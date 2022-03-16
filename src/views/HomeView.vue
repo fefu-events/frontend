@@ -1,18 +1,23 @@
 <template>
   <div class="home">
-    <img class="mx-auto" alt="Vue logo" src="../assets/img/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <img
+      class="mx-auto h-20 mb-5"
+      alt="Vue logo"
+      src="../assets/img/logo.svg"
+    />
+    <!-- <HelloWorld msg="Welcome to Your Vue.js App" /> -->
+    <LiveMap class="w-full" />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+import LiveMap from "@/components/LiveMap.vue";
 
 export default {
   name: "HomeView",
   components: {
-    HelloWorld,
+    LiveMap,
   },
 };
 </script>
