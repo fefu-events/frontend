@@ -12,6 +12,13 @@
       @move="log_move('move')"
     >
       <l-tile-layer :url="url" :attribution="attribution" />
+      <l-polygon
+        :lat-lngs="[poly_campus]"
+        color="#41b782"
+        :fill="true"
+        :fillOpacity="0.8"
+        fillColor="#41b782"
+      />
       <l-marker
         :lat-lng="[43.027503, 131.889759]"
         @moveend="log_move('moveend')"
@@ -61,6 +68,7 @@
 import {
   LMap,
   LTileLayer,
+  LPolygon,
   LMarker,
   LTooltip,
   LPopup,
@@ -68,12 +76,14 @@ import {
 } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
 import MapIcon from "../assets/img/logo.svg";
+import geojson from "../assets/json/geojson";
 
 export default {
   name: "HelloWorld",
   components: {
     LMap,
     LTileLayer,
+    LPolygon,
     LMarker,
     LTooltip,
     LPopup,
@@ -134,6 +144,7 @@ export default {
       staticAnchor: [28, 56],
       iconWidth: 56,
       iconHeight: 56,
+      poly_campus: geojson.FEFU_POLY,
     };
   },
   computed: {
