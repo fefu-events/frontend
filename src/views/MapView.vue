@@ -1,5 +1,6 @@
 <template>
-  <LiveMap class="w-full" />
+  <div></div>
+  <LiveMap class="w-screen h-screen" />
 </template>
 
 <script>
