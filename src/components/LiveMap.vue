@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 80vh; width: 100vw">
+  <div>
     <l-map
       :bounds="bounds"
       :maxBounds="maxBounds"
@@ -16,7 +16,7 @@
         :lat-lngs="[poly_campus]"
         color="#41b782"
         :fill="true"
-        :fillOpacity="0.8"
+        :fillOpacity="0.0"
         fillColor="#41b782"
       />
       <l-marker
@@ -89,9 +89,6 @@ export default {
     LPopup,
     LIcon,
   },
-  props: {
-    msg: String,
-  },
 
   data() {
     return {
@@ -131,10 +128,10 @@ export default {
       zoom: 15,
       minZoom: 15,
       maxZoom: 18,
-      center: [43.027503, 131.889759],
+      center: [43.029308, 131.892346],
       bounds: [
         [43.034866, 131.881141],
-        [43.02, 131.912204],
+        [43.011322, 131.937942],
       ],
       maxBounds: [
         [43.050454, 131.855313],
