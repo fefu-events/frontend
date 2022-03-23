@@ -1,0 +1,36 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer components {
+  .filter-checkbox {
+    @apply border-black;
+    @apply cursor-pointer;
+    @apply text-transparent;
+  }
+}
+
+@layer utilities {
+  .filter-checkbox {
+    &:checked {
+      @apply bg-checked-icon;
+      @apply border-black;
+      &:hover {
+        @apply border-secondary;
+      }
+      &:focus {
+        @apply border-black;
+        &:hover {
+          @apply border-secondary;
+        }
+      }
+    }
+    &:hover {
+      @apply border-secondary;
+    }
+    &:focus {
+      @apply ring-0;
+      @apply ring-offset-0;
+    }
+  }
+}
