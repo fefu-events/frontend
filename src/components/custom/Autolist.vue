@@ -39,9 +39,9 @@
         >
           <div
             v-if="filteredPlaces.length === 0 && query !== ''"
-            class="cursor-default select-none relative py-2 px-4 text-gray-700"
+            class="cursor-default select-none relative py-2 px-4 text-gray-dark italic"
           >
-            Nothing found.
+            Ничего не найдено
           </div>
           <div class="flex flex-col">
             <label
@@ -114,7 +114,7 @@ export default {
 
   watch: {
     checkedPlaces() {
-      this.$emit("checkedUpdate", this.checkedPlaces);
+      this.$emit("update", this.checkedPlaces);
     },
   },
 };
