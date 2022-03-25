@@ -5,9 +5,8 @@
     >
       <SearchIcon class="w-5 h-5" />
     </div>
-    <!--  TODO: определить цвет #E5E5E5 -->
-    <!--  TODO: сделать v-model для input и вывести в parent -->
     <input
+      v-model="query"
       type="text"
       id="email-adress-icon"
       class="block w-full pl-10 p-2.5 bg-gray-light border-0 text-sm rounded-lg focus:ring-0"
@@ -23,6 +22,17 @@ export default {
   name: "SearchComponent",
   components: {
     SearchIcon,
+  },
+  data() {
+    return {
+      query: "",
+    };
+  },
+
+  watch: {
+    query() {
+      this.$emit("update", this.query);
+    },
   },
 };
 </script>
