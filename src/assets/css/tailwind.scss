@@ -2,35 +2,46 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-@layer components {
-  .filter-checkbox {
-    @apply border-black;
-    @apply cursor-pointer;
-    @apply text-transparent;
+@layer base {
+  html {
+    font-family: Verdana, system-ui, sans-serif;
+  }
+
+  #app {
+    @apply bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500;
   }
 }
 
-@layer utilities {
-  .filter-checkbox {
-    &:checked {
-      @apply bg-checked-icon;
-      @apply border-black;
-      &:hover {
-        @apply border-secondary;
-      }
-      &:focus {
-        @apply border-black;
-        &:hover {
-          @apply border-secondary;
-        }
-      }
-    }
-    &:hover {
-      @apply border-secondary;
-    }
+.form-radio {
+  @apply cursor-pointer;
+  &:checked {
+    background-image: none;
     &:focus {
-      @apply ring-0;
-      @apply ring-offset-0;
+      @apply border-transparent;
     }
+  }
+  &:hover {
+    @apply border-primary;
+  }
+  &:focus {
+    @apply ring-0;
+    @apply ring-offset-0;
+  }
+}
+
+.form-checkbox {
+  @apply cursor-pointer;
+  &:checked {
+    @apply bg-checked-icon;
+    &:hover {
+      @apply border-primary;
+    }
+  }
+  &:hover {
+    @apply border-primary;
+  }
+  &:focus {
+    @apply ring-0;
+    @apply ring-offset-0;
   }
 }

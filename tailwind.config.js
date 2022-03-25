@@ -1,13 +1,16 @@
 module.exports = {
   content: ["./public/**/*.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
+  darkMode: "media",
   theme: {
     extend: {
       colors: {
         transparent: "transparent",
         current: "currentColor",
-        primary: "#FFFFFF",
-        secondary: "#FF9058",
-        disable: "#C7C7CC",
+        primary: "#FF9058",
+        gray: {
+          dark: "#C7C7CC",
+          light: "#E5E5E5",
+        },
         success: "#13CE66",
         danger: "#FF4949",
         warning: "#FFCC3D",
