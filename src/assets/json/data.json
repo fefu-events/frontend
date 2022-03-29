@@ -1,0 +1,21 @@
+{
+  "categories": [
+    { "name": "Образовательные", "value": "education" },
+    { "name": "Развлекательные", "value": "fun" },
+    { "name": "Спортивные", "value": "sport" },
+    { "name": "Официальные", "value": "official" },
+    { "name": "Другие", "value": "others" }
+  ],
+  "places": [
+    { "name": "Корпус 6.1", "value": "building6-1" },
+    { "name": "Корпус 11", "value": "building11" },
+    { "name": "Корпус A", "value": "buildingA" },
+    { "name": "Стадион", "value": "stadium" }
+  ],
+  "intervals": [
+    { "name": "Сейчас", "value": "now" },
+    { "name": "Сегодня", "value": "today" },
+    { "name": "На неделю", "value": "week" },
+    { "name": "На месяц", "value": "month" }
+  ]
+}
