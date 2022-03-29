@@ -10,7 +10,7 @@
           {{ categoryName }}
         </span>
         <ComboboxInput
-          class="w-full border-none bg-transparent focus:outline-none focus:ring-0 py-2 pl-16 pr-10 mx-2 text-sm leading-5 text-gray-900"
+          class="w-full border-none bg-transparent focus:outline-none focus:ring-0 py-2 pl-16 pr-10 md:mx-2 text-sm leading-5 text-gray-900"
           autocomplete="off"
           @change="query = $event.target.value"
         />
@@ -35,7 +35,7 @@
         @after-leave="query = ''"
       >
         <ComboboxOptions
-          class="w-full px-4 mt-1 overflow-auto text-sm rounded-md max-h-60 focus:outline-none sm:text-sm"
+          class="w-full px-4 py-2 overflow-auto text-sm rounded-md max-h-60 focus:outline-none sm:text-sm"
         >
           <div
             v-if="filteredPlaces.length === 0 && query !== ''"
