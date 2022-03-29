@@ -1,3 +1,5 @@
+const defaultTheme = require("tailwindcss/defaultTheme");
+
 module.exports = {
   content: ["./public/**/*.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
   darkMode: "media",
@@ -17,6 +19,9 @@ module.exports = {
       },
       backgroundImage: {
         "checked-icon": "url('/src/assets/img/svg/checked.svg')",
+      },
+      fontFamily: {
+        sans: ["Verdana", ...defaultTheme.fontFamily.sans],
       },
     },
   },
