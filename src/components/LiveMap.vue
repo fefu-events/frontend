@@ -75,7 +75,7 @@ import {
   LIcon,
 } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
-import MapIcon from "../assets/img/logo.svg";
+import MapIcon from "@/assets/img/svg/logo.svg";
 import geojson from "../assets/json/geojson";
 
 export default {

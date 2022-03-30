@@ -11,6 +11,7 @@
 git clone https://github.com/fefu-events/frontend.git
 cd frontend
 npm install
+npm install -g serve
 ```
 
 Затем сделайте сборку проекта:
@@ -37,7 +38,8 @@ src
 │   │   └───svg
 │   └───json
 ├───components
-│   └───custom
+│   ├───interface
+│   └───templates
 ├───router
 ├───store
 └───views

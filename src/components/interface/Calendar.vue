@@ -10,7 +10,7 @@
       is24hr
       :is-range="isRange"
       :is-dark="isDark"
-      class="!hidden md:!inline-flex my-2"
+      class="!hidden md:!inline-flex my-2 !border-0"
     />
     <DatePicker
       v-model="date"
