@@ -38,29 +38,34 @@
           class="w-full px-4 py-2 overflow-auto text-sm rounded-md max-h-60 focus:outline-none sm:text-sm"
         >
           <div
-            v-if="filteredPlaces.length === 0 && query !== ''"
+            v-if="filteredData.length === 0 && query !== ''"
             class="cursor-default select-none relative py-2 px-4 text-gray-dark italic"
           >
             Ничего не найдено
           </div>
           <div class="flex flex-col">
             <label
-              v-for="place in filteredPlaces"
-              :key="place"
+              v-for="unit in filteredData"
+              :key="unit"
               class="inline-flex items-center my-2 cursor-pointer"
-              :for="place.value"
+              :for="unit.value"
             >
               <input
-                class="cursor-default select-none relative py-2 form-checkbox text-primary w-5 h-5 rounded"
-                type="checkbox"
-                :id="place.value"
-                :value="place.value"
-                v-model="checkedPlaces"
+                class="py-2 w-5 h-5 text-primary cursor-default select-none"
+                :class="{
+                  'form-checkbox rounded': dataType === 'checkbox',
+                  'form-radio': dataType === 'radio',
+                }"
+                :type="dataType"
+                :id="unit.value"
+                :value="unit.value"
+                v-model="checkedData"
               />
               <span class="block truncate ml-2">
-                {{ place.name }}
+                {{ unit.name }}
               </span>
             </label>
+            <slot />
           </div>
         </ComboboxOptions>
       </TransitionRoot>
@@ -89,22 +94,23 @@ export default {
     ChevronDownIcon,
   },
   props: {
-    places: Object,
+    data: Object,
+    dataType: String,
     categoryName: String,
   },
   data() {
     return {
       query: "",
-      checkedPlaces: [],
+      checkedData: [],
     };
   },
 
   computed: {
-    filteredPlaces() {
+    filteredData() {
       return this.query === ""
-        ? this.places
-        : this.places.filter((place) =>
-            place?.name
+        ? this.data
+        : this.data.filter((unit) =>
+            unit?.name
               .toLowerCase()
               .replace(/\s+/g, "")
               .includes(this.query.toLowerCase().replace(/\s+/g, ""))
@@ -113,8 +119,8 @@ export default {
   },
 
   watch: {
-    checkedPlaces() {
-      this.$emit("update", this.checkedPlaces);
+    checkedData() {
+      this.$emit("update", this.checkedData);
     },
   },
 };

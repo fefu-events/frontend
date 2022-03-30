@@ -1,19 +1,17 @@
 <template>
-  <div
-    class="flex flex-col mx-auto w-[calc(200px+32px)] md:w-[calc(240px+12px)]"
-  >
+  <div class="flex flex-col h-full w-56 md:w-60">
     <!-- Search input -->
     <Search class="mt-9" @update="(value) => (filter.query = value)" />
     <!-- Show list button -->
-    <Button class="w-full">
-      <span>Показать список</span>
+    <Button class="w-full" @click="toggleEventsList">
+      <span>{{ eventsListState ? "Скрыть список" : "Показать список" }}</span>
     </Button>
     <!-- Filters list -->
     <div class="flex items-center max-w-[240px] px-4 py-2">
       <FilterIcon class="w-5 h-5" />
       <span class="ml-1 text-lg">Фильтры:</span>
     </div>
-    <div class="overflow-y-scroll">
+    <div class="z-10 h-full overflow-y-scroll overflow-x-hidden">
       <!-- Follow toggle -->
       <Toggle @update="(value) => (filter.followToggle = value)">
         <span class="text-sm font-medium"> Только подписки </span>
@@ -87,7 +85,8 @@
       <Autolist
         class="text-sm"
         @update="(value) => (filter.checkedPlaces = value)"
-        :places="json_data.places"
+        :data="json_data.places"
+        dataType="checkbox"
         categoryName="Место: "
       />
       <hr class="mb-8" />
@@ -102,20 +101,25 @@ hr {
 </style>
 
 <script>
-import { defineAsyncComponent } from "vue";
+import * as InterfaceComponents from "@/components/interface";
 import { FilterIcon } from "@heroicons/vue/outline";
 import json_data from "@/assets/json/data.json";
 
 export default {
   name: "FilterSidebarComponent",
   components: {
-    Autolist: defineAsyncComponent(() => import("./custom/Autolist.vue")),
-    Button: defineAsyncComponent(() => import("./custom/Button.vue")),
-    Calendar: defineAsyncComponent(() => import("./custom/Calendar.vue")),
-    Disclosure: defineAsyncComponent(() => import("./custom/Disclosure.vue")),
-    Search: defineAsyncComponent(() => import("./custom/Search.vue")),
-    Toggle: defineAsyncComponent(() => import("./custom/Toggle.vue")),
+    Autolist: InterfaceComponents.Autolist,
+    Button: InterfaceComponents.Button,
+    Calendar: InterfaceComponents.Calendar,
+    Disclosure: InterfaceComponents.Disclosure,
+    Search: InterfaceComponents.Search,
+    Toggle: InterfaceComponents.Toggle,
     FilterIcon,
+  },
+
+  props: {
+    eventsListState: Boolean,
+    toggleEventsList: Function,
   },
 
   data() {
