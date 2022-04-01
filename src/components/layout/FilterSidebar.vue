@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-full w-56 md:w-60">
+  <div class="flex flex-col h-full w-4/5 md:w-60">
     <!-- Search input -->
     <Search class="mt-9" @update="(value) => (filter.query = value)" />
     <!-- Show list button -->
@@ -11,7 +11,7 @@
       <FilterIcon class="w-5 h-5" />
       <span class="ml-1 text-lg">Фильтры:</span>
     </div>
-    <div class="z-10 h-full overflow-y-scroll overflow-x-hidden">
+    <div class="overflow-y-scroll overflow-x-hidden">
       <!-- Follow toggle -->
       <Toggle @update="(value) => (filter.followToggle = value)">
         <span class="text-sm font-medium"> Только подписки </span>

@@ -39,7 +39,8 @@ src
 │   └───json
 ├───components
 │   ├───interface
-│   └───templates
+│   ├───layout
+│   └───template
 ├───router
 ├───store
 └───views
