@@ -11,36 +11,42 @@ html {
   height: 0px;
 }
 
-.form-radio {
-  @apply cursor-pointer;
-  &:checked {
-    background-image: none;
-    &:focus {
-      @apply border-transparent;
-    }
+@layer components {
+  .sidebar {
+    @apply fixed bottom-10 md:bottom-0 md:relative w-screen h-0 md:w-0 md:h-screen bg-white outline-black rounded-t md:rounded-r-lg overflow-hidden duration-300 md:duration-100;
   }
-  &:hover {
-    @apply border-primary;
-  }
-  &:focus {
-    @apply ring-0;
-    @apply ring-offset-0;
-  }
-}
 
-.form-checkbox {
-  @apply cursor-pointer;
-  &:checked {
-    @apply bg-checked-icon;
+  .form-radio {
+    @apply cursor-pointer;
+    &:checked {
+      background-image: none;
+      &:focus {
+        @apply border-transparent;
+      }
+    }
     &:hover {
       @apply border-primary;
     }
+    &:focus {
+      @apply ring-0;
+      @apply ring-offset-0;
+    }
   }
-  &:hover {
-    @apply border-primary;
-  }
-  &:focus {
-    @apply ring-0;
-    @apply ring-offset-0;
+
+  .form-checkbox {
+    @apply cursor-pointer;
+    &:checked {
+      @apply bg-checked-icon;
+      &:hover {
+        @apply border-primary;
+      }
+    }
+    &:hover {
+      @apply border-primary;
+    }
+    &:focus {
+      @apply ring-0;
+      @apply ring-offset-0;
+    }
   }
 }

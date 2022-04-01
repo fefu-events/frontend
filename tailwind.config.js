@@ -16,9 +16,13 @@ module.exports = {
         success: "#13CE66",
         danger: "#FF4949",
         warning: "#FFCC3D",
+        hoverColor: "#FFECE2",
       },
       backgroundImage: {
         "checked-icon": "url('/src/assets/img/svg/checked.svg')",
+      },
+      zIndex: {
+        500: 500,
       },
       fontFamily: {
         sans: ["Verdana", ...defaultTheme.fontFamily.sans],
