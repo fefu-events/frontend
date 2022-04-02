@@ -1,16 +1,17 @@
 <template>
-  <div></div>
+  <Sidebar class="absolute" />
   <LiveMap class="w-screen h-screen" />
 </template>
 
 <script>
-// @ is an alias to /src
 import LiveMap from "@/components/LiveMap.vue";
+import Sidebar from "@/components/Sidebar.vue";
 
 export default {
-  name: "HomeView",
+  name: "MapView",
   components: {
     LiveMap,
+    Sidebar,
   },
 };
 </script>
