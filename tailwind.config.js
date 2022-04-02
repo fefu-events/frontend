@@ -21,6 +21,10 @@ module.exports = {
       backgroundImage: {
         "checked-icon": "url('/src/assets/img/svg/checked.svg')",
       },
+      width: {
+        70: "280px",
+        90: "360px",
+      },
       zIndex: {
         500: 500,
       },
