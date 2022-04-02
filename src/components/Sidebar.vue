@@ -1,5 +1,6 @@
 <template>
   <div class="flex z-500">
+    <!-- Filter bar -->
     <div
       class="sidebar"
       :class="{
@@ -12,6 +13,7 @@
         :toggleEventsList="onClickEventsListToggle"
       />
     </div>
+    <!-- Event list -->
     <div
       class="sidebar md:-z-10 overflow-y-scroll"
       :class="{
@@ -19,14 +21,28 @@
         'md:-left-2': sidebar_open,
       }"
     >
-      <div v-for="i in events" :key="i.title">
-        <EventBlock :title="i.title" :date="i.date" />
-      </div>
+      <EventsListBar
+        :onClickEventChoose="onClickEventChoose"
+        :filteredEvents="events"
+      />
     </div>
+    <!-- Event info bar -->
     <div
-      class="hidden md:block relative top-24 bg-white w-5 h-14 rounded-r-md border-y border-r border-black cursor-pointer -z-20"
+      class="sidebar md:-z-20"
       :class="{
-        '-left-2': eventlist_open,
+        'h-[90%] md:!w-90 md:h-screen !outline outline-1': choosen_event,
+        'md:-left-2': sidebar_open,
+        'md:-left-4': eventlist_open,
+      }"
+    >
+      <EventInfoBar />
+    </div>
+    <!-- Sidebar toggler -->
+    <div
+      class="hidden md:block relative top-24 bg-white w-5 h-14 rounded-r-md border-y border-r border-black cursor-pointer z-10"
+      :class="{
+        '-left-2': sidebar_open + eventlist_open + (choosen_event != null) == 2,
+        '-left-4': choosen_event && eventlist_open,
       }"
       @click.stop="onClickSidebarToggle"
     >
@@ -37,6 +53,7 @@
         }"
       />
     </div>
+    <!-- Mobile navbar -->
     <div
       class="md:hidden fixed bottom-0 flex flex-row h-10 w-screen bg-white border-y border-black items-center mx-auto"
     >
@@ -61,7 +78,6 @@
 
 <script>
 import * as LayoutComponents from "@/components/layout/";
-import * as TemplateComponents from "@/components/template";
 import { UserIcon } from "@heroicons/vue/solid";
 import {
   ChevronRightIcon,
@@ -74,7 +90,8 @@ export default {
   name: "AboutView",
   components: {
     FilterSidebar: LayoutComponents.FilterSidebar,
-    EventBlock: TemplateComponents.EventBlock,
+    EventInfoBar: LayoutComponents.EventInfoBar,
+    EventsListBar: LayoutComponents.EventsListBar,
     ChevronRightIcon,
     MenuIcon,
     PlusIcon,
@@ -85,30 +102,40 @@ export default {
     filteredEvents: Array,
   },
 
+  provide() {
+    return {
+      onClickEventChoose: this.onClickEventChoose,
+    };
+  },
+
   data() {
     return {
       choosen_event: null,
       sidebar_open: false,
       eventlist_open: false,
-      eventbar_open: false,
       events: [
         {
+          id: 1,
           title: "Название какого-то мероприятия",
           date: "01.01.2022 - 03.01.2022",
         },
         {
+          id: 2,
           title: "Название какого-то мероприятия",
           date: "01.01.2022 - 03.01.2022",
         },
         {
+          id: 3,
           title: "Название какого-то мероприятия",
           date: "01.01.2022 - 03.01.2022",
         },
         {
+          id: 4,
           title: "Название какого-то мероприятия",
           date: "01.01.2022 - 03.01.2022",
         },
         {
+          id: 5,
           title: "Название какого-то мероприятия",
           date: "01.01.2022 - 03.01.2022",
         },
@@ -119,10 +146,9 @@ export default {
   methods: {
     onClickEventChoose(id) {
       if (this.choosen_event === id) {
-        this.eventbar_open = false;
+        this.choosen_event = null;
         return;
       }
-      this.eventbar_open = true;
       this.choosen_event = id;
     },
 
@@ -133,6 +159,7 @@ export default {
     onClickSidebarToggle() {
       if (this.sidebar_open) {
         this.eventlist_open = false;
+        this.choosen_event = null;
       }
       this.sidebar_open = !this.sidebar_open;
     },
