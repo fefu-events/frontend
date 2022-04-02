@@ -40,7 +40,7 @@
           </label>
         </div>
       </Disclosure>
-      <hr />
+      <hr class="border-black" />
       <!-- Calendar -->
       <Disclosure categoryName="Дата">
         <div class="flex flex-col">
@@ -59,7 +59,7 @@
           />
         </div>
       </Disclosure>
-      <hr />
+      <hr class="border-black" />
       <!-- Intervals list -->
       <Disclosure categoryName="Временной интервал">
         <div class="flex flex-col">
@@ -80,7 +80,7 @@
           </label>
         </div>
       </Disclosure>
-      <hr />
+      <hr class="border-black" />
       <!-- Places list -->
       <Autolist
         class="text-sm"
@@ -89,16 +89,10 @@
         dataType="checkbox"
         categoryName="Место: "
       />
-      <hr class="mb-8" />
+      <hr class="border-black mb-8" />
     </div>
   </div>
 </template>
-
-<style scoped>
-hr {
-  border-color: black;
-}
-</style>
 
 <script>
 import * as InterfaceComponents from "@/components/interface";
@@ -106,7 +100,7 @@ import { FilterIcon } from "@heroicons/vue/outline";
 import json_data from "@/assets/json/data.json";
 
 export default {
-  name: "FilterSidebarComponent",
+  name: "FilterComponent",
   components: {
     Autolist: InterfaceComponents.Autolist,
     Button: InterfaceComponents.Button,

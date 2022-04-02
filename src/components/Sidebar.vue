@@ -7,7 +7,7 @@
         'h-[90%] md:!w-80 md:h-screen !outline outline-1': sidebar_open,
       }"
     >
-      <FilterSidebar
+      <FilterBar
         class="mx-auto"
         :eventsListState="eventlist_open"
         :toggleEventsList="onClickEventsListToggle"
@@ -89,7 +89,7 @@ import {
 export default {
   name: "AboutView",
   components: {
-    FilterSidebar: LayoutComponents.FilterSidebar,
+    FilterBar: LayoutComponents.FilterBar,
     EventInfoBar: LayoutComponents.EventInfoBar,
     EventsListBar: LayoutComponents.EventsListBar,
     ChevronRightIcon,
