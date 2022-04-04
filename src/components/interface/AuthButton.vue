@@ -18,22 +18,16 @@ export default {
   data() {
     return {
       account: undefined,
+      request: {
+        scopes: [
+          "api://4793bb1a-a0d2-46ec-8af5-5509bf011a32/user_impersonation",
+        ],
+      },
     };
   },
 
   async created() {
     this.$msalInstance = new PublicClientApplication(this.getMsalConfig);
-    this.$emitter.on(
-      "login",
-      async function (account) {
-        this.account = account;
-        console.log(this.account);
-      }.bind(this)
-    ),
-      this.$emitter.on("logout", () => {
-        console.log("logging out");
-        this.account = undefined;
-      });
   },
 
   computed: {
@@ -41,36 +35,32 @@ export default {
   },
 
   async mounted() {
-    let request = {
-      scopes: ["api://4793bb1a-a0d2-46ec-8af5-5509bf011a32/user_impersonation"],
-    };
     const accounts = this.$msalInstance.getAllAccounts();
     if (accounts.length == 0) {
       return;
     }
     this.account = accounts[0];
 
-    this.$emitter.emit("login", this.account);
     this.$msalInstance.setActiveAccount(this.account);
-    let tokenResponse = await this.$msalInstance.acquireTokenSilent(request);
+    let tokenResponse = await this.$msalInstance.acquireTokenSilent(
+      this.request
+    );
     this.$store.commit("setAccessToken", tokenResponse.accessToken);
   },
 
   methods: {
     async SignIn() {
-      let request = {
-        scopes: [
-          "api://4793bb1a-a0d2-46ec-8af5-5509bf011a32/user_impersonation",
-        ],
-      };
       await this.$msalInstance
-        .loginPopup(request)
+        .loginPopup(this.request)
         .then((data) => {
+          const myAccounts = this.$msalInstance.getAllAccounts();
+          this.account = myAccounts[0];
           this.$store.commit("setAccessToken", data.accessToken);
         })
         .catch((error) => {
           console.error(`error during authentication: ${error}`);
         });
+
       fetch("http://localhost:8000/user/register", {
         method: "get",
         headers: new Headers({
@@ -78,17 +68,12 @@ export default {
           "Content-Type": "application/x-www-form-urlencoded",
         }),
       });
-      const accounts = this.$msalInstance.getAllAccounts();
-      if (accounts.length == 0) {
-        return;
-      }
-      this.account = accounts[0];
     },
     async SignOut() {
       await this.$msalInstance
         .logoutPopup({})
         .then(() => {
-          this.$emitter.emit("logout", "logging out");
+          this.account = undefined;
         })
         .catch((error) => {
           console.error(error);
