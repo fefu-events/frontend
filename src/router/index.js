@@ -4,12 +4,11 @@ const routes = [
   {
     path: "/",
     name: "home",
-    component: () => import("@/views/HomeView.vue"),
+    component: () => import("@/views/MapView.vue"),
   },
   {
-    path: "/map",
-    name: "map",
-    component: () => import("@/views/MapView.vue"),
+    path: "/:catchAll(.*)",
+    redirect: { name: "home" },
   },
 ];
 
