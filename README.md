@@ -42,6 +42,9 @@ src
 │   ├───layout
 │   └───template
 ├───router
+├───service
+│   └───auth
 ├───store
+│   └───modules
 └───views
 ```
