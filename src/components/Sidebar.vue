@@ -53,7 +53,6 @@
         }"
       />
     </div>
-    <AuthButton class="relative bottom-0 right-0" />
     <!-- Mobile navbar -->
     <div
       class="md:hidden fixed bottom-0 flex flex-row h-10 w-screen bg-white border-y border-black items-center mx-auto"
@@ -79,7 +78,6 @@
 
 <script>
 import * as LayoutComponents from "@/components/layout/";
-import AuthButton from "@/components/interface/AuthButton.vue";
 import { UserIcon } from "@heroicons/vue/solid";
 import {
   ChevronRightIcon,
@@ -89,12 +87,11 @@ import {
 } from "@heroicons/vue/outline";
 
 export default {
-  name: "AboutView",
+  name: "SidebarView",
   components: {
     FilterBar: LayoutComponents.FilterBar,
     EventInfoBar: LayoutComponents.EventInfoBar,
     EventsListBar: LayoutComponents.EventsListBar,
-    AuthButton,
     ChevronRightIcon,
     MenuIcon,
     PlusIcon,

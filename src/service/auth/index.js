@@ -1,4 +1,7 @@
-import { PublicClientApplication } from "@azure/msal-browser";
+import {
+  PublicClientApplication,
+  InteractionRequiredAuthError,
+} from "@azure/msal-browser";
 
 const msalConfig = {
   auth: {
@@ -12,8 +15,14 @@ const msalConfig = {
   },
 };
 
-const request = {
+const silentRequest = {
   scopes: ["api://4793bb1a-a0d2-46ec-8af5-5509bf011a32/user_impersonation"],
+  forceRefresh: false,
+};
+
+const refreshRequest = {
+  scopes: ["api://4793bb1a-a0d2-46ec-8af5-5509bf011a32/user_impersonation"],
+  forceRefresh: true,
 };
 
 export default class MsalAuth {
@@ -38,13 +47,25 @@ export default class MsalAuth {
     }
     this.account = accounts[0];
     this.msalInstance.setActiveAccount(this.account);
-    const response = await this.msalInstance.acquireTokenSilent(request);
-    return response.accessToken;
+  }
+
+  async autoAuth() {
+    this.setActiveAccount();
+    const tokenResponse = await this.msalInstance
+      .acquireTokenSilent(silentRequest)
+      .catch(async (error) => {
+        if (error instanceof InteractionRequiredAuthError) {
+          return await this.msalInstance
+            .acquireTokenPopup(refreshRequest)
+            .catch((error) => console.log(error));
+        }
+      });
+    return tokenResponse?.accessToken;
   }
 
   async signIn() {
     await this.msalInstance
-      .loginPopup(request)
+      .loginPopup(silentRequest)
       .then((data) => {
         const accounts = this.msalInstance.getAllAccounts();
         this.account = accounts[0];
@@ -76,5 +97,10 @@ export default class MsalAuth {
       .catch((error) => {
         console.error(error);
       });
+  }
+
+  async refreshToken() {
+    const response = await this.msalInstance.acquireTokenSilent(refreshRequest);
+    return response.accessToken;
   }
 }
