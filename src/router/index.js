@@ -5,9 +5,18 @@ const routes = [
     path: "/",
     name: "home",
     component: () => import("@/views/MapView.vue"),
+    meta: {
+      title: "Map",
+    },
+  },
+  {
+    path: "/about",
+    name: "about",
+    component: () => import("@/views/MapView.vue"),
   },
   {
     path: "/:catchAll(.*)",
+    name: "404",
     redirect: { name: "home" },
   },
 ];
@@ -15,6 +24,11 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  document.title = to.meta.title;
+  next();
 });
 
 export default router;

@@ -9,7 +9,7 @@
       :zoomAnimation="true"
       :markerZoomAnimation="true"
       :center="center"
-      @move="log_move('move')"
+      @zoom="log_move('move')"
     >
       <l-tile-layer :url="url" :attribution="attribution" />
       <l-polygon
