@@ -3,7 +3,7 @@
     <!-- Search input -->
     <Search
       class="mt-9"
-      @update="(value) => (filter.query = value)"
+      @update="(value) => (query = value)"
       :placeholder="'Посиделки #пати #уют'"
     />
     <!-- Show list button -->
@@ -17,11 +17,11 @@
     </div>
     <div class="overflow-y-scroll overflow-x-hidden">
       <!-- Follow toggle -->
-      <Toggle @update="(value) => (filter.followToggle = value)">
+      <Toggle @update="(value) => (followToggle = value)">
         <span class="text-sm font-medium"> Только подписки </span>
       </Toggle>
       <!-- Recommend toggle -->
-      <Toggle @update="(value) => (filter.recommendToggle = value)">
+      <Toggle @update="(value) => (recommendToggle = value)">
         <span class="text-sm font-medium"> Рекомендации </span>
       </Toggle>
       <!-- Category list -->
@@ -38,7 +38,7 @@
               type="checkbox"
               :id="category.value"
               :value="category.value"
-              v-model="filter.checkedCategories"
+              v-model="categories"
             />
             <span class="ml-2">{{ category.name }}</span>
           </label>
@@ -47,43 +47,21 @@
       <hr class="border-black" />
       <!-- Calendar -->
       <Disclosure categoryName="Дата">
-        <span> {{ filter.date }} </span>
         <div class="flex flex-col">
-          <Toggle class="px-0 pt-0" @update="(value) => (isRange = !value)">
+          <Toggle class="px-0 pt-0" @update="(value) => (rangeToggle = !value)">
             <span class="text-sm font-medium"> Только начало </span>
           </Toggle>
           <Calendar
-            :isRange="isRange"
-            @update="(value) => (filter.date = value)"
+            :isRange="rangeToggle"
+            @update="(value) => (date = value)"
           />
-        </div>
-      </Disclosure>
-      <hr class="border-black" />
-      <!-- Intervals list -->
-      <Disclosure categoryName="Временной интервал">
-        <div class="flex flex-col">
-          <label
-            v-for="interval in json_data.intervals"
-            :key="interval"
-            class="inline-flex items-center my-2 cursor-pointer"
-            :for="interval.value"
-          >
-            <input
-              class="form-radio text-primary checked:border-primary w-5 h-5 rounded-xl"
-              type="radio"
-              :id="interval.value"
-              :value="interval.value"
-              v-model="filter.checkedIntervals"
-            />
-            <span class="ml-2">{{ interval.name }}</span>
-          </label>
         </div>
       </Disclosure>
       <hr class="border-black" />
       <!-- Places list -->
       <Autolist
         class="text-sm"
-        @update="(value) => (filter.checkedPlaces = value)"
+        @update="(value) => (places = value)"
         :data="json_data.places"
         dataType="checkbox"
         categoryName="Место: "
@@ -94,6 +72,7 @@
 </template>
 
 <script>
+import _ from "lodash";
 import * as InterfaceComponents from "@/components/interface";
 import { FilterIcon } from "@heroicons/vue/outline";
 import json_data from "@/assets/json/data.json";
@@ -118,27 +97,45 @@ export default {
   data() {
     return {
       json_data,
-      isRange: true,
-      filter: {
-        query: "",
-        followToggle: false,
-        recommendToggle: false,
-        checkedCategories: [],
-        date: null,
-        checkedPlaces: [],
-        checkedIntervals: null,
-      },
+      query: "",
+      followToggle: false,
+      recommendToggle: false,
+      categories: [],
+      rangeToggle: true,
+      date: null,
+      places: [],
     };
   },
 
   // TODO: создать Vuex store для фильтра и установить watch на каждый из фильтров
-  // watch: {
-  //   filter: {
-  //     handler(newValue) {
-  //       console.log(newValue);
-  //     },
-  //     deep: true,
-  //   },
-  // },
+  watch: {
+    query: _.debounce(function (newValue) {
+      this.$store.dispatch("UPDATE_FILTER", { key: "query", value: newValue });
+    }, 500),
+    followToggle(newValue) {
+      this.$store.dispatch("UPDATE_FILTER", {
+        key: "followToggle",
+        value: newValue,
+      });
+    },
+    recommendToggle(newValue) {
+      this.$store.dispatch("UPDATE_FILTER", {
+        key: "recommendToggle",
+        value: newValue,
+      });
+    },
+    categories(newValue) {
+      this.$store.dispatch("UPDATE_FILTER", {
+        key: "categories",
+        value: newValue,
+      });
+    },
+    date(newValue) {
+      this.$store.dispatch("UPDATE_FILTER", { key: "date", value: newValue });
+    },
+    places(newValue) {
+      this.$store.dispatch("UPDATE_FILTER", { key: "places", value: newValue });
+    },
+  },
 };
 </script>
