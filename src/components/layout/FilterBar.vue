@@ -1,7 +1,11 @@
 <template>
   <div class="flex flex-col h-full w-4/5 md:w-60">
     <!-- Search input -->
-    <Search class="mt-9" @update="(value) => (filter.query = value)" />
+    <Search
+      class="mt-9"
+      @update="(value) => (filter.query = value)"
+      :placeholder="'Посиделки #пати #уют'"
+    />
     <!-- Show list button -->
     <Button class="w-full" @click="toggleEventsList">
       <span>{{ eventsListState ? "Скрыть список" : "Показать список" }}</span>
@@ -43,19 +47,14 @@
       <hr class="border-black" />
       <!-- Calendar -->
       <Disclosure categoryName="Дата">
+        <span> {{ filter.date }} </span>
         <div class="flex flex-col">
-          <Toggle
-            class="px-0"
-            @update="(value) => ((isRange = !value), (filter.date = null))"
-          >
+          <Toggle class="px-0 pt-0" @update="(value) => (isRange = !value)">
             <span class="text-sm font-medium"> Только начало </span>
           </Toggle>
           <Calendar
-            :mode="'date'"
             :isRange="isRange"
-            :isDark="false"
             @update="(value) => (filter.date = value)"
-            class="self-center"
           />
         </div>
       </Disclosure>

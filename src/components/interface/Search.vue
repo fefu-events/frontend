@@ -10,7 +10,7 @@
       type="text"
       id="email-adress-icon"
       class="block w-full pl-10 p-2.5 bg-gray-light border-0 text-sm rounded-lg focus:ring-0"
-      placeholder="Поиск"
+      :placeholder="placeholder"
     />
   </div>
 </template>
@@ -22,6 +22,9 @@ export default {
   name: "SearchComponent",
   components: {
     SearchIcon,
+  },
+  props: {
+    placeholder: String,
   },
   data() {
     return {

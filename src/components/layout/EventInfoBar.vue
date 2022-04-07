@@ -41,9 +41,9 @@
       <div
         v-for="tag in tags"
         :key="tag"
-        class="px-2 mr-2 mt-2 border border-black rounded"
+        class="px-2 mr-2 mt-2 border border-black rounded hover:bg-primary hover:border-primary hover:text-white hover:cursor-pointer"
       >
-        <span>#{{ tag }}</span>
+        <span class="">#{{ tag }}</span>
       </div>
     </div>
   </div>
