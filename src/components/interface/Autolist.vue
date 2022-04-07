@@ -4,18 +4,14 @@
       <div
         class="relative w-full text-left rounded-lg cursor-default focus:outline-none focus-visible:ring-2 sm:text-sm overflow-hidden"
       >
-        <span
-          class="absolute inset-y-0 left-0 flex items-center font-bold leading-5 pl-4"
-        >
-          {{ categoryName }}
-        </span>
         <ComboboxInput
-          class="w-full border-none bg-transparent focus:outline-none focus:ring-0 py-2 pl-16 pr-10 md:mx-2 text-sm leading-5 text-gray-900"
+          class="w-full border-none bg-transparent focus:outline-none focus:ring-0 py-2 -mx-3 text-sm leading-5"
+          placeholder="Место"
           autocomplete="off"
           @change="query = $event.target.value"
         />
         <ComboboxButton
-          class="absolute inset-y-0 right-0 flex items-center pr-4"
+          class="absolute inset-y-0 right-0 flex items-center"
           v-slot="{ open }"
         >
           <ChevronDownIcon
@@ -35,11 +31,11 @@
         @after-leave="query = ''"
       >
         <ComboboxOptions
-          class="w-full px-4 py-2 overflow-auto text-sm rounded-md max-h-60 focus:outline-none sm:text-sm"
+          class="w-full py-2 overflow-auto text-sm rounded-md max-h-60 focus:outline-none sm:text-sm"
         >
           <div
             v-if="filteredData.length === 0 && query !== ''"
-            class="cursor-default select-none relative py-2 px-4 text-gray-dark italic"
+            class="cursor-default select-none relative py-2 text-gray-dark italic"
           >
             Ничего не найдено
           </div>

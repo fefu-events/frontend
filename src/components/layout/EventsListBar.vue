@@ -1,11 +1,11 @@
 <template>
-  <div class="my-4">
+  <div class="h-[85%] xl:h-full xl:my-6">
     <div
       class="hover:bg-hoverColor cursor-pointer"
       v-for="event in filteredEvents"
       :key="event.id"
     >
-      <EventBlock :event_data="event" @click="onClickEventChoose(event.id)" />
+      <EventBlock :event="event" @click="onClickEventChoose(event.id)" />
     </div>
   </div>
 </template>

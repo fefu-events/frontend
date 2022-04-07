@@ -2,7 +2,7 @@
   <div class="rounded-lg">
     <Disclosure v-slot="{ open }">
       <DisclosureButton
-        class="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-black rounded-l"
+        class="flex justify-between w-full py-2 text-sm font-medium text-left text-black rounded-l"
       >
         <span class="font-bold">{{ categoryName }}</span>
         <ChevronDownIcon
@@ -19,7 +19,7 @@
         leaveTo="opacity-0"
         @after-leave="query = ''"
       >
-        <DisclosurePanel class="px-4 pt-2 pb-2 text-sm text-left">
+        <DisclosurePanel class="pt-2 pb-2 text-sm text-left">
           <slot />
         </DisclosurePanel>
       </TransitionRoot>

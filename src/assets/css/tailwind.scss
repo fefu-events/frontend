@@ -2,7 +2,8 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-html {
+html, body {
+  scrollbar-width: none;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -13,7 +14,7 @@ html {
 
 @layer components {
   .sidebar {
-    @apply fixed bottom-10 md:bottom-0 md:relative w-screen h-0 md:w-0 md:h-screen bg-white outline-black rounded-t md:rounded-r-lg overflow-hidden duration-300 md:duration-100;
+    @apply fixed bottom-10 xl:bottom-0 xl:relative w-screen h-0 xl:w-0 xl:h-screen bg-white outline-black rounded-t xl:rounded-r-lg overflow-hidden duration-300 xl:duration-100;
   }
 
   .form-radio {

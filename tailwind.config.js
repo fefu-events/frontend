@@ -5,6 +5,10 @@ module.exports = {
   darkMode: "media",
   theme: {
     extend: {
+      gradientColorStops: {
+        primary: "#FF9058",
+        end: "#F38B88",
+      },
       colors: {
         transparent: "transparent",
         current: "currentColor",
@@ -20,6 +24,9 @@ module.exports = {
       },
       backgroundImage: {
         "checked-icon": "url('/src/assets/img/svg/checked.svg')",
+      },
+      height: {
+        "9/10": "90%",
       },
       width: {
         70: "280px",
