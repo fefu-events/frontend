@@ -79,7 +79,7 @@ import MapIcon from "@/assets/img/svg/logo.svg";
 import geojson from "../assets/json/geojson";
 
 export default {
-  name: "HelloWorld",
+  name: "LiveMapComponent",
   components: {
     LMap,
     LTileLayer,

@@ -1,7 +1,7 @@
 <template>
   <div class="h-[85%] xl:h-full xl:my-6">
     <div
-      class="hover:bg-hoverColor cursor-pointer"
+      class="xl:px-5 hover:bg-hoverColor cursor-pointer"
       v-for="event in filteredEvents"
       :key="event.id"
     >

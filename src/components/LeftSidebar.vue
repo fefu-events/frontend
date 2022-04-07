@@ -63,7 +63,7 @@
     <AuthButton class="hidden relative bottom-0 right-0" />
     <!-- Mobile navbar -->
     <div
-      class="xl:hidden fixed bottom-0 flex flex-row h-10 w-screen border-y border-black items-center mx-auto"
+      class="xl:hidden fixed bottom-0 flex flex-row h-10 w-screen bg-white border-y border-black items-center mx-auto"
     >
       <div class="basis-1/4 hover:text-primary">
         <UserIcon class="w-full h-5" />
