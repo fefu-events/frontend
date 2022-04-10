@@ -1,6 +1,8 @@
 import user from "./user";
+import client from "./client";
 
 const api = {
+  client,
   user,
 };
 
