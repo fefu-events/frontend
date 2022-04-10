@@ -1,11 +1,11 @@
 <template>
-  <div class="w-4/5 xl:w-70 mx-auto">
+  <div class="xl:w-70 mx-auto">
     <div class="grid grid-flow-row grid-cols-5 gap-3 py-4">
-      <div class="col-span-4 px-4 text-left text-lg">
+      <div class="col-span-4 text-left text-lg">
         <span> {{ event.title }} </span>
       </div>
       <div
-        class="flex w-12 rounded-full overflow-hidden justify-self-end self-center"
+        class="w-12 rounded-full overflow-hidden justify-self-end self-center"
       >
         <img
           class="self-center justify-self-center"
@@ -13,7 +13,7 @@
           alt="user avatar"
         />
       </div>
-      <div class="col-span-5 px-4 text-left">
+      <div class="col-span-5 text-left">
         <span>{{ event.date }}</span>
       </div>
     </div>

@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col h-full w-4/5 xl:w-70 mx-auto">
     <div
-      class="grid grid-cols-10 xl:flex mt-8 mb-4 xl:mt-0 xl:mb-5 flex-row content-between items-center xl:flex-col"
+      class="grid grid-cols-10 xl:flex mt-10 mb-4 xl:mt-0 xl:mb-5 flex-row content-between items-center xl:flex-col"
     >
       <div
         class="bg-black col-span-2 xl:w-28 xl:my-7 rounded-full overflow-hidden"
@@ -22,7 +22,7 @@
     <hr class="hidden xl:block border-black" />
     <div class="overflow-y-scroll">
       <div class="text-left">
-        <div class="xl:my-6">
+        <div class="my-3 xl:my-6">
           <span class="text-primary text-2xl xl:text-2xl font-bold">
             {{ people }}
           </span>
@@ -60,15 +60,17 @@
           https://2gis.ru/moscow/my
         </a>
       </div>
-      <Button class="w-full mt-10 lg:my-10">
-        <span> {{ !visit ? "Возможно пойду" : "Не пойду" }} </span>
-      </Button>
-      <Button
-        class="lg:hidden w-full mt-2 mb-10"
-        @click="onClickEventChoose(event)"
-      >
-        <span> К списку </span>
-      </Button>
+      <div class="mx-5">
+        <Button class="w-full mt-10 lg:my-10">
+          <span> {{ !visit ? "Возможно пойду" : "Не пойду" }} </span>
+        </Button>
+        <Button
+          class="lg:hidden w-full mt-2 mb-10"
+          @click="onClickEventSelect(event)"
+        >
+          <span> К списку </span>
+        </Button>
+      </div>
     </div>
   </div>
 </template>
@@ -79,7 +81,7 @@ import { UserGroupIcon, CalendarIcon, ClockIcon } from "@heroicons/vue/outline";
 import { LinkIcon } from "@heroicons/vue/solid";
 
 export default {
-  name: "EventInfoComponent",
+  name: "EventInfoLayout",
   components: {
     Button,
     UserGroupIcon,
@@ -92,7 +94,7 @@ export default {
     event: Number,
   },
 
-  inject: ["onClickEventChoose"],
+  inject: ["onClickEventSelect"],
 
   data() {
     return {

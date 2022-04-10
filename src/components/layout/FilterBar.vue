@@ -3,7 +3,7 @@
     <div class="flex flex-col h-[85%] xl:h-full">
       <!-- Search input -->
       <Search
-        class="mt-9"
+        class="mt-10"
         @update="(value) => (query = value)"
         :placeholder="'Посиделки #пати #уют'"
       />
@@ -86,7 +86,7 @@ import { FilterIcon } from "@heroicons/vue/outline";
 import json_data from "@/assets/json/data.json";
 
 export default {
-  name: "FilterComponent",
+  name: "FilterLayout",
   components: {
     Autolist: InterfaceComponents.Autolist,
     Button: InterfaceComponents.Button,
