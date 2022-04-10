@@ -2,7 +2,9 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-html, body {
+html,
+body {
+  //TODO: настроить скроллбар для Mozila
   scrollbar-width: none;
   -webkit-tap-highlight-color: transparent;
 }
@@ -13,8 +15,14 @@ html, body {
 }
 
 @layer components {
-  .sidebar {
-    @apply fixed bottom-10 xl:bottom-0 xl:relative w-screen h-0 xl:w-0 xl:h-screen bg-white outline-black rounded-t xl:rounded-r-lg overflow-hidden duration-300 xl:duration-100;
+  .left-sidebar {
+    @apply fixed bottom-10 w-screen h-0 bg-white outline-1 outline-black rounded-t-lg overflow-hidden duration-300
+           xl:bottom-0 xl:relative xl:w-0 xl:h-screen xl:rounded-r-lg xl:rounded-l-none xl:duration-100;
+  }
+
+  .right-sidebar {
+    @apply fixed bottom-10 w-screen h-0 bg-white outline-1 outline-black rounded-t-lg overflow-hidden duration-300
+           xl:bottom-0 xl:right-0 xl:absolute xl:w-0 xl:h-[85%] xl:rounded-l-lg xl:rounded-r-none xl:duration-100;
   }
 
   .form-radio {
