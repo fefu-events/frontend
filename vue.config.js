@@ -4,5 +4,13 @@ module.exports = defineConfig({
   productionSourceMap: false,
   devServer: {
     // https: true,
+    proxy: {
+      "^/api": {
+        target: "http://localhost:8000/",
+        pathRewrite: {
+          "^/api": "",
+        },
+      },
+    },
   },
 });
