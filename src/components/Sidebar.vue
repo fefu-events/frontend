@@ -6,12 +6,12 @@
     <div
       class="left-sidebar"
       :class="{
-        'h-9/10 xl:!w-80 xl:h-screen outline': sidebar_toggle,
+        'h-9/10 xl:!w-80 xl:h-screen outline': searchLayout,
       }"
     >
       <FilterBar
         class="mx-auto"
-        :eventsListState="event_list_toggle"
+        :eventsListState="eventListLayout"
         :toggleEventsList="onClickEventsListToggle"
       />
     </div>
@@ -19,12 +19,12 @@
     <div
       class="left-sidebar flex flex-col justify-between items-center xl:-z-10 overflow-y-scroll"
       :class="{
-        'h-9/10 xl:!w-80 xl:h-screen outline': event_list_toggle,
-        'xl:-left-2': sidebar_toggle,
+        'h-9/10 xl:!w-80 xl:h-screen outline': eventListLayout,
+        'xl:-left-2': searchLayout,
       }"
     >
       <EventsListBar
-        :onClickEventSelect="onClickEventSelect"
+        :onClickSelectEvent="onClickSelectEvent"
         :filteredEvents="events"
         class="overflow-scroll"
       />
@@ -39,27 +39,27 @@
     <div
       class="left-sidebar xl:-z-20"
       :class="{
-        'h-9/10 xl:!w-90 xl:h-screen outline': choosen_event,
-        'xl:-left-2': sidebar_toggle,
-        'xl:-left-4': event_list_toggle,
+        'h-9/10 xl:!w-90 xl:h-screen outline': selectedEvent,
+        'xl:-left-2': searchLayout,
+        'xl:-left-4': eventListLayout,
       }"
     >
-      <EventInfoBar :event="choosen_event" />
+      <EventInfoBar :event="selectedEvent" />
     </div>
     <!-- Sidebar toggler -->
     <div
       class="hidden xl:block relative top-24 bg-white w-5 h-14 rounded-r-md border-y border-r border-black cursor-pointer z-10"
       :class="{
         '-left-2':
-          sidebar_toggle + event_list_toggle + (choosen_event != null) == 2,
-        '-left-4': choosen_event && event_list_toggle,
+          searchLayout + eventListLayout + (selectedEvent != null) == 2,
+        '-left-4': selectedEvent && eventListLayout,
       }"
       @click.stop="onClickSidebarToggle"
     >
       <ChevronRightIcon
         class="w-5 h-14"
         :class="{
-          'transform rotate-180': sidebar_toggle,
+          'transform rotate-180': searchLayout || selectedEvent,
         }"
       />
     </div>
@@ -68,11 +68,12 @@
   <!-- RIGHT SIDEBAR -->
 
   <div class="flex z-500 absolute h-screen xl:right-0">
+    <!-- Navigation -->
     <div class="hidden xl:block fixed top-10 right-10 w-max">
-      <section v-if="auth">
+      <section v-if="user">
         <Button
           class="w-15 h-15 mx-5 !my-0 bg-white"
-          @click="onClickEventAddToggle"
+          @click="onClickEventActionToggle()"
         >
           <PlusIcon class="w-10 h-10 text mx-auto" />
         </Button>
@@ -98,12 +99,22 @@
         </Button>
       </section>
     </div>
-    <!-- Profile navbar -->
+    <!-- Profile info bar -->
     <div
       class="right-sidebar"
-      :class="{ 'h-9/10 xl:h-[85%] xl:!w-90 outline': user_toggle.info }"
+      :class="{ 'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.me }"
     >
       <ProfileBar :user="user" :signOut="signOut" />
+    </div>
+    <!-- Event action bar -->
+    <div
+      class="right-sidebar"
+      :class="{
+        'h-9/10 xl:h-[85%] xl:!w-90 outline':
+          eventActionLayout || editableEvent,
+      }"
+    >
+      <EventActionLayout :editableEvent="editableEvent" />
     </div>
   </div>
 
@@ -123,7 +134,10 @@
     >
       <SearchIcon class="w-full h-5" />
     </div>
-    <div class="basis-1/4 hover:text-primary">
+    <div
+      class="basis-1/4 hover:text-primary"
+      @click="onClickEventActionToggle()"
+    >
       <PlusIcon class="w-full h-5" />
     </div>
     <div class="basis-1/4 hover:text-primary">
@@ -146,12 +160,13 @@ import {
 } from "@heroicons/vue/outline";
 
 export default {
-  name: "LeftSidebarComponent",
+  name: "SidebarComponent",
   components: {
     FilterBar: LayoutComponents.FilterLayout,
     EventInfoBar: LayoutComponents.EventInfoLayout,
     EventsListBar: LayoutComponents.EventsListLayout,
     ProfileBar: LayoutComponents.ProfileInfoLayout,
+    EventActionLayout: LayoutComponents.EventActionLayout,
     Button,
     ChevronRightIcon,
     MenuIcon,
@@ -166,29 +181,17 @@ export default {
 
   provide() {
     return {
-      onClickEventSelect: this.onClickEventSelect,
+      onClickSelectEvent: this.onClickSelectEvent,
+      onClickSelectEditEvent: this.onClickSelectEditEvent,
+      onClickEventActionToggle: this.onClickEventActionToggle,
     };
-  },
-
-  async mounted() {
-    const response = await this.$msal.silentAuth();
-    if (response) {
-      await this.$store.dispatch("auth/LOGIN", response);
-      this.auth = true;
-    }
-  },
-
-  computed: {
-    ...mapState("auth/", {
-      user: (state) => state.user,
-    }),
   },
 
   data() {
     return {
-      choosen_event: null,
-      sidebar_toggle: false,
-      event_list_toggle: false,
+      selectedEvent: null,
+      editableEvent: null,
+      searchLayout: false,
       events: [
         {
           id: 1,
@@ -231,13 +234,34 @@ export default {
           date: "01.01.2022 - 03.01.2022",
         },
       ],
-      ok: false,
-      auth: false,
-      user_toggle: {
-        info: false,
-        add_event: false,
+      eventListLayout: false,
+      eventActionLayout: false,
+      infoLayouts: {
+        me: false,
       },
     };
+  },
+
+  async mounted() {
+    const response = await this.$msal.silentAuth();
+    if (response) {
+      await this.$store.dispatch("auth/LOGIN", response);
+    }
+  },
+
+  computed: {
+    ...mapState("auth/", {
+      user: (state) => state.user,
+    }),
+
+    oneOfInfo() {
+      let answer = false;
+      for (let toggle in this.infoLayouts) {
+        if (toggle === "me") continue;
+        answer += this.infoLayouts[toggle];
+      }
+      return answer || this.editableEvent;
+    },
   },
 
   methods: {
@@ -257,38 +281,89 @@ export default {
           this.$store.dispatch("auth/LOGOUT");
         })
         .then(() => {
-          for (let toggles in this.user_toggle) {
-            this.user_toggle[toggles] = false;
-          }
+          this.infoLayouts.me = false;
         });
     },
 
-    onClickEventSelect(id) {
-      if (this.choosen_event === id) {
-        this.choosen_event = null;
+    // LEFT SIDEBAR ACTIONS
+
+    onClickSidebarToggle() {
+      // for close others
+      if (window.screen.width < 1280) {
+        for (let toggle in this.infoLayouts) {
+          this.infoLayouts[toggle] = false;
+        }
+        this.eventActionLayout = false;
+        this.editableEvent = null;
+      }
+
+      // main actions
+      if (this.searchLayout) {
+        this.eventListLayout = false;
+        this.selectedEvent = null;
+      }
+      if (this.selectedEvent) {
+        this.selectedEvent = null;
         return;
       }
-      this.choosen_event = id;
+      this.searchLayout = !this.searchLayout;
     },
 
     onClickEventsListToggle() {
-      this.event_list_toggle = !this.event_list_toggle;
+      this.eventListLayout = !this.eventListLayout;
     },
 
-    onClickSidebarToggle() {
-      if (this.sidebar_toggle) {
-        this.event_list_toggle = false;
-        this.choosen_event = null;
+    onClickSelectEvent(id) {
+      if (this.selectedEvent === id) {
+        this.selectedEvent = null;
+      } else {
+        this.selectedEvent = id;
       }
-      this.sidebar_toggle = !this.sidebar_toggle;
     },
 
-    onClickEventAddToggle() {
-      this.user_toggle.info = !this.user_toggle.info;
-    },
+    // RIGHT SIDEBAR ACTIONS
 
     onClickUserInfoToggle() {
-      this.user_toggle.info = !this.user_toggle.info;
+      // for close others
+      if (window.screen.width < 1280) {
+        this.selectedEvent = null;
+        this.eventListLayout = false;
+        this.searchLayout = false;
+      }
+      this.eventActionLayout = false;
+
+      // main actions
+      if (this.oneOfInfo) {
+        for (let toggle in this.infoLayouts) {
+          this.infoLayouts[toggle] = false;
+          this.infoLayouts.me = true;
+          this.editableEvent = null;
+        }
+      } else this.infoLayouts.me = !this.infoLayouts.me;
+    },
+
+    onClickSelectEditEvent(id) {
+      if (this.editableEvent === id) {
+        this.editableEvent = null;
+      } else {
+        this.editableEvent = id;
+      }
+    },
+
+    onClickEventActionToggle() {
+      // for close others
+      if (window.screen.width < 1280) {
+        this.selectedEvent = null;
+        this.eventListLayout = false;
+        this.searchLayout = false;
+      }
+      for (let toggle in this.infoLayouts) {
+        this.infoLayouts[toggle] = false;
+      }
+
+      // main actions
+      this.eventActionLayout = !this.eventActionLayout;
+      this.editableEvent = null;
     },
   },
 };

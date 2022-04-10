@@ -17,7 +17,7 @@
       <div
         v-if="edit"
         class="hover:text-primary"
-        @click.stop="onClickSelectEditEvent(event.id)"
+        @click.stop="onClickEdit(event.id)"
       >
         <PencilAltIcon class="w-6 h-6 mx-auto" />
       </div>
@@ -41,5 +41,11 @@ export default {
   },
 
   inject: ["onClickSelectEditEvent"],
+
+  methods: {
+    onClickEdit(eventID) {
+      this.onClickSelectEditEvent(eventID);
+    },
+  },
 };
 </script>
