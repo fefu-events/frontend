@@ -1,17 +1,17 @@
 <template>
-  <LeftSidebar class="absolute" />
+  <Sidebar />
   <LiveMap class="w-screen h-screen" />
 </template>
 
 <script>
 import LiveMap from "@/components/LiveMap.vue";
-import LeftSidebar from "@/components/LeftSidebar.vue";
+import Sidebar from "@/components/Sidebar.vue";
 
 export default {
   name: "MapView",
   components: {
     LiveMap,
-    LeftSidebar,
+    Sidebar,
   },
 };
 </script>

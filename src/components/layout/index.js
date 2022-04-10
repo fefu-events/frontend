@@ -1,4 +1,4 @@
-export { default as EventInfoBar } from "./EventInfoBar.vue";
-export { default as EventsListBar } from "./EventsListBar.vue";
-export { default as FilterBar } from "./FilterBar.vue";
-export { default as ProfileInfoBar } from "./ProfileInfoBar.vue";
+export { default as EventInfoLayout } from "./EventInfoLayout.vue";
+export { default as EventsListLayout } from "./EventsListLayout.vue";
+export { default as FilterLayout } from "./FilterLayout.vue";
+export { default as ProfileInfoLayout } from "./ProfileInfoLayout.vue";
