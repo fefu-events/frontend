@@ -36,10 +36,6 @@ export default class MsalAuth {
     return this.account;
   }
 
-  isAuthenticated() {
-    return this.account !== undefined;
-  }
-
   async setActiveAccount() {
     const accounts = this.msalInstance.getAllAccounts();
     if (accounts.length == 0) {
@@ -49,7 +45,7 @@ export default class MsalAuth {
     this.msalInstance.setActiveAccount(this.account);
   }
 
-  async autoAuth() {
+  async silentAuth() {
     this.setActiveAccount();
     const tokenResponse = await this.msalInstance
       .acquireTokenSilent(silentRequest)
@@ -69,18 +65,7 @@ export default class MsalAuth {
       .then((data) => {
         const accounts = this.msalInstance.getAllAccounts();
         this.account = accounts[0];
-        try {
-          this.token = data.accessToken;
-          fetch("http://localhost:8000/user/register", {
-            method: "get",
-            headers: new Headers({
-              Authorization: `Bearer ${this.token}`,
-              "Content-Type": "application/x-www-form-urlencoded",
-            }),
-          }).catch(() => console.log("error"));
-        } catch (error) {
-          console.log(error);
-        }
+        this.token = data.accessToken;
       })
       .catch((error) => {
         console.error(`error during authentication: ${error}`);
@@ -89,8 +74,12 @@ export default class MsalAuth {
   }
 
   async signOut() {
-    this.msalInstance
-      .logoutPopup({})
+    await this.msalInstance
+      .logoutRedirect({
+        onRedirectNavigate: () => {
+          return false;
+        },
+      })
       .then(() => {
         this.account = undefined;
       })
