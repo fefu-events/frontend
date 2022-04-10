@@ -6,7 +6,10 @@
       >
         <ComboboxInput
           class="w-full border-none bg-transparent focus:outline-none focus:ring-0 py-2 -mx-3 text-sm leading-5"
-          placeholder="Место"
+          :class="{
+            'placeholder-black font-bold': categoryName,
+          }"
+          :placeholder="categoryName"
           autocomplete="off"
           @change="query = $event.target.value"
         />
@@ -41,10 +44,10 @@
           </div>
           <div class="flex flex-col">
             <label
-              v-for="unit in filteredData"
-              :key="unit"
+              v-for="row in filteredData"
+              :key="row"
               class="inline-flex items-center my-2 cursor-pointer"
-              :for="unit.value"
+              :for="`${row.id}_${row.label}`"
             >
               <input
                 class="py-2 w-5 h-5 text-primary cursor-default select-none"
@@ -53,12 +56,12 @@
                   'form-radio': dataType === 'radio',
                 }"
                 :type="dataType"
-                :id="unit.value"
-                :value="unit.value"
+                :id="`${row.id}_${row.label}`"
+                :value="row.id"
                 v-model="checkedData"
               />
               <span class="block truncate ml-2">
-                {{ unit.name }}
+                {{ row.label }}
               </span>
             </label>
             <slot />
@@ -105,8 +108,8 @@ export default {
     filteredData() {
       return this.query === ""
         ? this.data
-        : this.data.filter((unit) =>
-            unit?.name
+        : this.data.filter((row) =>
+            row?.label
               .toLowerCase()
               .replace(/\s+/g, "")
               .includes(this.query.toLowerCase().replace(/\s+/g, ""))

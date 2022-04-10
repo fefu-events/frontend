@@ -18,30 +18,30 @@
       </div>
       <div class="lg:mb-6 overflow-y-scroll overflow-x-hidden">
         <!-- Follow toggle -->
-        <Toggle @update="(value) => (followToggle = value)">
+        <Toggle class="px-4" @update="(value) => (followToggle = value)">
           <span class="text-sm font-medium"> Только подписки </span>
         </Toggle>
         <!-- Recommend toggle -->
-        <Toggle @update="(value) => (recommendToggle = value)">
+        <Toggle class="px-4" @update="(value) => (recommendToggle = value)">
           <span class="text-sm font-medium"> Рекомендации </span>
         </Toggle>
         <!-- Category list -->
         <Disclosure categoryName="Категория" class="px-4">
           <div class="flex flex-col">
             <label
-              v-for="category in json_data.categories"
+              v-for="category in availableCategories"
               :key="category"
               class="inline-flex items-center my-2 cursor-pointer"
-              :for="category.value"
+              :for="`${category.id}`"
             >
               <input
                 class="form-checkbox text-primary w-5 h-5 rounded"
                 type="checkbox"
-                :id="category.value"
-                :value="category.value"
+                :id="`${category.id}`"
+                :value="category.id"
                 v-model="categories"
               />
-              <span class="ml-2">{{ category.name }}</span>
+              <span class="ml-2">{{ category.label }}</span>
             </label>
           </div>
         </Disclosure>
@@ -64,11 +64,11 @@
         <hr class="border-black" />
         <!-- Places list -->
         <Autolist
-          class="text-sm px-4"
+          class="px-4"
           @update="(value) => (places = value)"
-          :data="json_data.places"
+          :data="availablePlaces"
           dataType="checkbox"
-          categoryName="Место: "
+          categoryName="Место"
         />
         <hr class="border-black" />
       </div>
@@ -80,10 +80,10 @@
 </template>
 
 <script>
-import _ from "lodash";
+import { mapState } from "vuex";
 import * as InterfaceComponents from "@/components/interface";
 import { FilterIcon } from "@heroicons/vue/outline";
-import json_data from "@/assets/json/data.json";
+import _ from "lodash";
 
 export default {
   name: "FilterLayout",
@@ -104,18 +104,23 @@ export default {
 
   data() {
     return {
-      json_data,
       query: "",
       followToggle: false,
       recommendToggle: false,
-      categories: [],
       rangeToggle: true,
       date: null,
       places: [],
+      categories: [],
     };
   },
 
-  // TODO: создать Vuex store для фильтра и установить watch на каждый из фильтров
+  computed: {
+    ...mapState("client/", {
+      availablePlaces: (state) => state.places,
+      availableCategories: (state) => state.categories,
+    }),
+  },
+
   watch: {
     query: _.debounce(function (newValue) {
       this.$store.dispatch("UPDATE_FILTER", { key: "query", value: newValue });
