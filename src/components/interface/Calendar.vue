@@ -12,7 +12,6 @@
       :isDark="isDark"
     >
       <template v-slot="{ inputValue, inputEvents }">
-        <span> {{ date }} </span>
         <div class="flex flex-col justify-start">
           <div class="relative flex-grow my-2">
             <CalendarIcon

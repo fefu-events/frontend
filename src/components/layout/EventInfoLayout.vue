@@ -66,7 +66,7 @@
         </Button>
         <Button
           class="lg:hidden w-full mt-2 mb-10"
-          @click="onClickEventSelect(event)"
+          @click="onClickSelectEvent(event)"
         >
           <span> К списку </span>
         </Button>
@@ -94,7 +94,7 @@ export default {
     event: Number,
   },
 
-  inject: ["onClickEventSelect"],
+  inject: ["onClickSelectEvent"],
 
   data() {
     return {

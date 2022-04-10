@@ -35,11 +35,12 @@
         <span class="xl:mx-5 font-medium">Мои мероприятия: </span>
         <div class="h-[40vh] my-2 overflow-y-scroll">
           <div
-            class="hover:bg-hoverColor xl:px-5"
+            class="hover:bg-hoverColor xl:px-5 cursor-pointer"
             v-for="event in events"
             :key="event.id"
+            @click="onClickSelectEvent(event.id)"
           >
-            <EventBlock :event="event" />
+            <EventBlock :event="event" :edit="true" />
           </div>
         </div>
       </div>
@@ -69,6 +70,8 @@ export default {
     user: Object,
     signOut: Function,
   },
+
+  inject: ["onClickSelectEvent"],
 
   data() {
     return {

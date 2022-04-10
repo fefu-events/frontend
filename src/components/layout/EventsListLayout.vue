@@ -8,7 +8,7 @@
       <EventBlock
         class="w-4/5 xl:px-4"
         :event="event"
-        @click="onClickEventSelect(event.id)"
+        @click="onClickSelectEvent(event.id)"
       />
     </div>
   </div>
@@ -24,7 +24,7 @@ export default {
   },
   props: {
     filteredEvents: Array,
-    onClickEventSelect: Function,
+    onClickSelectEvent: Function,
   },
 };
 </script>

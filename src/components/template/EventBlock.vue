@@ -4,17 +4,22 @@
       <div class="col-span-4 text-left text-lg">
         <span> {{ event.title }} </span>
       </div>
-      <div
-        class="w-12 rounded-full overflow-hidden justify-self-end self-center"
-      >
+      <div class="w-12 rounded-full overflow-hidden">
         <img
-          class="self-center justify-self-center"
+          class="self-center justify-self-center w-10 h-10 m-auto"
           src="@/assets/img/svg/logo.svg"
           alt="user avatar"
         />
       </div>
-      <div class="col-span-5 text-left">
+      <div class="col-span-5 text-left" :class="{ '!col-span-4': edit }">
         <span>{{ event.date }}</span>
+      </div>
+      <div
+        v-if="edit"
+        class="hover:text-primary"
+        @click.stop="onClickSelectEditEvent(event.id)"
+      >
+        <PencilAltIcon class="w-6 h-6 mx-auto" />
       </div>
     </div>
     <hr class="border-black" />
@@ -22,10 +27,19 @@
 </template>
 
 <script>
+import { PencilAltIcon } from "@heroicons/vue/outline";
+
 export default {
   name: "EventBlockComponent",
+  components: {
+    PencilAltIcon,
+  },
+
   props: {
     event: Object,
+    edit: Boolean,
   },
+
+  inject: ["onClickSelectEditEvent"],
 };
 </script>
