@@ -144,7 +144,7 @@
       </Button>
     </div>
     <div v-else class="flex flex-col">
-      <Button class="mx-10 mb-10">
+      <Button class="mx-10 mb-10" @click="onClickSubmit">
         <span> Создать </span>
       </Button>
     </div>
@@ -175,7 +175,7 @@ export default {
     editableEvent: Number,
   },
 
-  inject: ["onClickSelectEditEvent"],
+  inject: ["onClickEventActionToggle", "onClickSelectEditEvent"],
 
   data() {
     return {
@@ -236,6 +236,10 @@ export default {
   },
 
   methods: {
+    onClickSubmit() {
+      this.onClickEventActionToggle();
+    },
+
     onClickDelete() {
       this.onClickSelectEditEvent(null);
     },

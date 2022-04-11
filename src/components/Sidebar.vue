@@ -343,11 +343,7 @@ export default {
     },
 
     onClickSelectEditEvent(id) {
-      if (this.editableEvent === id) {
-        this.editableEvent = null;
-      } else {
-        this.editableEvent = id;
-      }
+      this.editableEvent = id;
     },
 
     onClickEventActionToggle() {

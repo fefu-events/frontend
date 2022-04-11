@@ -38,7 +38,6 @@
             class="hover:bg-hoverColor xl:px-5 cursor-pointer"
             v-for="event in events"
             :key="event.id"
-            @click="onClickSelectEvent(event.id)"
           >
             <EventBlock :event="event" :edit="true" />
           </div>
@@ -70,8 +69,6 @@ export default {
     user: Object,
     signOut: Function,
   },
-
-  inject: ["onClickSelectEvent"],
 
   data() {
     return {
