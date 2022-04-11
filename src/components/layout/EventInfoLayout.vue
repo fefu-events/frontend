@@ -61,11 +61,11 @@
         </a>
       </div>
       <div class="mx-5">
-        <Button class="w-full mt-10 lg:my-10">
+        <Button class="w-full mt-10 xl:my-10">
           <span> {{ !visit ? "Возможно пойду" : "Не пойду" }} </span>
         </Button>
         <Button
-          class="lg:hidden w-full mt-2 mb-10"
+          class="xl:hidden w-full mt-2 mb-10"
           @click="onClickSelectEvent(event)"
         >
           <span> К списку </span>

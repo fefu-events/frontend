@@ -16,7 +16,7 @@
         <FilterIcon class="w-5 h-5" />
         <span class="ml-1 text-lg">Фильтры:</span>
       </div>
-      <div class="lg:mb-6 overflow-y-scroll overflow-x-hidden">
+      <div class="xl:mb-6 overflow-y-scroll overflow-x-hidden">
         <!-- Follow toggle -->
         <Toggle class="px-4" @update="(value) => (followToggle = value)">
           <span class="text-sm font-medium"> Только подписки </span>
@@ -73,7 +73,7 @@
         <hr class="border-black" />
       </div>
     </div>
-    <Button class="xl:hidden w-full !mt-4 !my-10" @click="toggleEventsList">
+    <Button class="xl:hidden mx-5 !mt-4 !my-10" @click="toggleEventsList">
       <span>{{ eventsListState ? "Скрыть список" : "Показать список" }}</span>
     </Button>
   </div>

@@ -98,7 +98,7 @@
         <hr class="border-black" />
       </div>
       <!-- Organization -->
-      <div v-if="editableEvent" class="mt-4 xl:!mt-8 xl:mx-5">
+      <div v-if="!editableEvent" class="mt-4 xl:!mt-8 xl:mx-5">
         <Toggle class="px-4" @update="(value) => (org = value)">
           <span class="text-sm font-medium"> От имени организации </span>
         </Toggle>
@@ -129,22 +129,22 @@
         </div>
       </div>
     </div>
-    <div v-if="editableEvent" class="flex flex-col">
+    <div v-if="editableEvent" class="flex flex-col mx-5 xl:mx-10">
       <Button
-        class="mx-10 hover:text-danger hover:border-danger"
+        class="hover:text-danger hover:border-danger"
         @click="onClickDelete(event.id)"
       >
         <span> Удалить мероприятие </span>
       </Button>
       <Button
-        class="mx-10 mb-10 hover:text-success hover:border-success"
+        class="mb-10 hover:text-success hover:border-success"
         @click="onClickAccept(event.id)"
       >
         <span> Подтверить изменения </span>
       </Button>
     </div>
-    <div v-else class="flex flex-col">
-      <Button class="mx-10 mb-10" @click="onClickSubmit">
+    <div v-else class="flex flex-col mx-5 xl:mx-10">
+      <Button class="mb-10" @click="onClickSubmit">
         <span> Создать </span>
       </Button>
     </div>

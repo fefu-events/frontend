@@ -1,5 +1,7 @@
 <template>
-  <div class="flex flex-col justify-between h-full w-4/5 xl:w-80 mx-auto">
+  <div
+    class="flex flex-col justify-between h-full w-4/5 xl:w-80 mx-auto overflow-y-scroll"
+  >
     <div class="flex flex-col">
       <!-- Person -->
       <div class="flex flex-row justify-between items-center mt-10 xl:mx-5">
@@ -44,7 +46,7 @@
         </div>
       </div>
     </div>
-    <Button class="mx-10 mb-10" @click="signOut">
+    <Button class="mx-5 xl:mx-10 mb-10" @click="signOut">
       <span> Выйти </span>
     </Button>
   </div>

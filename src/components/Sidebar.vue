@@ -28,12 +28,11 @@
         :filteredEvents="events"
         class="overflow-scroll"
       />
-      <Button
-        class="xl:hidden w-4/5 !mt-4 !my-10"
-        @click="onClickEventsListToggle"
-      >
-        <span> Скрыть список </span>
-      </Button>
+      <div class="xl:hidden flex flex-col w-4/5 mx-auto">
+        <Button class="!mt-4 !my-10 mx-5" @click="onClickEventsListToggle">
+          <span> Скрыть список </span>
+        </Button>
+      </div>
     </div>
     <!-- Event info bar -->
     <div

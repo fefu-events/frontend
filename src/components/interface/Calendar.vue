@@ -75,9 +75,7 @@ export default {
   data() {
     return {
       date: null,
-      isDark:
-        localStorage.theme === "dark" ||
-        window.matchMedia("(prefers-color-scheme: dark)").matches,
+      isDark: false,
       modelConfig: {
         type: "string",
         mask: "iso",
@@ -88,6 +86,12 @@ export default {
         weekdays: "WWW",
       },
     };
+  },
+
+  mounted() {
+    this.isDark =
+      localStorage.theme === "dark" ||
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
   },
 
   watch: {
