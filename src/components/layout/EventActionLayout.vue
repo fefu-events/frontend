@@ -1,41 +1,62 @@
 <template>
   <div class="flex flex-col justify-between h-full w-4/5 xl:w-80 mx-auto">
-    <div class="flex flex-col overflow-y-scroll my-6">
+    <div id="form" class="flex flex-col overflow-y-scroll my-6">
       <!-- Title -->
       <div class="xl:mt-4 xl:mx-5">
         <div class="flex justify-between">
           <input
-            class="w-full py-2 mr-4 focus:outline-none"
+            class="w-10/12 py-2 bg-transparent focus:outline-none"
             placeholder="Название"
-            v-model="title"
+            v-model="event.title"
             :maxlength="50"
           />
           <span
             class="py-2 pr-2 text-sm"
-            v-text="maxTitleSize - title.length"
+            v-text="maxTitleSize - event.title.length"
             :class="{
-              'text-danger': maxTitleSize - title.length < 1,
+              'text-danger': maxTitleSize - event.title.length < 1,
             }"
           />
         </div>
-        <hr class="border-black" />
+        <hr
+          :class="errors.includes('title') ? 'border-danger' : 'border-black'"
+        />
       </div>
       <!-- Calendar -->
       <div class="mt-4 xl:mx-5">
         <Disclosure class="px-4" categoryName="Дата">
-          <Calendar :isRange="true" />
+          <Calendar
+            :propdate="editableEvent ? event.date : null"
+            :isRange="true"
+            @update="(value) => (event.date = value)"
+          />
         </Disclosure>
-        <hr class="border-black" />
+        <hr
+          :class="errors.includes('date') ? 'border-danger' : 'border-black'"
+        />
       </div>
       <!-- Place -->
       <div class="mt-4 xl:mx-5">
         <Autolist
           class="px-4"
-          @update="(value) => (selectedPlace = value)"
+          @update="(value) => (event.selectedPlace = value)"
           :data="availablePlaces"
           :dataType="'radio'"
           :categoryName="selectedPlaceLabel || 'Место'"
         />
+        <hr
+          :class="errors.includes('place') ? 'border-danger' : 'border-black'"
+        />
+      </div>
+      <!-- Place description -->
+      <div class="mt-4 xl:mx-5">
+        <div class="flex justify-between">
+          <input
+            class="w-full py-2 px-4 text-sm bg-transparent focus:outline-none"
+            placeholder="Уточнение места"
+            v-model="event.placeDescription"
+          />
+        </div>
         <hr class="border-black" />
       </div>
       <!-- Category -->
@@ -56,18 +77,22 @@
                 type="radio"
                 :id="`${category.id}_${category.label}_create`"
                 :value="category.id"
-                v-model="selectedCategory"
+                v-model="event.selectedCategory"
               />
               <span class="ml-2">{{ category.label }}</span>
             </label>
           </div>
         </Disclosure>
-        <hr class="border-black" />
+        <hr
+          :class="
+            errors.includes('category') ? 'border-danger' : 'border-black'
+          "
+        />
       </div>
       <!-- Description -->
       <div class="relative mt-4 xl:!mt-8 xl:mx-5">
         <textarea
-          v-model="description"
+          v-model="event.description"
           class="w-full h-36 px-6 py-2 rounded text-sm resize-none ring-offset-0 focus:ring-0 focus:border-primary"
           :maxlength="maxDescSize"
           placeholder="Описание"
@@ -75,23 +100,23 @@
         <span
           class="absolute bottom-2 right-2 text-xs"
           :class="{
-            'text-danger': maxDescSize - description.length < 1,
+            'text-danger': maxDescSize - event.description.length < 1,
           }"
-          v-text="maxDescSize - description.length"
+          v-text="maxDescSize - event.description.length"
         />
       </div>
       <!-- Tags -->
       <div class="mt-4 xl:!mt-8 xl:mx-5">
         <textarea
-          v-model="tags"
+          v-model="event.tags"
           class="w-full h-36 px-6 py-2 rounded text-sm resize-none ring-offset-0 focus:ring-0 focus:border-primary"
-          placeholder="Ввеите теги через пробел"
+          placeholder="Введите теги через пробел"
         />
       </div>
       <!-- Link -->
       <div class="mt-4 xl:mx-5">
         <input
-          v-model="link"
+          v-model="event.link"
           class="w-full py-2 px-4 text-sm focus:outline-none placeholder:italic"
           placeholder="https://fefuevent.ru"
         />
@@ -119,7 +144,7 @@
                   type="radio"
                   :id="`${organization.id}_${organization.label}`"
                   :value="organization.id"
-                  v-model="selectedOrganization"
+                  v-model="event.selectedOrganization"
                 />
                 <span class="ml-2">{{ organization.label }}</span>
               </label>
@@ -152,6 +177,7 @@
 </template>
 
 <script>
+import api from "@/service/api";
 import { mapState } from "vuex";
 import {
   Autolist,
@@ -181,24 +207,54 @@ export default {
     return {
       maxTitleSize: 50,
       maxDescSize: 255,
-      title: "",
-      description: "",
-      tags: "",
-      link: "",
+      errors: [],
       org: false,
-      selectedPlace: null,
-      selectedCategory: null,
-      selectedOrganization: null,
+      event: {
+        title: "",
+        date: null,
+        selectedPlace: null,
+        placeDescription: "",
+        selectedCategory: null,
+        description: "",
+        tags: "",
+        link: "",
+        selectedOrganization: null,
+      },
       availableOrganizations: [
         { id: 1, label: "Организация 1" },
         { id: 2, label: "Организация 2" },
       ],
-      event: {
-        id: 1,
-        title: "Название какого-то мероприятия",
-        date: "01.01.2022 - 03.01.2022",
-      },
     };
+  },
+
+  async created() {
+    if (this.editableEvent) {
+      const { data } = await api.event.getByID(this.editableEvent);
+      const {
+        title,
+        description,
+        date_begin,
+        date_end,
+        place_description,
+        tags,
+        place,
+        category,
+      } = data;
+
+      this.event = {
+        title: title || "",
+        date: { start: date_begin + "Z", end: date_end + "Z" },
+        selectedPlace: place.id,
+        placeDescription: place_description || "",
+        selectedCategory: category.id,
+        description: description || "",
+        tags: tags.join(" "),
+        link: "",
+        selectedOrganization: null,
+      };
+    } else {
+      console.log("created");
+    }
   },
 
   computed: {
@@ -207,9 +263,13 @@ export default {
       availableCategories: (state) => state.categories,
     }),
 
+    ...mapState("auth/", {
+      accessToken: (state) => state.accessToken,
+    }),
+
     selectedPlaceLabel() {
       for (const place of this.availablePlaces) {
-        if (place.id == this.selectedPlace) {
+        if (place.id == this.event.selectedPlace) {
           return place.label;
         }
       }
@@ -218,7 +278,7 @@ export default {
 
     selectedCategoryLabel() {
       for (const category of this.availableCategories) {
-        if (category.id == this.selectedCategory) {
+        if (category.id == this.event.selectedCategory) {
           return category.label;
         }
       }
@@ -227,25 +287,78 @@ export default {
 
     selectedOrgLabel() {
       for (const category of this.availableOrganizations) {
-        if (category.id == this.selectedOrganization) {
+        if (category.id == this.event.selectedOrganization) {
           return category.label;
         }
       }
       return "";
     },
+
+    validateEventForm() {
+      let errors = [];
+      // Title validate
+      if (this.event.title === "") {
+        errors.push("title");
+      }
+      // Date validate
+      if (this.event.date !== null) {
+        const { start, end } = this.event.date;
+        const now = new Date().toISOString();
+        if (start < now || end < now) {
+          errors.push("date");
+        }
+      } else {
+        errors.push("date");
+      }
+      // Place validate
+      if (this.event.selectedPlace === null) {
+        errors.push("place");
+      }
+      // Category validate
+      if (this.event.selectedCategory === null) {
+        errors.push("category");
+      }
+      // Scroll on error
+      if (this.errors.length > 0) {
+        const form = document.getElementById("form");
+        form.scroll({ top: 0, left: 0, behavior: "smooth" });
+        return errors;
+      }
+      return errors;
+    },
   },
 
   methods: {
-    onClickSubmit() {
-      this.onClickEventActionToggle();
+    async onClickSubmit() {
+      this.errors = this.validateEventForm;
+      if (this.errors.length > 0) return;
+      const response = await api.event.create(this.accessToken, this.event);
+      if (response.status === 201) {
+        this.onClickEventActionToggle();
+      }
     },
 
-    onClickDelete() {
-      this.onClickSelectEditEvent(null);
+    async onClickDelete() {
+      const response = await api.event.delete(
+        this.accessToken,
+        this.editableEvent
+      );
+      if (response.status === 200) {
+        this.onClickSelectEditEvent(null);
+      }
     },
 
-    onClickAccept() {
-      this.onClickSelectEditEvent(null);
+    async onClickAccept() {
+      this.errors = this.validateEventForm;
+      if (this.errors.length > 0) return;
+      const response = await api.event.update(
+        this.accessToken,
+        this.event,
+        this.editableEvent
+      );
+      if (response.status === 200) {
+        this.onClickSelectEditEvent(null);
+      }
     },
   },
 };

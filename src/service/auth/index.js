@@ -53,7 +53,7 @@ export default class MsalAuth {
         if (error instanceof InteractionRequiredAuthError) {
           return await this.msalInstance
             .acquireTokenPopup(refreshRequest)
-            .catch((error) => console.log(error));
+            .catch(() => console.error("Unavailable token"));
         }
       });
     return tokenResponse?.accessToken;

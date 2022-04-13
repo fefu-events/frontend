@@ -113,7 +113,8 @@
           eventActionLayout || editableEvent,
       }"
     >
-      <EventActionLayout :editableEvent="editableEvent" />
+      <EventActionLayout v-if="editableEvent" :editableEvent="editableEvent" />
+      <EventActionLayout v-if="eventActionLayout && !editableEvent" />
     </div>
   </div>
 
