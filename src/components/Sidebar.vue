@@ -9,7 +9,7 @@
         'h-9/10 xl:!w-80 xl:h-screen outline': searchLayout,
       }"
     >
-      <FilterBar
+      <FilterLayout
         class="mx-auto"
         :eventsListState="eventListLayout"
         :toggleEventsList="onClickEventsListToggle"
@@ -23,7 +23,7 @@
         'xl:-left-2': searchLayout,
       }"
     >
-      <EventsListBar
+      <EventsListLayout
         :onClickSelectEvent="onClickSelectEvent"
         :filteredEvents="events"
         class="overflow-scroll"
@@ -43,7 +43,7 @@
         'xl:-left-4': eventListLayout,
       }"
     >
-      <EventInfoBar :event="selectedEvent" />
+      <EventInfoLayout :event="selectedEvent" />
     </div>
     <!-- Sidebar toggler -->
     <div
@@ -68,7 +68,7 @@
 
   <div class="flex z-500 absolute h-screen xl:right-0">
     <!-- Navigation -->
-    <div class="hidden xl:block fixed top-10 right-10 w-max">
+    <div v-if="isLoaded" class="hidden xl:block fixed top-10 right-10 w-max">
       <section v-if="user">
         <Button
           class="w-15 h-15 mx-5 !my-0 bg-white"
@@ -103,7 +103,7 @@
       class="right-sidebar"
       :class="{ 'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.me }"
     >
-      <ProfileBar :user="user" :signOut="signOut" />
+      <ProfileInfoLayout :user="selectedUser || user" :signOut="signOut" />
     </div>
     <!-- Event action bar -->
     <div
@@ -162,10 +162,10 @@ import {
 export default {
   name: "SidebarComponent",
   components: {
-    FilterBar: LayoutComponents.FilterLayout,
-    EventInfoBar: LayoutComponents.EventInfoLayout,
-    EventsListBar: LayoutComponents.EventsListLayout,
-    ProfileBar: LayoutComponents.ProfileInfoLayout,
+    FilterLayout: LayoutComponents.FilterLayout,
+    EventInfoLayout: LayoutComponents.EventInfoLayout,
+    EventsListLayout: LayoutComponents.EventsListLayout,
+    ProfileInfoLayout: LayoutComponents.ProfileInfoLayout,
     EventActionLayout: LayoutComponents.EventActionLayout,
     Button,
     ChevronRightIcon,
@@ -189,8 +189,10 @@ export default {
 
   data() {
     return {
+      isLoaded: false,
       selectedEvent: null,
       editableEvent: null,
+      selectedUser: null,
       searchLayout: false,
       events: [
         {
@@ -247,6 +249,7 @@ export default {
     if (response) {
       await this.$store.dispatch("auth/LOGIN", response);
     }
+    this.isLoaded = true;
   },
 
   computed: {
@@ -336,10 +339,12 @@ export default {
       if (this.oneOfInfo) {
         for (let toggle in this.infoLayouts) {
           this.infoLayouts[toggle] = false;
-          this.infoLayouts.me = true;
           this.editableEvent = null;
+          this.infoLayouts.me = true;
         }
-      } else this.infoLayouts.me = !this.infoLayouts.me;
+      } else {
+        this.infoLayouts.me = !this.infoLayouts.me;
+      }
     },
 
     onClickSelectEditEvent(id) {
