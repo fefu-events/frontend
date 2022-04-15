@@ -2,6 +2,7 @@ import api from "@/service/api";
 
 export default {
   state: () => ({
+    forceUpdateList: false,
     categories: [],
     places: [],
   }),
@@ -15,6 +16,10 @@ export default {
     async SET_PLACES({ commit }) {
       const { data } = await api.client.getPlaces();
       commit("places", data);
+    },
+
+    async SET_FORCE_UPDATE_LIST({ commit }, payload) {
+      commit("forceUpdateList", payload);
     },
   },
 
@@ -33,6 +38,9 @@ export default {
     },
     places(state, payload) {
       state.places = payload;
+    },
+    forceUpdateList(state, payload) {
+      state.forceUpdateList = payload;
     },
   },
 

@@ -4,11 +4,11 @@
   >
     <div class="flex flex-col">
       <!-- Person -->
-      <div class="flex flex-row justify-between items-center mt-10 xl:mx-5">
+      <div class="flex flex-row xl:justify-between items-center mt-10 xl:mx-5">
         <div class="w-16 h-16 rounded-full bg-gray-300">
           <img src="" alt="" srcset="" />
         </div>
-        <div class="mr-8">
+        <div class="mx-4 md:mx-6 xl:mr-8 xl:ml-0">
           <span class="block text-2xl">{{ user?.name.split(" ")[0] }}</span>
           <span class="block text-2xl">{{ user?.name.split(" ")[1] }}</span>
         </div>
@@ -35,7 +35,7 @@
       <!-- Events -->
       <div>
         <span class="xl:mx-5 font-medium">Мои мероприятия: </span>
-        <div class="h-[40vh] my-2 overflow-y-scroll">
+        <div class="h-[40vh] my-1 overflow-y-scroll" ref="events">
           <div
             class="hover:bg-hoverColor xl:px-5 cursor-pointer"
             v-for="event in events"
@@ -53,6 +53,8 @@
 </template>
 
 <script>
+import api from "@/service/api";
+import { mapState } from "vuex";
 import { HashtagIcon, UserIcon, UserGroupIcon } from "@heroicons/vue/outline";
 import { EventBlock } from "@/components/template";
 import { Button } from "@/components/interface";
@@ -74,49 +76,53 @@ export default {
 
   data() {
     return {
-      events: [
-        {
-          id: 1,
-          title: "Название какого-то мероприятия",
-          date: "01.01.2022 - 03.01.2022",
-        },
-        {
-          id: 2,
-          title: "Название какого-то мероприятия",
-          date: "01.01.2022 - 03.01.2022",
-        },
-        {
-          id: 3,
-          title: "Название какого-то мероприятия",
-          date: "01.01.2022 - 03.01.2022",
-        },
-        {
-          id: 4,
-          title: "Название какого-то мероприятия",
-          date: "01.01.2022 - 03.01.2022",
-        },
-        {
-          id: 5,
-          title: "Название какого-то мероприятия",
-          date: "01.01.2022 - 03.01.2022",
-        },
-        {
-          id: 6,
-          title: "Название какого-то мероприятия",
-          date: "01.01.2022 - 03.01.2022",
-        },
-        {
-          id: 7,
-          title: "Название какого-то мероприятия",
-          date: "01.01.2022 - 03.01.2022",
-        },
-        {
-          id: 8,
-          title: "Название какого-то мероприятия",
-          date: "01.01.2022 - 03.01.2022",
-        },
-      ],
+      page: 1,
+      events: [],
     };
+  },
+
+  computed: {
+    ...mapState("client/", {
+      forceUpdate: "forceUpdateList",
+    }),
+    skip() {
+      return 10 * this.page;
+    },
+  },
+
+  mounted() {
+    const eventsList = this.$refs.events;
+    eventsList.addEventListener("scroll", () => this.handleScroll());
+    this.updateEventList();
+  },
+
+  methods: {
+    async updateEventList() {
+      const { data } = await api.event.getByUserID(0, this.user?.id);
+      this.events = data;
+    },
+
+    async handleScroll() {
+      const eventsList = this.$refs.events;
+      const scrolling = eventsList.scrollTop + eventsList.clientHeight;
+      if (
+        scrolling >= eventsList.scrollHeight &&
+        this.events.length >= this.page * 10
+      ) {
+        const { data } = await api.event.getByUserID(this.skip, this.user?.id);
+        this.events = this.events.concat(data);
+        this.page++;
+      }
+    },
+  },
+
+  watch: {
+    forceUpdate(newValue) {
+      if (newValue === true) {
+        this.updateEventList();
+      }
+      this.$store.dispatch("client/SET_FORCE_UPDATE_LIST", false);
+    },
   },
 };
 </script>

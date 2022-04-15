@@ -335,6 +335,7 @@ export default {
       const response = await api.event.create(this.accessToken, this.event);
       if (response.status === 201) {
         this.onClickEventActionToggle();
+        this.$store.dispatch("client/SET_FORCE_UPDATE_LIST", true);
       }
     },
 
@@ -345,6 +346,7 @@ export default {
       );
       if (response.status === 200) {
         this.onClickSelectEditEvent(null);
+        this.$store.dispatch("client/SET_FORCE_UPDATE_LIST", true);
       }
     },
 
@@ -358,6 +360,7 @@ export default {
       );
       if (response.status === 200) {
         this.onClickSelectEditEvent(null);
+        this.$store.dispatch("client/SET_FORCE_UPDATE_LIST", true);
       }
     },
   },
