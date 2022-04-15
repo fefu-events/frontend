@@ -12,7 +12,7 @@
         />
       </div>
       <div class="col-span-5 text-left" :class="{ '!col-span-4': edit }">
-        <span>{{ event.date }}</span>
+        <span>{{ event.date_begin }} - {{ event.date_end }}</span>
       </div>
       <div
         v-if="edit"
