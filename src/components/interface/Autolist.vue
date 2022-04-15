@@ -25,7 +25,6 @@
         </ComboboxButton>
       </div>
       <TransitionRoot
-        :unmount="true"
         enter="transition ease-in duration-200"
         enterFrom="opacity-0"
         enterTo="opacity-100"

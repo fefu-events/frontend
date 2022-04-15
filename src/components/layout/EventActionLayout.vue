@@ -24,7 +24,7 @@
       </div>
       <!-- Calendar -->
       <div class="mt-4 xl:mx-5">
-        <Disclosure class="px-4" categoryName="Дата">
+        <Disclosure :unmount="true" class="px-4" categoryName="Дата">
           <Calendar
             :propDate="editableEvent ? event.date : null"
             :isRange="true"
@@ -155,6 +155,7 @@
         </div>
       </div>
     </div>
+    <!-- Buttons -->
     <div v-if="editableEvent" class="flex flex-col mx-5 xl:mx-10">
       <Button
         class="hover:text-danger hover:border-danger"

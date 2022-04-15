@@ -114,7 +114,7 @@
       }"
     >
       <EventActionLayout v-if="editableEvent" :editableEvent="editableEvent" />
-      <EventActionLayout v-if="eventActionLayout && !editableEvent" />
+      <EventActionLayout v-else />
     </div>
   </div>
 
