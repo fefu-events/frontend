@@ -12,7 +12,7 @@
       </DisclosureButton>
       <TransitionRoot
         :show="open"
-        :unmount="false"
+        :unmount="unmount"
         enter="transition ease-in duration-200"
         enterFrom="opacity-0"
         enterTo="opacity-100"
@@ -47,6 +47,10 @@ export default {
     ChevronDownIcon,
   },
   props: {
+    unmount: {
+      type: Boolean,
+      default: true,
+    },
     categoryName: String,
   },
 

@@ -47,7 +47,7 @@
         </Disclosure>
         <hr class="border-black" />
         <!-- Calendar -->
-        <Disclosure categoryName="Дата" class="px-4">
+        <Disclosure :unmount="false" categoryName="Дата" class="px-4">
           <div class="flex flex-col">
             <Toggle
               class="px-0 pt-0"
@@ -66,7 +66,7 @@
         <Autolist
           class="px-4"
           @update="(value) => (places = value)"
-          :data="availablePlaces"
+          :availablePlaces="availablePlaces"
           dataType="checkbox"
           categoryName="Место"
         />

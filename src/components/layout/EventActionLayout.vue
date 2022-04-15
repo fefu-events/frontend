@@ -26,7 +26,7 @@
       <div class="mt-4 xl:mx-5">
         <Disclosure class="px-4" categoryName="Дата">
           <Calendar
-            :propdate="editableEvent ? event.date : null"
+            :propDate="editableEvent ? event.date : null"
             :isRange="true"
             @update="(value) => (event.date = value)"
           />
@@ -40,7 +40,8 @@
         <Autolist
           class="px-4"
           @update="(value) => (event.selectedPlace = value)"
-          :data="availablePlaces"
+          :propData="event.selectedPlace"
+          :availablePlaces="availablePlaces"
           :dataType="'radio'"
           :categoryName="selectedPlaceLabel || 'Место'"
         />
@@ -227,9 +228,9 @@ export default {
     };
   },
 
-  async created() {
+  async mounted() {
     if (this.editableEvent) {
-      const { data } = await api.event.getByID(this.editableEvent);
+      const { data } = await api.event.getByEventID(this.editableEvent);
       const {
         title,
         description,
@@ -252,8 +253,6 @@ export default {
         link: "",
         selectedOrganization: null,
       };
-    } else {
-      console.log("created");
     }
   },
 

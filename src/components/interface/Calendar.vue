@@ -70,12 +70,12 @@ export default {
   name: "CalendarComponent",
   components: { DatePicker, CalendarIcon },
   props: {
-    propdate: Object,
+    propDate: Object,
     isRange: Boolean,
   },
   data() {
     return {
-      date: this.propdate || null,
+      date: this.propDate || null,
       isDark: false,
       modelConfig: {
         type: "string",

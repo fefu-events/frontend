@@ -25,6 +25,7 @@
         </ComboboxButton>
       </div>
       <TransitionRoot
+        :unmount="true"
         enter="transition ease-in duration-200"
         enterFrom="opacity-0"
         enterTo="opacity-100"
@@ -93,7 +94,8 @@ export default {
     ChevronDownIcon,
   },
   props: {
-    data: Object,
+    availablePlaces: Object,
+    propData: [Array, Number],
     dataType: String,
     categoryName: String,
   },
@@ -107,8 +109,8 @@ export default {
   computed: {
     filteredData() {
       return this.query === ""
-        ? this.data
-        : this.data.filter((row) =>
+        ? this.availablePlaces
+        : this.availablePlaces.filter((row) =>
             row?.label
               .toLowerCase()
               .replace(/\s+/g, "")
@@ -118,6 +120,9 @@ export default {
   },
 
   watch: {
+    propData() {
+      this.checkedData = this.propData;
+    },
     checkedData() {
       this.$emit("update", this.checkedData);
     },
