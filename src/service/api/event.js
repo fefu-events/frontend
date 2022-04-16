@@ -47,13 +47,13 @@ const endpoints = {
       },
     }),
 
-  getAll: (data, user) => {
+  getAll: (skip, data, user) => {
     const queryParams = {
-      skip: 0,
+      skip: skip,
       limit: 10,
       title: data.query,
-      tags: user.tags ? user.tags.split(" ").filter(Boolean) : [],
-      for_user_id: user.id,
+      tags: user?.tags ? user.tags : [],
+      for_user_id: user?.id,
       subscriptions: data.followToggle,
       personalize_tags: data.recommendToggle,
     };
@@ -68,7 +68,7 @@ const endpoints = {
       }
     }
 
-    axios.get("/api/event", {
+    return axios.get("/api/event", {
       params: queryParams,
     });
   },
