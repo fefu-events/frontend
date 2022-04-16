@@ -24,8 +24,8 @@
       }"
     >
       <EventsListLayout
+        v-if="eventListLayout"
         :onClickSelectEvent="onClickSelectEvent"
-        :filteredEvents="events"
         class="overflow-scroll"
       />
       <div class="xl:hidden flex flex-col w-4/5 mx-auto">
@@ -103,7 +103,11 @@
       class="right-sidebar"
       :class="{ 'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.me }"
     >
-      <ProfileInfoLayout :user="selectedUser || user" :signOut="signOut" />
+      <ProfileInfoLayout
+        v-if="selectedUser || user"
+        :user="selectedUser || user"
+        :signOut="signOut"
+      />
     </div>
     <!-- Event action bar -->
     <div
@@ -175,9 +179,6 @@ export default {
     LoginIcon,
     UserIcon,
   },
-  props: {
-    filteredEvents: Array,
-  },
 
   provide() {
     return {
@@ -193,49 +194,8 @@ export default {
       selectedEvent: null,
       editableEvent: null,
       selectedUser: null,
+
       searchLayout: false,
-      events: [
-        {
-          id: 1,
-          title: "Название какого-то мероприятия",
-          date: "01.01.2022 - 03.01.2022",
-        },
-        {
-          id: 2,
-          title: "Название какого-то мероприятия",
-          date: "01.01.2022 - 03.01.2022",
-        },
-        {
-          id: 3,
-          title: "Название какого-то мероприятия",
-          date: "01.01.2022 - 03.01.2022",
-        },
-        {
-          id: 4,
-          title: "Название какого-то мероприятия",
-          date: "01.01.2022 - 03.01.2022",
-        },
-        {
-          id: 5,
-          title: "Название какого-то мероприятия",
-          date: "01.01.2022 - 03.01.2022",
-        },
-        {
-          id: 6,
-          title: "Название какого-то мероприятия",
-          date: "01.01.2022 - 03.01.2022",
-        },
-        {
-          id: 7,
-          title: "Название какого-то мероприятия",
-          date: "01.01.2022 - 03.01.2022",
-        },
-        {
-          id: 8,
-          title: "Название какого-то мероприятия",
-          date: "01.01.2022 - 03.01.2022",
-        },
-      ],
       eventListLayout: false,
       eventActionLayout: false,
       infoLayouts: {
