@@ -56,9 +56,16 @@
               <span class="text-sm font-medium"> Только начало </span>
             </Toggle>
             <Calendar
+              :clearFlag="clearFlag"
+              :propDate="date"
               :isRange="rangeToggle"
               @update="(value) => (date = value)"
             />
+            <span
+              class="self-end border-b-2 border-dotted hover:border-primary select-none cursor-pointer"
+              @click="clearDate()"
+              >Очистить</span
+            >
           </div>
         </Disclosure>
         <hr class="border-black" />
@@ -108,6 +115,7 @@ export default {
       followToggle: false,
       recommendToggle: false,
       rangeToggle: true,
+      clearFlag: false,
       date: null,
       places: [],
       categories: [],
@@ -121,33 +129,52 @@ export default {
     }),
   },
 
+  methods: {
+    clearDate() {
+      this.date = null;
+      this.clearFlag = true;
+      setTimeout(() => {
+        this.clearFlag = false;
+      }, 1000);
+    },
+  },
+
   watch: {
     query: _.debounce(function (newValue) {
-      this.$store.dispatch("UPDATE_FILTER", { key: "query", value: newValue });
+      this.$store.dispatch("filter/UPDATE_FILTER", {
+        key: "query",
+        value: newValue,
+      });
     }, 500),
     followToggle(newValue) {
-      this.$store.dispatch("UPDATE_FILTER", {
+      this.$store.dispatch("filter/UPDATE_FILTER", {
         key: "followToggle",
         value: newValue,
       });
     },
     recommendToggle(newValue) {
-      this.$store.dispatch("UPDATE_FILTER", {
+      this.$store.dispatch("filter/UPDATE_FILTER", {
         key: "recommendToggle",
         value: newValue,
       });
     },
     categories(newValue) {
-      this.$store.dispatch("UPDATE_FILTER", {
+      this.$store.dispatch("filter/UPDATE_FILTER", {
         key: "categories",
         value: newValue,
       });
     },
     date(newValue) {
-      this.$store.dispatch("UPDATE_FILTER", { key: "date", value: newValue });
+      this.$store.dispatch("filter/UPDATE_FILTER", {
+        key: "date",
+        value: newValue,
+      });
     },
     places(newValue) {
-      this.$store.dispatch("UPDATE_FILTER", { key: "places", value: newValue });
+      this.$store.dispatch("filter/UPDATE_FILTER", {
+        key: "places",
+        value: newValue,
+      });
     },
   },
 };

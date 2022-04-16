@@ -12,7 +12,7 @@
         />
       </div>
       <div class="col-span-5 text-left" :class="{ '!col-span-4': edit }">
-        <span>{{ normalizedDate.start }} - {{ normalizedDate.end }}</span>
+        <span>{{ normalizedDate }}</span>
       </div>
       <div
         v-if="edit"
@@ -47,7 +47,7 @@ export default {
     normalizedDate() {
       const start = moment(this.event.date_begin).format("DD.MM.YYYY");
       const end = moment(this.event.date_end).format("DD.MM.YYYY");
-      return { start, end };
+      return `${start} - ${end}`;
     },
   },
 

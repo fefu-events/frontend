@@ -85,6 +85,7 @@ export default {
     ...mapState("client/", {
       forceUpdate: "forceUpdateList",
     }),
+
     skip() {
       return 10 * this.page;
     },
