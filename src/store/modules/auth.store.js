@@ -20,12 +20,6 @@ export default {
     },
   },
 
-  getters: {
-    getUser(state) {
-      return state.user;
-    },
-  },
-
   mutations: {
     login(state, payload) {
       state.accessToken = payload.token;

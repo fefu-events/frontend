@@ -1,22 +1,16 @@
 export default {
-  state: {
+  state: () => ({
     query: "",
     followToggle: false,
     recommendToggle: false,
     categories: [],
     date: null,
     places: [],
-  },
+  }),
 
   actions: {
     UPDATE_FILTER({ commit }, payload) {
       commit("setNewFilter", payload);
-    },
-  },
-
-  getters: {
-    GET_FILTER: (state) => {
-      return state;
     },
   },
 
@@ -25,4 +19,6 @@ export default {
       state[payload.key] = payload.value;
     },
   },
+
+  namespaced: true,
 };
