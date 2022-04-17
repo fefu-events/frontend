@@ -1,7 +1,7 @@
 <template>
   <div class="xl:w-70 mx-auto">
     <div class="grid grid-flow-row grid-cols-5 gap-3 py-4">
-      <div class="col-span-4 text-left text-lg">
+      <div class="flex items-center col-span-4 text-left text-lg">
         <span> {{ event.title }} </span>
       </div>
       <div class="w-12 rounded-full overflow-hidden">
