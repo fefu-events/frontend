@@ -127,10 +127,14 @@
     class="xl:hidden z-500 fixed bottom-0 flex flex-row h-10 w-screen bg-white border-y border-black items-center mx-auto"
   >
     <div
+      v-if="user"
       class="basis-1/4 hover:text-primary"
       @click.stop="onClickUserInfoToggle"
     >
       <UserIcon class="w-full h-5" />
+    </div>
+    <div v-else class="basis-1/4 hover:text-primary" @click.stop="signIn">
+      <LoginIcon class="w-full h-5 rotate-180" />
     </div>
     <div
       class="basis-1/4 hover:text-primary"
@@ -138,10 +142,7 @@
     >
       <SearchIcon class="w-full h-5" />
     </div>
-    <div
-      class="basis-1/4 hover:text-primary"
-      @click="onClickEventActionToggle()"
-    >
+    <div class="basis-1/4 hover:text-primary" @click="onClickEventActionToggle">
       <PlusIcon class="w-full h-5" />
     </div>
     <div class="basis-1/4 hover:text-primary">
