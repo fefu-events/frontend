@@ -26,7 +26,7 @@
       <div class="mt-4 xl:mx-5">
         <Disclosure :unmount="true" class="px-4" categoryName="Дата">
           <Calendar
-            :propDate="editableEvent ? event.date : null"
+            :propDate="event.date"
             :isRange="true"
             @update="(value) => (event.date = value)"
           />
@@ -231,29 +231,23 @@ export default {
 
   async mounted() {
     if (this.editableEvent) {
-      const { data } = await api.event.getByEventID(this.editableEvent);
-      const {
-        title,
-        description,
-        date_begin,
-        date_end,
-        place_description,
-        tags,
-        place,
-        category,
-      } = data;
+      this.event = await api.event
+        .getByEventID(this.editableEvent)
+        .then(({ data }) => {
+          const eventObj = {
+            title: data.title || "",
+            date: { start: data.date_begin, end: data.date_end },
+            selectedPlace: data.place.id,
+            placeDescription: data.place_description || "",
+            selectedCategory: data.category.id,
+            description: data.description || "",
+            tags: data.tags.join(" "),
+            link: "",
+            selectedOrganization: null,
+          };
 
-      this.event = {
-        title: title || "",
-        date: { start: date_begin + "Z", end: date_end + "Z" },
-        selectedPlace: place.id,
-        placeDescription: place_description || "",
-        selectedCategory: category.id,
-        description: description || "",
-        tags: tags.join(" "),
-        link: "",
-        selectedOrganization: null,
-      };
+          return eventObj;
+        });
     }
   },
 
@@ -334,6 +328,17 @@ export default {
       if (this.errors.length > 0) return;
       const response = await api.event.create(this.accessToken, this.event);
       if (response.status === 201) {
+        this.event = {
+          title: "",
+          date: null,
+          selectedPlace: null,
+          placeDescription: "",
+          selectedCategory: null,
+          description: "",
+          tags: "",
+          link: "",
+          selectedOrganization: null,
+        };
         this.onClickEventActionToggle();
         this.$store.dispatch("client/SET_FORCE_UPDATE_LIST", true);
       }
