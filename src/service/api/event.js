@@ -54,6 +54,8 @@ const endpoints = {
       title: data.query,
       tags: user?.tags ? user.tags : [],
       for_user_id: user?.id,
+      category_ids: data.categories,
+      place_ids: data.places,
       subscriptions: data.followToggle,
       personalize_tags: data.recommendToggle,
     };
