@@ -35,7 +35,11 @@
       <!-- Events -->
       <div>
         <span class="xl:mx-5 font-medium">Мои мероприятия: </span>
-        <div class="h-[40vh] my-1 overflow-y-scroll" ref="events">
+        <div
+          v-if="events.length > 0"
+          class="h-[40vh] my-1 overflow-y-scroll"
+          ref="events"
+        >
           <div
             class="hover:bg-hoverColor xl:px-5 cursor-pointer"
             v-for="event in events"
@@ -43,6 +47,13 @@
           >
             <EventBlock :event="event" :edit="true" />
           </div>
+        </div>
+        <div v-else class="my-4">
+          <img
+            class="w-3/5 h-3/5 mx-auto"
+            src="@/assets/img/svg/emptyList.svg"
+            alt=""
+          />
         </div>
       </div>
     </div>
@@ -91,16 +102,18 @@ export default {
     },
   },
 
-  mounted() {
+  async mounted() {
+    await this.updateEventList();
     const eventsList = this.$refs.events;
-    eventsList.addEventListener("scroll", () => this.handleScroll());
-    this.updateEventList();
+    if (eventsList)
+      eventsList.addEventListener("scroll", () => this.handleScroll());
   },
 
   methods: {
     async updateEventList() {
-      const { data } = await api.event.getByUserID(0, this.user?.id);
-      this.events = data;
+      this.events = await api.event
+        .getByUserID(0, this.user?.id)
+        .then((response) => response.data);
     },
 
     async handleScroll() {

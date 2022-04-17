@@ -1,15 +1,49 @@
 <template>
   <div class="h-[85%] xl:h-full w-full xl:my-6 mt-10" ref="events">
-    <div
-      class="xl:px-5 hover:bg-hoverColor cursor-pointer"
-      v-for="event in events"
-      :key="event.id"
-    >
-      <EventBlock
-        class="w-4/5 xl:px-4"
-        :event="event"
-        @click="onClickSelectEvent(event)"
-      />
+    <div v-if="!isLoaded" class="flex items-center h-full">
+      <svg
+        class="animate-spin h-12 w-12 text-primary mx-auto"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          class="opacity-40"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="2"
+        ></circle>
+        <path
+          class="opacity-80"
+          stroke="currentColor"
+          stroke-width="2"
+          d="M4.85857 5C3.09032 6.80375 2 9.27455 2 12C2 17.5228 6.47715 22 12 22"
+        />
+      </svg>
+    </div>
+    <div v-else class="h-full">
+      <section v-if="events.length > 0">
+        <div
+          class="xl:px-5 hover:bg-hoverColor cursor-pointer"
+          v-for="event in events"
+          :key="event.id"
+        >
+          <EventBlock
+            class="w-4/5 xl:px-4"
+            :event="event"
+            @click="onClickSelectEvent(event)"
+          />
+        </div>
+      </section>
+      <section v-else class="flex items-center h-full">
+        <img
+          class="w-3/5 h-3/5 mx-auto"
+          src="@/assets/img/svg/emptyList.svg"
+          alt=""
+        />
+      </section>
     </div>
   </div>
 </template>
@@ -30,6 +64,7 @@ export default {
 
   data() {
     return {
+      isLoaded: false,
       page: 1,
       events: [],
     };
@@ -60,8 +95,12 @@ export default {
 
   methods: {
     async updateEventList() {
-      const { data } = await api.event.getAll(0, this.filterParams, this.user);
-      this.events = data;
+      this.events = await api.event
+        .getAll(0, this.filterParams, this.user)
+        .then(({ data }) => {
+          this.isLoaded = true;
+          return data;
+        });
     },
 
     async handleScroll() {
