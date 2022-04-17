@@ -70,7 +70,6 @@ export default {
   name: "CalendarComponent",
   components: { DatePicker, CalendarIcon },
   props: {
-    clearFlag: Boolean,
     propDate: [Object, String],
     isRange: Boolean,
   },
@@ -97,8 +96,8 @@ export default {
   },
 
   watch: {
-    clearFlag() {
-      if (this.clearFlag) this.date = null;
+    propDate() {
+      this.date = this.propDate;
     },
     date() {
       this.$emit("update", this.date);

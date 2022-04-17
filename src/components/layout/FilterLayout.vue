@@ -56,7 +56,6 @@
               <span class="text-sm font-medium"> Только начало </span>
             </Toggle>
             <Calendar
-              :clearFlag="clearFlag"
               :propDate="date"
               :isRange="rangeToggle"
               @update="(value) => (date = value)"
@@ -115,7 +114,6 @@ export default {
       followToggle: false,
       recommendToggle: false,
       rangeToggle: true,
-      clearFlag: false,
       date: null,
       places: [],
       categories: [],
@@ -132,10 +130,6 @@ export default {
   methods: {
     clearDate() {
       this.date = null;
-      this.clearFlag = true;
-      setTimeout(() => {
-        this.clearFlag = false;
-      }, 1000);
     },
   },
 
