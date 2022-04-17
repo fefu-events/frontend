@@ -25,7 +25,7 @@
         <div class="text-left">
           <div class="my-3 xl:my-6">
             <span class="text-primary text-2xl xl:text-2xl font-bold">
-              {{ people }}
+              {{ event?.participant_count }}
             </span>
             собираются пойти
           </div>
