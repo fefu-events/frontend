@@ -52,7 +52,8 @@ export default {
   mounted() {
     setTimeout(() => {
       const eventsList = this.$refs.events;
-      eventsList.addEventListener("scroll", () => this.handleScroll());
+      if (eventsList)
+        eventsList.addEventListener("scroll", () => this.handleScroll());
       this.updateEventList();
     }, 1000);
   },
