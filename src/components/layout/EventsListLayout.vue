@@ -33,7 +33,7 @@
           <EventBlock
             class="w-4/5 xl:px-4"
             :event="event"
-            @click="onClickSelectEvent(event)"
+            @click="onClickSelectEvent(event.id)"
           />
         </div>
       </section>
@@ -58,9 +58,8 @@ export default {
   components: {
     EventBlock: TemplateComponents.EventBlock,
   },
-  props: {
-    onClickSelectEvent: Function,
-  },
+
+  inject: ["onClickSelectEvent"],
 
   data() {
     return {

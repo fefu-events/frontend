@@ -23,11 +23,7 @@
         'xl:-left-2': searchLayout,
       }"
     >
-      <EventsListLayout
-        v-if="eventListLayout"
-        :onClickSelectEvent="onClickSelectEvent"
-        class="overflow-scroll"
-      />
+      <EventsListLayout v-if="eventListLayout" class="overflow-scroll" />
       <div class="xl:hidden flex flex-col w-4/5 mx-auto">
         <Button class="!mt-4 !my-10 mx-5" @click="onClickEventsListToggle">
           <span> Скрыть список </span>
@@ -43,7 +39,7 @@
         'xl:-left-4': eventListLayout,
       }"
     >
-      <EventInfoLayout :event="selectedEvent" />
+      <EventInfoLayout :eventID="selectedEvent" />
     </div>
     <!-- Sidebar toggler -->
     <div
