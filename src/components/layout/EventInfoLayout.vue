@@ -1,113 +1,141 @@
 <template>
   <div class="flex flex-col h-full w-4/5 xl:w-70 mx-auto">
-    <div
-      class="grid grid-cols-10 xl:flex pt-10 pb-4 xl:py-0 flex-row content-between items-center xl:flex-col"
-    >
-      <div
-        class="bg-black col-span-3 xl:w-28 xl:my-7 rounded-full overflow-hidden"
+    <div v-if="!isLoaded" class="flex items-center h-full">
+      <svg
+        class="animate-spin h-12 w-12 text-primary mx-auto"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
       >
-        <img
-          class="self-center justify-self-center"
-          src="@/assets/img/svg/logo.svg"
-          alt="user avatar"
+        <circle
+          class="opacity-40"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="2"
+        ></circle>
+        <path
+          class="opacity-80"
+          stroke="currentColor"
+          stroke-width="2"
+          d="M4.85857 5C3.09032 6.80375 2 9.27455 2 12C2 17.5228 6.47715 22 12 22"
         />
-      </div>
-      <div class="flex flex-col pl-5 xl:pl-0 col-span-7 xl:w-full">
-        <span class="text-left text-xl xl:text-2xl mb-3 uppercase">
-          {{ event?.title }}
-        </span>
-        <hr class="xl:hidden border-black" />
-      </div>
+      </svg>
     </div>
-    <hr class="hidden xl:block border-black" />
-    <div class="h-full flex flex-col justify-between overflow-y-scroll">
-      <div>
-        <div class="text-left">
-          <div class="my-3 xl:my-6">
-            <span class="text-primary text-2xl xl:text-2xl font-bold">
-              {{ event?.participant_count }}
-            </span>
-            собираются пойти
-          </div>
-          <div class="flex items-center my-4">
-            <div class="self-baseline mr-4 my-1">
-              <UserGroupIcon class="w-5 h-5" />
-            </div>
-            <span>
-              {{
-                event?.organization
-                  ? event?.organization.name
-                  : event?.user.name
-              }}
-            </span>
-          </div>
-          <div class="flex items-center my-4">
-            <div class="self-baseline mr-4 my-1">
-              <CalendarIcon class="w-5 h-5" />
-            </div>
-            <span>
-              {{ normalizedDate }}
-            </span>
-          </div>
-          <div class="flex items-center my-4">
-            <div class="self-baseline mr-4 my-1">
-              <ClockIcon class="w-5 h-5" />
-            </div>
-            <span>
-              {{ normalizedTime }}
-            </span>
-          </div>
-          <div class="flex items-center my-4">
-            <div class="self-baseline mr-4 my-1">
-              <img src="@/assets/img/svg/icon.svg" class="w-5 h-7" />
-            </div>
-            <div class="flex flex-col">
-              <span>
-                {{ event?.place.label }}
-              </span>
-              <span>
-                {{ event?.place_description }}
-              </span>
-            </div>
-          </div>
-          <p>
-            {{ event?.description }}
-          </p>
+    <div v-else class="flex flex-col items-center h-full">
+      <div
+        class="grid grid-cols-10 xl:flex pt-10 pb-4 xl:py-0 flex-row content-between items-center xl:flex-col"
+      >
+        <div
+          class="bg-black col-span-3 xl:w-28 xl:my-7 rounded-full overflow-hidden"
+        >
+          <img
+            class="self-center justify-self-center"
+            src="@/assets/img/svg/logo.svg"
+          />
         </div>
-        <div class="flex flex-wrap mt-5 mb-10">
-          <div
-            v-for="tag in event?.tags"
-            :key="tag"
-            class="px-2 mr-2 mt-2 border border-black rounded hover:bg-primary hover:border-primary hover:text-white hover:cursor-pointer"
-          >
-            <span class="">#{{ tag }}</span>
-          </div>
-        </div>
-        <div class="flex items-center my-4">
-          <div class="self-baseline mr-4 my-1">
-            <LinkIcon class="w-5 h-5" />
-          </div>
-          <a :href="url" class="underline break-all" target="blank">
-            {{ url }}
-          </a>
+        <div class="flex flex-col pl-5 xl:pl-0 col-span-7 xl:w-full">
+          <span class="text-left text-xl xl:text-2xl mb-3 uppercase">
+            {{ event?.title }}
+          </span>
+          <hr class="xl:hidden border-black" />
         </div>
       </div>
-      <div class="mx-5">
-        <Button class="w-full mt-10 xl:my-10">
-          <span> {{ !visit ? "Возможно пойду" : "Не пойду" }} </span>
-        </Button>
-        <Button
-          class="xl:hidden w-full mt-2 mb-10"
-          @click="onClickSelectEvent(event)"
-        >
-          <span> К списку </span>
-        </Button>
+      <hr class="hidden xl:block border-black" />
+      <div class="h-full flex flex-col justify-between overflow-y-scroll">
+        <div>
+          <div class="text-left">
+            <div class="my-3 xl:my-6">
+              <span class="text-primary text-2xl xl:text-2xl font-bold">
+                {{ event?.participant_count }}
+              </span>
+              собираются пойти
+            </div>
+            <div class="flex items-center my-4">
+              <div class="self-baseline mr-4 my-1">
+                <UserGroupIcon class="w-5 h-5" />
+              </div>
+              <span>
+                {{
+                  event?.organization
+                    ? event?.organization.name
+                    : event?.user.name
+                }}
+              </span>
+            </div>
+            <div class="flex items-center my-4">
+              <div class="self-baseline mr-4 my-1">
+                <CalendarIcon class="w-5 h-5" />
+              </div>
+              <span>
+                {{ normalizedDate }}
+              </span>
+            </div>
+            <div class="flex items-center my-4">
+              <div class="self-baseline mr-4 my-1">
+                <ClockIcon class="w-5 h-5" />
+              </div>
+              <span>
+                {{ normalizedTime }}
+              </span>
+            </div>
+            <div class="flex items-center my-4">
+              <div class="self-baseline mr-4 my-1">
+                <img src="@/assets/img/svg/icon.svg" class="w-5 h-7" />
+              </div>
+              <div class="flex flex-col">
+                <span>
+                  {{ event?.place.label }}
+                </span>
+                <span>
+                  {{ event?.place_description }}
+                </span>
+              </div>
+            </div>
+            <p>
+              {{ event?.description }}
+            </p>
+          </div>
+          <div class="flex flex-wrap mt-5 mb-10">
+            <div
+              v-for="tag in event?.tags"
+              :key="tag"
+              class="px-2 mr-2 mt-2 border border-black rounded hover:bg-primary hover:border-primary hover:text-white hover:cursor-pointer"
+            >
+              <span class="">#{{ tag }}</span>
+            </div>
+          </div>
+          <div class="flex items-center my-4">
+            <div class="self-baseline mr-4 my-1">
+              <LinkIcon class="w-5 h-5" />
+            </div>
+            <a :href="url" class="underline break-all" target="blank">
+              {{ url }}
+            </a>
+          </div>
+        </div>
+        <div class="mx-5">
+          <Button v-if="token" class="w-full mt-10 xl:my-10" @click="takePart">
+            <span>
+              {{ event?.am_i_participation ? "Не пойду" : "Возможно пойду" }}
+            </span>
+          </Button>
+          <Button
+            class="xl:hidden w-full mt-2 mb-10"
+            @click="onClickSelectEvent(event.id)"
+          >
+            <span> К списку </span>
+          </Button>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import api from "@/service/api";
+import { mapState } from "vuex";
 import moment from "moment";
 import { Button } from "@/components/interface";
 import { UserGroupIcon, CalendarIcon, ClockIcon } from "@heroicons/vue/outline";
@@ -124,28 +152,61 @@ export default {
   },
 
   props: {
-    event: Object,
+    eventID: Number,
   },
 
   inject: ["onClickSelectEvent"],
 
   data() {
     return {
-      visit: false,
-      people: 1000,
+      isLoaded: false,
+      event: null,
       url: "https://2gis.ru/moscow/my",
     };
   },
 
   computed: {
+    ...mapState("auth", {
+      token: (state) => state.accessToken,
+    }),
+
     normalizedDate() {
       const start = moment(this.event?.date_begin).format("DD.MM.YYYY");
       const end = moment(this.event?.date_end).format("DD.MM.YYYY");
       return `${start} - ${end}`;
     },
+
     normalizedTime() {
       const time = moment(this.event?.date_begin).format("HH:mm");
       return time;
+    },
+  },
+
+  methods: {
+    takePart() {
+      if (!this.event.am_i_participation) {
+        this.event.participant_count += 1;
+        api.participation.part(this.token, this.eventID);
+      } else {
+        this.event.participant_count -= 1;
+        api.participation.nonpart(this.token, this.eventID);
+      }
+      this.event.am_i_participation = !this.event.am_i_participation;
+    },
+  },
+
+  watch: {
+    async eventID(newValue) {
+      if (newValue == null) {
+        return;
+      }
+      this.isLoaded = false;
+      this.event = await api.event
+        .getByEventID(this.eventID, this.token)
+        .then(({ data }) => {
+          this.isLoaded = true;
+          return data;
+        });
     },
   },
 };

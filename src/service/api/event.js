@@ -83,7 +83,11 @@ const endpoints = {
       },
     }),
 
-  getByEventID: (id) => axios.get(`/api/event/${id}`),
+  getByEventID: (id, token) => {
+    return axios.get(`/api/event/${id}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+  },
 };
 
 export default endpoints;
