@@ -18,13 +18,15 @@
       </div>
       <div class="xl:mb-6 overflow-y-scroll overflow-x-hidden">
         <!-- Follow toggle -->
-        <Toggle class="px-4" @update="(value) => (followToggle = value)">
-          <span class="text-sm font-medium"> Только подписки </span>
-        </Toggle>
-        <!-- Recommend toggle -->
-        <Toggle class="px-4" @update="(value) => (recommendToggle = value)">
-          <span class="text-sm font-medium"> Рекомендации </span>
-        </Toggle>
+        <section v-if="user">
+          <Toggle class="px-4" @update="(value) => (followToggle = value)">
+            <span class="text-sm font-medium"> Только подписки </span>
+          </Toggle>
+          <!-- Recommend toggle -->
+          <Toggle class="px-4" @update="(value) => (recommendToggle = value)">
+            <span class="text-sm font-medium"> Рекомендации </span>
+          </Toggle>
+        </section>
         <!-- Category list -->
         <Disclosure categoryName="Категория" class="px-4">
           <div class="flex flex-col">
@@ -124,6 +126,10 @@ export default {
     ...mapState("client/", {
       availablePlaces: (state) => state.places,
       availableCategories: (state) => state.categories,
+    }),
+
+    ...mapState("auth/", {
+      user: (state) => state.user,
     }),
   },
 
