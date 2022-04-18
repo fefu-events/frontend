@@ -23,7 +23,7 @@
         />
       </svg>
     </div>
-    <div v-else class="flex flex-col items-center h-full">
+    <div v-else class="flex flex-col h-full">
       <div
         class="grid grid-cols-10 xl:flex pt-10 pb-4 xl:py-0 flex-row content-between items-center xl:flex-col"
       >

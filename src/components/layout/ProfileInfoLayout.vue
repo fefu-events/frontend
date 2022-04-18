@@ -1,10 +1,10 @@
 <template>
   <div
-    class="flex flex-col justify-between h-full w-4/5 xl:w-80 mx-auto overflow-y-scroll"
+    class="flex flex-col justify-between h-full w-[89%] xl:w-80 mx-auto overflow-y-scroll"
   >
     <div class="flex flex-col">
       <!-- Person -->
-      <div class="flex flex-row xl:justify-between items-center mt-10 xl:mx-5">
+      <div class="flex flex-row xl:justify-between items-center mt-10 mx-5">
         <div class="w-16 h-16 rounded-full bg-gray-300">
           <img src="" alt="" srcset="" />
         </div>
@@ -14,7 +14,7 @@
         </div>
       </div>
       <!-- Bookmarks -->
-      <div class="xl:mx-5 mt-8">
+      <div class="mx-5 mt-8">
         <ul>
           <li class="flex flex-row my-5 font-bold cursor-pointer group">
             <HashtagIcon class="w-5 h-5 mx-2" />
@@ -34,14 +34,14 @@
       </div>
       <!-- Events -->
       <div>
-        <span class="xl:mx-5 font-medium">Мои мероприятия: </span>
+        <span class="mx-5 font-medium">Мои мероприятия: </span>
         <div
           v-if="events.length > 0"
           class="h-[40vh] my-1 overflow-y-scroll"
           ref="events"
         >
           <div
-            class="hover:bg-hoverColor xl:px-5 cursor-pointer"
+            class="hover:bg-hoverColor px-5 cursor-pointer"
             v-for="event in events"
             :key="event.id"
           >
