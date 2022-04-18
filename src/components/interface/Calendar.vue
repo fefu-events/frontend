@@ -90,9 +90,9 @@ export default {
   },
 
   mounted() {
-    this.isDark =
-      localStorage.theme === "dark" ||
-      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    this.isDark = false;
+    // localStorage.theme === "dark" ||
+    // window.matchMedia("(prefers-color-scheme: dark)").matches;
   },
 
   watch: {
