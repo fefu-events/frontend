@@ -52,7 +52,6 @@ const endpoints = {
       skip: skip,
       limit: 10,
       title: data.query,
-      tags: user?.tags ? user.tags : [],
       for_user_id: user?.id,
       category_ids: data.categories,
       place_ids: data.places,
