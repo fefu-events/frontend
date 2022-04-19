@@ -12,12 +12,12 @@
       <div class="mt-10 font-bold cursor-pointer">
         <span>Мои организации</span>
       </div>
-      <Button class="mx-5 my-6" @click="createOrganization">
+      <Button class="mx-5 my-6" @click="openCreateOrganizationPage">
         <span> Создать организацию </span>
       </Button>
     </div>
     <!-- Organization types -->
-    <div class="flex flex-row justify-between">
+    <div class="flex flex-row justify-between mb-4">
       <div
         class="w-[140px] text-center group cursor-pointer"
         @click="adminType = false"
@@ -39,27 +39,46 @@
         />
       </div>
     </div>
+    <div class="overflow-y-scroll mb-4">
+      <div
+        class="hover:bg-hoverColor px-5 cursor-pointer"
+        v-for="org in filteredOrganizations"
+        :key="org.id"
+        @click="onClickSelectOrganization(org.id)"
+      >
+        <OrgBlock :organization="org" :admin="adminType" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-// import api from "@/service/api";
+import api from "@/service/api";
 import { mapState } from "vuex";
 import { ReplyIcon } from "@heroicons/vue/outline";
 import { Button } from "@/components/interface";
+import { OrgBlock } from "@/components/template";
 
 export default {
   name: "OrganizationsListLayout",
   components: {
     Button,
+    OrgBlock,
     ReplyIcon,
   },
 
-  inject: ["onClickRightsToggle"],
+  inject: ["onClickRightsToggle", "onClickSelectOrganization"],
+
+  provide() {
+    return {
+      updateOrganizations: this.updateOrganizations,
+    };
+  },
 
   data() {
     return {
-      adminType: true,
+      organizations: [],
+      adminType: false,
       members: [],
     };
   },
@@ -67,21 +86,57 @@ export default {
   computed: {
     ...mapState("auth/", {
       token: (state) => state.accessToken,
+      userID: (state) => state.user.id,
     }),
+
+    ...mapState("client/", {
+      forceUpdateOrganizationList: "forceUpdateOrganizationList",
+    }),
+
+    filteredOrganizations() {
+      let organizations = [];
+      if (this.adminType) {
+        organizations = this.organizations.filter(
+          (org) => org.owner_id === this.userID
+        );
+      } else {
+        organizations = this.organizations.filter(
+          (org) => org.owner_id !== this.userID
+        );
+      }
+      return organizations;
+    },
   },
 
-  async mounted() {},
+  async mounted() {
+    await this.updateOrganizations();
+  },
 
   methods: {
     backMove() {
       this.onClickRightsToggle("org");
     },
 
-    createOrganization() {
+    async updateOrganizations() {
+      this.organizations = await api.user
+        .getByUserID(this.userID)
+        .then(({ data }) => {
+          return data.organizations;
+        });
+    },
+
+    openCreateOrganizationPage() {
       this.onClickRightsToggle("createOrg");
     },
   },
 
-  watch: {},
+  watch: {
+    forceUpdateOrganizationList(newValue) {
+      if (newValue === true) {
+        this.updateOrganizations();
+      }
+      this.$store.dispatch("client/SET_FORCE_UPDATE_EVENT_LIST", false);
+    },
+  },
 };
 </script>
