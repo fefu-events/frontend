@@ -112,7 +112,7 @@
         'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.org,
       }"
     >
-      <OrganizationsListLayout />
+      <OrganizationsListLayout v-if="infoLayouts.org" />
     </div>
     <!-- Create organization layout -->
     <div
@@ -121,7 +121,7 @@
         'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.createOrg,
       }"
     >
-      <CreateOrganizationLayout />
+      <CreateOrganizationLayout v-if="infoLayouts.createOrg" />
     </div>
     <!-- Event action bar -->
     <div
@@ -204,6 +204,7 @@ export default {
       onClickEventActionToggle: this.onClickEventActionToggle,
 
       onClickRightsToggle: this.onClickRightsToggle,
+      onClickSelectOrganization: this.onClickSelectOrganization,
     };
   },
 
@@ -213,6 +214,7 @@ export default {
       selectedEvent: null,
       editableEvent: null,
       selectedUser: null,
+      selectedOrganization: null,
 
       searchLayout: false,
       eventListLayout: false,
@@ -335,6 +337,10 @@ export default {
 
     onClickSelectEditEvent(id) {
       this.editableEvent = id;
+    },
+
+    onClickSelectOrganization(id) {
+      this.selectedOrganization = id;
     },
 
     onClickEventActionToggle() {
