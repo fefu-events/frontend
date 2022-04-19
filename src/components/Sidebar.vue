@@ -94,7 +94,7 @@
         </Button>
       </section>
     </div>
-    <!-- Profile info bar -->
+    <!-- Profile info layout -->
     <div
       class="right-sidebar"
       :class="{ 'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.me }"
@@ -104,6 +104,24 @@
         :user="selectedUser || user"
         :signOut="signOut"
       />
+    </div>
+    <!-- Organizations list layout -->
+    <div
+      class="right-sidebar"
+      :class="{
+        'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.org,
+      }"
+    >
+      <OrganizationsListLayout />
+    </div>
+    <!-- Create organization layout -->
+    <div
+      class="right-sidebar"
+      :class="{
+        'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.createOrg,
+      }"
+    >
+      <CreateOrganizationLayout />
     </div>
     <!-- Event action bar -->
     <div
@@ -167,6 +185,8 @@ export default {
     EventInfoLayout: LayoutComponents.EventInfoLayout,
     EventsListLayout: LayoutComponents.EventsListLayout,
     ProfileInfoLayout: LayoutComponents.ProfileInfoLayout,
+    OrganizationsListLayout: LayoutComponents.OrganizationsListLayout,
+    CreateOrganizationLayout: LayoutComponents.CreateOrganizationLayout,
     EventActionLayout: LayoutComponents.EventActionLayout,
     Button,
     ChevronRightIcon,
@@ -182,6 +202,8 @@ export default {
       onClickSelectEvent: this.onClickSelectEvent,
       onClickSelectEditEvent: this.onClickSelectEditEvent,
       onClickEventActionToggle: this.onClickEventActionToggle,
+
+      onClickRightsToggle: this.onClickRightsToggle,
     };
   },
 
@@ -197,6 +219,8 @@ export default {
       eventActionLayout: false,
       infoLayouts: {
         me: false,
+        org: false,
+        createOrg: false,
       },
     };
   },
@@ -302,6 +326,11 @@ export default {
       } else {
         this.infoLayouts.me = !this.infoLayouts.me;
       }
+    },
+
+    // others right loayouts
+    onClickRightsToggle(layout) {
+      this.infoLayouts[layout] = !this.infoLayouts[layout];
     },
 
     onClickSelectEditEvent(id) {
