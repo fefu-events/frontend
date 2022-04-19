@@ -11,6 +11,7 @@
       id="email-adress-icon"
       class="block w-full pl-10 p-2.5 bg-gray-light border-0 text-sm rounded-lg focus:ring-0"
       :placeholder="placeholder"
+      autocomplete="off"
     />
   </div>
 </template>
