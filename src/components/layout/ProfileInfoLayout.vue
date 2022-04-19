@@ -97,7 +97,7 @@ export default {
 
   computed: {
     ...mapState("client/", {
-      forceUpdate: "forceUpdateList",
+      forceUpdateEventList: "forceUpdateEventList",
     }),
 
     skip() {
@@ -138,11 +138,11 @@ export default {
   },
 
   watch: {
-    forceUpdate(newValue) {
+    forceUpdateEventList(newValue) {
       if (newValue === true) {
         this.updateEventList();
       }
-      this.$store.dispatch("client/SET_FORCE_UPDATE_LIST", false);
+      this.$store.dispatch("client/SET_FORCE_UPDATE_EVENT_LIST", false);
     },
   },
 };

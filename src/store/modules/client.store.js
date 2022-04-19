@@ -2,7 +2,8 @@ import api from "@/service/api";
 
 export default {
   state: () => ({
-    forceUpdateList: false,
+    forceUpdateEventList: false,
+    forceUpdateOrganizationList: false,
     categories: [],
     places: [],
   }),
@@ -18,17 +19,12 @@ export default {
       commit("places", data);
     },
 
-    async SET_FORCE_UPDATE_LIST({ commit }, payload) {
-      commit("forceUpdateList", payload);
+    async SET_FORCE_UPDATE_EVENT_LIST({ commit }, payload) {
+      commit("forceUpdateEventList", payload);
     },
-  },
 
-  getters: {
-    getPlaces(state) {
-      return state.places;
-    },
-    getCategories(state) {
-      return state.categories;
+    async SET_FORCE_UPDATE_ORG_LIST({ commit }, payload) {
+      commit("forceUpdateOrganizationList", payload);
     },
   },
 
@@ -39,8 +35,11 @@ export default {
     places(state, payload) {
       state.places = payload;
     },
-    forceUpdateList(state, payload) {
-      state.forceUpdateList = payload;
+    forceUpdateEventList(state, payload) {
+      state.forceUpdateEventList = payload;
+    },
+    forceUpdateOrganizationList(state, payload) {
+      state.forceUpdateOrganizationList = payload;
     },
   },
 

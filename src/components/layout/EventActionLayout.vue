@@ -338,7 +338,7 @@ export default {
           selectedOrganization: null,
         };
         this.onClickEventActionToggle();
-        this.$store.dispatch("client/SET_FORCE_UPDATE_LIST", true);
+        this.$store.dispatch("client/SET_FORCE_UPDATE_EVENT_LIST", true);
       }
     },
 
@@ -349,7 +349,7 @@ export default {
       );
       if (response.status === 200) {
         this.onClickSelectEditEvent(null);
-        this.$store.dispatch("client/SET_FORCE_UPDATE_LIST", true);
+        this.$store.dispatch("client/SET_FORCE_UPDATE_EVENT_LIST", true);
       }
     },
 
@@ -363,7 +363,7 @@ export default {
       );
       if (response.status === 200) {
         this.onClickSelectEditEvent(null);
-        this.$store.dispatch("client/SET_FORCE_UPDATE_LIST", true);
+        this.$store.dispatch("client/SET_FORCE_UPDATE_EVENT_LIST", true);
       }
     },
   },
