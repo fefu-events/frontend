@@ -29,12 +29,9 @@
           class="xl:px-5 hover:bg-hoverColor cursor-pointer"
           v-for="event in events"
           :key="event.id"
+          @click="onClickSelectEvent(event.id)"
         >
-          <EventBlock
-            class="w-4/5 xl:px-4"
-            :event="event"
-            @click="onClickSelectEvent(event.id)"
-          />
+          <EventBlock class="w-4/5 xl:px-4" :event="event" />
         </div>
       </section>
       <section v-else class="flex items-center h-full">
