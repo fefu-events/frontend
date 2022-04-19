@@ -3,6 +3,7 @@ import event from "./event";
 import me from "./me";
 import organization from "./organization";
 import participation from "./participation";
+import user from "./user";
 
 const api = {
   client,
@@ -10,6 +11,7 @@ const api = {
   me,
   organization,
   participation,
+  user,
 };
 
 export default api;
