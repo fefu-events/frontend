@@ -88,10 +88,10 @@
 </template>
 
 <script>
+import _ from "lodash";
 import { mapState } from "vuex";
 import * as InterfaceComponents from "@/components/interface";
 import { FilterIcon } from "@heroicons/vue/outline";
-import _ from "lodash";
 
 export default {
   name: "FilterLayout",
