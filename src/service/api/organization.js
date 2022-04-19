@@ -14,6 +14,30 @@ const endpoints = {
         },
       }
     ),
+
+  addMember: (token, organizationID, userID) => {
+    axios.post(
+      `/api/organization/${organizationID}/member`,
+      {
+        user_id: userID,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  },
+
+  removeMember: (token, organizationID, userID) =>
+    axios.delete(`/api/organization/${organizationID}/member`, {
+      data: {
+        user_id: userID,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }),
 };
 
 export default endpoints;
