@@ -19,7 +19,7 @@
       <!-- Search input -->
       <Search
         class="mt-4"
-        @update="(value) => (query = value)"
+        @update="(value) => (userQuery = value)"
         :placeholder="'Поиск'"
       />
     </div>
@@ -103,6 +103,7 @@ export default {
 
   data() {
     return {
+      userQuery: "",
       addUserList: false,
       maxTitleSize: 50,
       maxDescSize: 255,
@@ -126,12 +127,10 @@ export default {
   methods: {
     backMove() {
       if (this.addUserList) {
+        this.userQuery = "";
         this.addUserList = false;
         return;
       }
-      this.title = "";
-      this.description = "";
-      this.members = [];
       this.onClickRightsToggle("createOrg");
     },
 
@@ -150,8 +149,8 @@ export default {
           description: "",
           members: [],
         };
-
         this.onClickRightsToggle("createOrg");
+        this.$store.dispatch("client/SET_FORCE_UPDATE_ORG_LIST", true);
       }
     },
   },
