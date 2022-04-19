@@ -4,11 +4,10 @@
       <div class="flex items-center col-span-4 text-left text-lg">
         <span> {{ event.title }} </span>
       </div>
-      <div class="w-12 rounded-full overflow-hidden">
+      <div class="min-w-[40px] rounded-full overflow-hidden">
         <img
           class="self-center justify-self-center w-10 h-10 m-auto"
           src="@/assets/img/svg/logo.svg"
-          alt="user avatar"
         />
       </div>
       <div class="col-span-5 text-left" :class="{ '!col-span-4': edit }">
@@ -38,7 +37,10 @@ export default {
 
   props: {
     event: Object,
-    edit: Boolean,
+    edit: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   inject: ["onClickSelectEditEvent"],
