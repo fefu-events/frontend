@@ -51,13 +51,11 @@
       </div>
       <!-- Place description -->
       <div class="mt-4 xl:mx-5">
-        <div class="flex justify-between">
-          <input
-            class="w-full py-2 px-4 text-sm bg-transparent focus:outline-none"
-            placeholder="Уточнение места"
-            v-model="event.placeDescription"
-          />
-        </div>
+        <input
+          class="w-full py-2 px-4 text-sm bg-transparent focus:outline-none"
+          placeholder="Уточнение места"
+          v-model="event.placeDescription"
+        />
         <hr class="border-black" />
       </div>
       <!-- Category -->

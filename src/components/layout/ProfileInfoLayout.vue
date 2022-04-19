@@ -57,7 +57,7 @@
         </div>
       </div>
     </div>
-    <Button class="mx-5 xl:mx-10 mb-10" @click="signOut">
+    <Button class="mx-10 mb-10" @click="signOut">
       <span> Выйти </span>
     </Button>
   </div>
