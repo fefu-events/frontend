@@ -2,7 +2,7 @@
   <!-- LEFT SIDEBAR -->
 
   <div class="flex z-500 absolute">
-    <!-- Filter bar -->
+    <!-- Filter layout -->
     <div
       class="left-sidebar"
       :class="{
@@ -15,7 +15,7 @@
         :toggleEventsList="onClickEventsListToggle"
       />
     </div>
-    <!-- Event list -->
+    <!-- Event list layout -->
     <div
       class="left-sidebar flex flex-col justify-between items-center xl:-z-10 overflow-y-scroll"
       :class="{
@@ -30,7 +30,7 @@
         </Button>
       </div>
     </div>
-    <!-- Event info bar -->
+    <!-- Event info layout -->
     <div
       class="left-sidebar xl:-z-20"
       :class="{
@@ -109,10 +109,10 @@
     <div
       class="right-sidebar"
       :class="{
-        'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.org,
+        'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.myOrgs,
       }"
     >
-      <OrganizationsListLayout v-if="infoLayouts.org" />
+      <OrganizationsListLayout v-if="infoLayouts.myOrgs" />
     </div>
     <!-- Create organization layout -->
     <div
@@ -123,7 +123,19 @@
     >
       <CreateOrganizationLayout v-if="infoLayouts.createOrg" />
     </div>
-    <!-- Event action bar -->
+    <!-- Organization info layout -->
+    <div
+      class="right-sidebar"
+      :class="{
+        'h-9/10 xl:h-[85%] xl:!w-90 outline': selectedOrganization,
+      }"
+    >
+      <OrganizationInfoLayout
+        :organizationID="selectedOrganization"
+        v-if="selectedOrganization"
+      />
+    </div>
+    <!-- Event action layout -->
     <div
       class="right-sidebar"
       :class="{
@@ -186,6 +198,7 @@ export default {
     EventsListLayout: LayoutComponents.EventsListLayout,
     ProfileInfoLayout: LayoutComponents.ProfileInfoLayout,
     OrganizationsListLayout: LayoutComponents.OrganizationsListLayout,
+    OrganizationInfoLayout: LayoutComponents.OrganizationInfoLayout,
     CreateOrganizationLayout: LayoutComponents.CreateOrganizationLayout,
     EventActionLayout: LayoutComponents.EventActionLayout,
     Button,
@@ -221,7 +234,7 @@ export default {
       eventActionLayout: false,
       infoLayouts: {
         me: false,
-        org: false,
+        myOrgs: false,
         createOrg: false,
       },
     };
@@ -323,6 +336,7 @@ export default {
         for (let toggle in this.infoLayouts) {
           this.infoLayouts[toggle] = false;
           this.editableEvent = null;
+          this.selectedOrganization = null;
           this.infoLayouts.me = true;
         }
       } else {
