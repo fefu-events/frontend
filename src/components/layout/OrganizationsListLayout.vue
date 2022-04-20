@@ -9,7 +9,7 @@
     </div>
     <!-- Create -->
     <div class="flex flex-col mx-5">
-      <div class="mt-10 font-bold cursor-pointer">
+      <div class="mt-10 font-bold text-lg cursor-pointer">
         <span>Мои организации</span>
       </div>
       <Button class="mx-5 my-6" @click="openCreateOrganizationPage">

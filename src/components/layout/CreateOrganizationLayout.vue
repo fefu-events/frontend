@@ -10,8 +10,8 @@
 
     <!-- Add user list -->
     <div v-if="addUserList" class="flex flex-col h-full mx-5">
-      <div class="mt-10 font-bold cursor-pointer">
-        <span>Мои организации</span>
+      <div class="mt-10 font-bold text-lg cursor-pointer">
+        <span>Добавить участника</span>
       </div>
       <!-- Search input -->
       <Search
@@ -25,10 +25,6 @@
           v-for="user in filteredAddUsers"
           :key="user"
         >
-          <MemberBlock :user="user" :createMode="true" :addMode="true" />
-          <MemberBlock :user="user" :createMode="true" :addMode="true" />
-          <MemberBlock :user="user" :createMode="true" :addMode="true" />
-          <MemberBlock :user="user" :createMode="true" :addMode="true" />
           <MemberBlock :user="user" :createMode="true" :addMode="true" />
         </div>
       </div>
@@ -98,7 +94,7 @@
         </div>
       </div>
 
-      <div class="flex flex-col mt-auto pb-10">
+      <div class="flex flex-col mt-auto mb-10">
         <Button class="mx-10 my-0" v-if="!addUserList" @click="onClickSubmit">
           <span> Создать организацию </span>
         </Button>
@@ -108,12 +104,12 @@
 </template>
 
 <script>
-// import api from "@/service/api";
+import _ from "lodash";
+import api from "@/service/api";
 import { mapState } from "vuex";
 import { ReplyIcon } from "@heroicons/vue/outline";
 import * as InterfaceComponents from "@/components/interface";
 import { MemberBlock } from "@/components/template";
-import api from "@/service/api";
 
 export default {
   name: "CreateOrganizationLayout",
@@ -156,13 +152,12 @@ export default {
     }),
 
     filteredAddUsers() {
-      return this.users;
-      // return this.users.filter(
-      //   (user) =>
-      //     !this.organization.members
-      //       .map((member) => member.id)
-      //       .includes(user.id)
-      // );
+      return this.users.filter(
+        (user) =>
+          !this.organization.members
+            .map((member) => member.id)
+            .includes(user.id)
+      );
     },
   },
 
@@ -185,33 +180,31 @@ export default {
       this.onClickRightsToggle("createOrg");
     },
 
+    async updateUsersList() {
+      this.users = await api.user
+        .getAll(0, this.userQuery)
+        .then(({ data }) => data);
+    },
+
     async handleScroll() {
-      const eventsList = this.$refs.users;
-      const scrolling = eventsList.scrollTop + eventsList.clientHeight;
+      const usersList = this.$refs.users;
+      const scrolling = usersList.scrollTop + usersList.clientHeight;
       if (
-        scrolling >= eventsList.scrollHeight &&
-        this.events.length >= this.page * 10
+        scrolling >= usersList.scrollHeight &&
+        this.users.length >= this.page * 10
       ) {
-        const { data } = await api.event.getAll(
-          this.skip,
-          this.filterParams,
-          this.user
-        );
-        this.events = this.events.concat(data);
+        const { data } = await api.user.getAll(this.skip, this.userQuery);
+        this.users = this.users.concat(data);
         this.page++;
       }
     },
 
     openAddUserList() {
-      const eventsList = this.$refs.users;
-      if (eventsList)
-        eventsList.addEventListener("scroll", () => this.handleScroll());
-      this.loadUsersList();
+      const usersList = this.$refs.users;
+      if (usersList)
+        usersList.addEventListener("scroll", () => this.handleScroll());
+      this.updateUsersList();
       this.addUserList = true;
-    },
-
-    async loadUsersList() {
-      this.users = await api.user.getAll().then(({ data }) => data);
     },
 
     async addMemberToArray(user) {
@@ -239,6 +232,12 @@ export default {
         this.$store.dispatch("client/SET_FORCE_UPDATE_ORG_LIST", true);
       }
     },
+  },
+
+  watch: {
+    userQuery: _.debounce(function () {
+      this.updateUsersList();
+    }, 500),
   },
 };
 </script>
