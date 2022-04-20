@@ -1,12 +1,14 @@
 <template>
   <div class="flex flex-col h-full w-[89%] xl:w-80 mx-auto overflow-scroll">
     <!-- Person -->
-    <div class="flex flex-row xl:justify-between items-center mt-10 mx-5">
+    <div class="flex flex-row items-center mt-10 mx-5">
       <div class="min-w-[64px] h-16 rounded-full bg-gray-300">
         <img src="" alt="" srcset="" />
       </div>
       <div class="mx-4 md:ml-6 md:mr-0">
-        <span class="text-2xl break-words">{{ user?.name }}</span>
+        <span class="text-2xl break-words word-space-full">{{
+          user?.name
+        }}</span>
       </div>
     </div>
     <!-- Bookmarks -->
@@ -58,6 +60,12 @@
   </div>
 </template>
 
+<style>
+.word-space-full {
+  word-spacing: 9999px;
+}
+</style>
+
 <script>
 import api from "@/service/api";
 import { mapState } from "vuex";
@@ -108,7 +116,7 @@ export default {
 
   methods: {
     openOrganizationsList() {
-      this.onClickRightsToggle("org");
+      this.onClickRightsToggle("myOrgs");
     },
 
     async updateEventList() {
