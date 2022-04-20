@@ -30,6 +30,29 @@
       </div>
     </div>
 
+    <!-- Organization event list view -->
+    <div v-else-if="eventsList" class="flex flex-col h-full mx-5">
+      <div class="mt-10 font-bold text-lg cursor-pointer">
+        <span>Мероприятия</span>
+      </div>
+      <!-- Search input -->
+      <!-- <Search
+        class="mt-4"
+        @update="(value) => (userQuery = value)"
+        :placeholder="'Поиск'"
+      /> -->
+      <div class="mb-4 overflow-y-scroll" ref="events">
+        <div
+          class="hover:bg-hoverColor cursor-pointer"
+          v-for="event in events"
+          :key="event"
+          @click="selectEvent(event.id)"
+        >
+          <EventBlock class="px-2" :event="event" :edit="isAdmin" />
+        </div>
+      </div>
+    </div>
+
     <!-- Info view -->
     <div v-else class="flex flex-col h-full mt-6 overflow-hidden">
       <!-- Organization avatar and title -->
@@ -38,7 +61,25 @@
           <img src="" alt="" srcset="" />
         </div>
         <div class="flex-1 mx-4 md:ml-6 md:mr-0">
-          <span class="self-center text-2xl break-words">{{
+          <div v-if="editMode" class="flex flex-col">
+            <div class="flex justify-between">
+              <input
+                class="w-10/12 py-2 bg-transparent focus:outline-none"
+                placeholder="Название"
+                v-model="orgTitle"
+                :maxlength="50"
+              />
+              <span
+                class="py-2 pr-2 text-sm"
+                v-text="maxTitleSize - orgTitle.length"
+                :class="{
+                  'text-danger': maxTitleSize - orgTitle.length < 1,
+                }"
+              />
+            </div>
+            <hr class="border-black" />
+          </div>
+          <span v-else class="self-center text-2xl break-words">{{
             organization?.title
           }}</span>
         </div>
@@ -64,13 +105,20 @@
           {{ organization?.description }}
         </p>
       </div>
+      <!-- Control -->
       <div class="flex flex-row justify-evenly items-center">
         <Button class="w-60 h-10 mx-2 my-5 leading-none" @click="openEventList">
-          <span class="text-sm"> Посмотреть мероприятия </span>
+          <span> Посмотреть мероприятия </span>
         </Button>
         <PencilAltIcon
-          v-if="isAdmin"
+          v-if="isAdmin && !editMode"
+          class="w-7 h-7 hover:text-primary cursor-pointer"
+          @click="editMode = true"
+        />
+        <CheckIcon
+          v-else-if="isAdmin && editMode"
           class="w-8 h-8 hover:text-primary cursor-pointer"
+          @click="onClickAcceptEdits"
         />
       </div>
       <!-- Add members -->
@@ -87,7 +135,7 @@
         </div>
       </div>
       <!-- Members -->
-      <div class="mx-5 my-5 overflow-y-scroll">
+      <div class="mx-5 mt-5 mb-2 overflow-y-scroll">
         <div
           class="hover:bg-hoverColor cursor-pointer"
           v-for="member in organization?.members"
@@ -101,7 +149,7 @@
           />
         </div>
       </div>
-
+      <!-- Leave and Delete -->
       <div v-if="!addUserList" class="flex flex-col mt-auto mb-10">
         <Button class="mx-10 my-3" :disabled="isAdmin" @click="onClickLeave">
           <span> Выйти из организации </span>
@@ -118,17 +166,18 @@
 import _ from "lodash";
 import api from "@/service/api";
 import { mapState } from "vuex";
-import { ReplyIcon } from "@heroicons/vue/outline";
-import { PencilAltIcon } from "@heroicons/vue/outline";
+import { ReplyIcon, PencilAltIcon, CheckIcon } from "@heroicons/vue/outline";
 import * as InterfaceComponents from "@/components/interface";
-import { MemberBlock } from "@/components/template";
+import { MemberBlock, EventBlock } from "@/components/template";
 
 export default {
   name: "OrganizationInfoLayout",
   components: {
     Button: InterfaceComponents.Button,
     Search: InterfaceComponents.Search,
+    EventBlock,
     MemberBlock,
+    CheckIcon,
     PencilAltIcon,
     ReplyIcon,
   },
@@ -144,7 +193,7 @@ export default {
     };
   },
 
-  inject: ["onClickSelectOrganization"],
+  inject: ["onClickSelectOrganization", "onClickSelectEvent"],
 
   data() {
     return {
@@ -189,14 +238,18 @@ export default {
   },
 
   async mounted() {
-    this.organization = await api.organization
-      .getByID(this.organizationID)
-      .then(({ data }) => data);
-    this.orgTitle = this.organization.title;
-    this.orgDescription = this.organization.description;
+    this.initOrganization();
   },
 
   methods: {
+    async initOrganization() {
+      this.organization = await api.organization
+        .getByID(this.organizationID)
+        .then(({ data }) => data);
+      this.orgTitle = this.organization.title;
+      this.orgDescription = this.organization.description;
+    },
+
     backMove() {
       if (this.addUserList) {
         // remove listener
@@ -213,22 +266,25 @@ export default {
       this.onClickSelectOrganization(null);
     },
 
-    async updateUsersList() {
-      this.users = await api.user
-        .getAll(0, this.userQuery)
-        .then(({ data }) => data);
-    },
-
-    async handleScroll() {
-      const usersList = this.$refs.users;
-      const scrolling = usersList.scrollTop + usersList.clientHeight;
+    async handleScroll(listType) {
+      const list = this.$refs[listType];
+      const scrolling = list.scrollTop + list.clientHeight;
       if (
-        scrolling >= usersList.scrollHeight &&
-        this.users.length >= this.users_page * 10
+        scrolling >= list.scrollHeight &&
+        this.listType.length >= this[`${listType}_page`] * 10
       ) {
-        const { data } = await api.user.getAll(this.skip, this.userQuery);
-        this.users = this.users.concat(data);
-        this.users_page++;
+        let data = [];
+        if (listType === "users") {
+          data = await api.user
+            .getAll(this.skip, this.userQuery)
+            .then(({ data }) => data);
+        } else {
+          data = await api.user
+            .getByOrganizationID(this.skip, this.organizationID)
+            .then(({ data }) => data);
+        }
+        this[listType] = this[listType].concat(data);
+        this[`${listType}_page`]++;
       }
     },
 
@@ -240,28 +296,38 @@ export default {
       this.updateUsersList();
     },
 
-    openEventList() {
-      const usersList = this.$refs.users;
-      if (usersList)
-        usersList.addEventListener("scroll", () => this.handleScroll());
-      this.updateUsersList();
-      this.eventsList = true;
+    async updateUsersList() {
+      this.users = await api.user
+        .getAll(0, this.userQuery)
+        .then(({ data }) => data);
     },
 
-    async onClickSubmit() {
-      const response = await api.organization.create(
+    openEventList() {
+      this.eventsList = true;
+      const eventsList = this.$refs.events;
+      if (eventsList)
+        eventsList.addEventListener("scroll", () => this.handleScroll());
+      this.updateEventsList();
+    },
+
+    async updateEventsList() {
+      this.events = await api.event
+        .getByOrganizationID(0, this.organizationID)
+        .then(({ data }) => data);
+    },
+
+    selectEvent(eventID) {
+      this.onClickSelectEvent(eventID);
+    },
+
+    async onClickAcceptEdits() {
+      await api.organization.update(
         this.token,
-        this.organization
+        { title: this.orgTitle, description: this.orgDescription },
+        this.organizationID
       );
-      if (response.status == 201) {
-        this.organization = {
-          title: "",
-          description: "",
-          members: [],
-        };
-        this.onClickRightsToggle("createOrg");
-        this.$store.dispatch("client/SET_FORCE_UPDATE_ORG_LIST", true);
-      }
+      this.initOrganization();
+      this.editMode = false;
     },
 
     async onClickLeave() {
