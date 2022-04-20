@@ -11,31 +11,24 @@
       </div>
       <div
         v-if="addMode"
-        class="mx-4 hover:text-primary"
+        class="mx-2 hover:text-primary"
         @click.stop="addMember()"
       >
         <PlusIcon class="w-6 h-6 mx-auto" />
       </div>
       <div
-        v-else-if="removeMode"
-        class="mx-4 hover:text-primary"
+        v-if="removeMode"
+        class="mx-2 hover:text-primary"
         @click.stop="removeMember()"
       >
         <TrashIcon class="w-6 h-6 mx-auto" />
       </div>
-      <div class="flex flex-row mx-4" v-else-if="admin">
-        <div
-          class="hover:text-primary"
-          @click.stop="leaveOrganization(organization.id)"
-        >
-          <TrashIcon class="w-6 h-6 mx-auto" />
-        </div>
-        <div
-          class="hover:text-primary"
-          @click.stop="leaveOrganization(organization.id)"
-        >
-          <StarIcon class="w-6 h-6 mx-auto" />
-        </div>
+      <div
+        v-if="promoteMode"
+        class="hover:text-primary"
+        @click.stop="removeMember()"
+      >
+        <StarIcon class="w-6 h-6 mx-auto" />
       </div>
     </div>
     <hr class="border-black" />
@@ -55,6 +48,10 @@ export default {
   },
 
   props: {
+    addMode: {
+      type: Boolean,
+      default: false,
+    },
     removeMode: {
       type: Boolean,
       default: false,
@@ -63,14 +60,11 @@ export default {
       type: Boolean,
       default: false,
     },
-    addMode: {
+    promoteMode: {
       type: Boolean,
       default: false,
     },
-    admin: {
-      type: Boolean,
-      default: false,
-    },
+
     user: Object,
   },
 
@@ -92,7 +86,6 @@ export default {
       }
     },
     // async promoteMember(userID) {},
-    // async demoteMember(userID) {},
   },
 };
 </script>

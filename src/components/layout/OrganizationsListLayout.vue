@@ -114,7 +114,7 @@ export default {
 
   methods: {
     backMove() {
-      this.onClickRightsToggle("org");
+      this.onClickRightsToggle("myOrgs");
     },
 
     async updateOrganizations() {
@@ -135,7 +135,7 @@ export default {
       if (newValue === true) {
         this.updateOrganizations();
       }
-      this.$store.dispatch("client/SET_FORCE_UPDATE_EVENT_LIST", false);
+      this.$store.dispatch("client/SET_FORCE_UPDATE_ORG_LIST", false);
     },
   },
 };

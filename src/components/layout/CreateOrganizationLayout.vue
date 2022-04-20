@@ -8,7 +8,7 @@
       <ReplyIcon class="w-10 h-10 stroke-1" />
     </div>
 
-    <!-- Add user list -->
+    <!-- Add user list view -->
     <div v-if="addUserList" class="flex flex-col h-full mx-5">
       <div class="mt-10 font-bold text-lg cursor-pointer">
         <span>Добавить участника</span>
@@ -25,12 +25,17 @@
           v-for="user in filteredAddUsers"
           :key="user"
         >
-          <MemberBlock :user="user" :createMode="true" :addMode="true" />
+          <MemberBlock
+            class="px-2"
+            :user="user"
+            :createMode="true"
+            :addMode="true"
+          />
         </div>
       </div>
     </div>
 
-    <!-- Create page -->
+    <!-- Create view -->
     <div v-else class="flex flex-col h-full mt-6 overflow-hidden">
       <!-- Avatar -->
       <div class="flex flex-col mx-5 mt-8">
@@ -77,7 +82,7 @@
       <!-- Add members -->
       <div class="mt-7 mx-5 xl:mx-0">
         <div class="flex flex-row items-center justify-between xl:mx-5">
-          <span> Участники </span>
+          <span class="text-lg"> Участники </span>
           <Button class="w-28 h-9 my-0 leading-none" @click="openAddUserList">
             <span class="text-sm"> Добавить </span>
           </Button>
@@ -90,7 +95,12 @@
           v-for="member in organization.members"
           :key="member"
         >
-          <MemberBlock :user="member" :createMode="true" :removeMode="true" />
+          <MemberBlock
+            class="px-2"
+            :user="member"
+            :createMode="true"
+            :removeMode="true"
+          />
         </div>
       </div>
 
@@ -200,11 +210,11 @@ export default {
     },
 
     openAddUserList() {
+      this.addUserList = true;
       const usersList = this.$refs.users;
       if (usersList)
         usersList.addEventListener("scroll", () => this.handleScroll());
       this.updateUsersList();
-      this.addUserList = true;
     },
 
     async addMemberToArray(user) {
