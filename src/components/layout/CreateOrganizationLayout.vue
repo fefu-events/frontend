@@ -9,7 +9,10 @@
     </div>
 
     <!-- Add user list view -->
-    <div v-if="addUserList" class="flex flex-col h-full mx-5">
+    <div
+      class="flex flex-col h-full mx-5"
+      :class="addUsersList ? 'flex' : 'hidden'"
+    >
       <div class="mt-10 font-bold text-lg cursor-pointer">
         <span>Добавить участника</span>
       </div>
@@ -36,7 +39,10 @@
     </div>
 
     <!-- Create view -->
-    <div v-else class="flex flex-col h-full mt-6 overflow-hidden">
+    <div
+      class="flex flex-col h-full mt-6 overflow-hidden"
+      :class="!addUsersList ? 'flex' : 'hidden'"
+    >
       <!-- Avatar -->
       <div class="flex flex-col mx-5 mt-8">
         <div class="w-24 h-24 mx-auto rounded-full text-center bg-gray-dark" />
@@ -105,7 +111,7 @@
       </div>
 
       <div class="flex flex-col mt-auto mb-10">
-        <Button class="mx-10 my-0" v-if="!addUserList" @click="onClickSubmit">
+        <Button class="mx-10 my-0" @click="onClickSubmit">
           <span> Создать организацию </span>
         </Button>
       </div>
@@ -144,7 +150,7 @@ export default {
       userQuery: "",
       page: 1,
       users: [],
-      addUserList: false,
+      addUsersList: false,
       maxTitleSize: 50,
       maxDescSize: 255,
 
@@ -176,16 +182,16 @@ export default {
 
   methods: {
     backMove() {
-      if (this.addUserList) {
+      if (this.addUsersList) {
         // remove listener
-        const eventsList = this.$refs.users;
-        eventsList.removeEventListener("scroll", () => this.handleScroll());
+        const refUsersList = this.$refs.users;
+        refUsersList.removeEventListener("scroll", () => this.handleScroll());
 
         //init states
         this.userQuery = "";
         this.users = [];
         this.page = 1;
-        this.addUserList = false;
+        this.addUsersList = false;
         return;
       }
       this.onClickRightsToggle("createOrg");
@@ -198,23 +204,23 @@ export default {
     },
 
     async handleScroll() {
-      const usersList = this.$refs.users;
-      const scrolling = usersList.scrollTop + usersList.clientHeight;
+      const refUsersList = this.$refs.users;
+      const scrolling = refUsersList.scrollTop + refUsersList.clientHeight;
       if (
-        scrolling >= usersList.scrollHeight &&
+        scrolling >= refUsersList.scrollHeight &&
         this.users.length >= this.page * 10
       ) {
-        const { data } = await api.user.getAll(this.skip, this.userQuery);
+        const { data } = await api.user.getAll(this.page * 10, this.userQuery);
         this.users = this.users.concat(data);
         this.page++;
       }
     },
 
     openAddUserList() {
-      this.addUserList = true;
-      const usersList = this.$refs.users;
-      if (usersList)
-        usersList.addEventListener("scroll", () => this.handleScroll());
+      this.addUsersList = true;
+      const refUsersList = this.$refs.users;
+      if (refUsersList)
+        refUsersList.addEventListener("scroll", () => this.handleScroll());
       this.updateUsersList();
     },
 

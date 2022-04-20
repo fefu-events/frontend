@@ -9,7 +9,10 @@
     </div>
 
     <!-- Add user list view -->
-    <div v-if="addUserList" class="flex flex-col h-full mx-5">
+    <div
+      class="flex flex-col h-full mx-5"
+      :class="addUsersList ? 'flex' : 'hidden'"
+    >
       <div class="mt-10 font-bold text-lg cursor-pointer">
         <span>Добавить участника</span>
       </div>
@@ -31,7 +34,10 @@
     </div>
 
     <!-- Organization event list view -->
-    <div v-else-if="eventsList" class="flex flex-col h-full mx-5">
+    <div
+      class="flex flex-col h-full mx-5"
+      :class="eventsList ? 'flex' : 'hidden'"
+    >
       <div class="mt-10 font-bold text-lg cursor-pointer">
         <span>Мероприятия</span>
       </div>
@@ -54,7 +60,10 @@
     </div>
 
     <!-- Info view -->
-    <div v-else class="flex flex-col h-full mt-6 overflow-hidden">
+    <div
+      class="flex-col h-full mt-6 overflow-hidden"
+      :class="!addUsersList && !eventsList ? 'flex' : 'hidden'"
+    >
       <!-- Organization avatar and title -->
       <div class="flex flex-row items-center mt-10 mx-5">
         <div class="min-w-[64px] h-16 rounded-full bg-gray-300">
@@ -150,7 +159,7 @@
         </div>
       </div>
       <!-- Leave and Delete -->
-      <div v-if="!addUserList" class="flex flex-col mt-auto mb-10">
+      <div class="flex flex-col mt-auto mb-10">
         <Button class="mx-10 my-3" :disabled="isAdmin" @click="onClickLeave">
           <span> Выйти из организации </span>
         </Button>
@@ -197,7 +206,7 @@ export default {
 
   data() {
     return {
-      addUserList: false,
+      addUsersList: false,
       userQuery: "",
       users: [],
       users_page: 1,
@@ -251,36 +260,44 @@ export default {
     },
 
     backMove() {
-      if (this.addUserList) {
+      if (this.addUsersList) {
         // remove listener
-        const eventsList = this.$refs.users;
-        eventsList.removeEventListener("scroll", () => this.handleScroll());
+        const refUsersList = this.$refs.users;
+        refUsersList.removeEventListener("scroll", () => this.handleScroll());
 
         //init states
         this.userQuery = "";
         this.users = [];
         this.users_page = 1;
-        this.addUserList = false;
+        this.addUsersList = false;
+        return;
+      }
+      if (this.eventsList) {
+        const refEventsList = this.$refs.events;
+        refEventsList.removeEventListener("scroll", () => this.handleScroll());
+        this.events = [];
+        this.events_page = 1;
+        this.eventsList = false;
         return;
       }
       this.onClickSelectOrganization(null);
     },
 
     async handleScroll(listType) {
-      const list = this.$refs[listType];
-      const scrolling = list.scrollTop + list.clientHeight;
+      const refList = this.$refs[listType];
+      const scrolling = refList.scrollTop + refList.clientHeight;
       if (
-        scrolling >= list.scrollHeight &&
-        this.listType.length >= this[`${listType}_page`] * 10
+        scrolling >= refList.scrollHeight &&
+        this[listType].length >= this[`${listType}_page`] * 10
       ) {
         let data = [];
         if (listType === "users") {
           data = await api.user
-            .getAll(this.skip, this.userQuery)
+            .getAll(this.users_page * 10, this.userQuery)
             .then(({ data }) => data);
         } else {
-          data = await api.user
-            .getByOrganizationID(this.skip, this.organizationID)
+          data = await api.event
+            .getByOrganizationID(this.events_page * 10, this.organizationID)
             .then(({ data }) => data);
         }
         this[listType] = this[listType].concat(data);
@@ -289,10 +306,12 @@ export default {
     },
 
     openAddUserList() {
-      this.addUserList = true;
-      const usersList = this.$refs.users;
-      if (usersList)
-        usersList.addEventListener("scroll", () => this.handleScroll());
+      this.addUsersList = true;
+      const refUsersList = this.$refs.users;
+      if (refUsersList)
+        refUsersList.addEventListener("scroll", () =>
+          this.handleScroll("users")
+        );
       this.updateUsersList();
     },
 
@@ -304,9 +323,11 @@ export default {
 
     openEventList() {
       this.eventsList = true;
-      const eventsList = this.$refs.events;
-      if (eventsList)
-        eventsList.addEventListener("scroll", () => this.handleScroll());
+      const refEventsList = this.$refs.events;
+      if (refEventsList)
+        refEventsList.addEventListener("scroll", () =>
+          this.handleScroll("events")
+        );
       this.updateEventsList();
     },
 
