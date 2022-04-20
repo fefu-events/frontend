@@ -59,7 +59,7 @@
               <span>
                 {{
                   event?.organization
-                    ? event?.organization.name
+                    ? event?.organization.title
                     : event?.user.name
                 }}
               </span>
@@ -110,8 +110,8 @@
             <div class="self-baseline mr-4 my-1">
               <LinkIcon class="w-5 h-5" />
             </div>
-            <a :href="url" class="underline break-all" target="blank">
-              {{ url }}
+            <a :href="event?.url" class="underline break-all" target="blank">
+              {{ event?.url }}
             </a>
           </div>
         </div>
@@ -161,7 +161,6 @@ export default {
     return {
       isLoaded: false,
       event: null,
-      url: "https://2gis.ru/moscow/my",
     };
   },
 

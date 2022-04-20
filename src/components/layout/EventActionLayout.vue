@@ -136,16 +136,16 @@
                 v-for="organization in availableOrganizations"
                 :key="organization"
                 class="inline-flex items-center my-2 cursor-pointer"
-                :for="`${organization.id}_${organization.label}`"
+                :for="`${organization.id}_${organization.title}`"
               >
                 <input
                   class="form-radio text-primary w-5 h-5"
                   type="radio"
-                  :id="`${organization.id}_${organization.label}`"
+                  :id="`${organization.id}_${organization.title}`"
                   :value="organization.id"
                   v-model="event.selectedOrganization"
                 />
-                <span class="ml-2">{{ organization.label }}</span>
+                <span class="ml-2">{{ organization.title }}</span>
               </label>
             </div>
           </Disclosure>
@@ -163,7 +163,7 @@
       </Button>
       <Button
         class="mb-10 hover:text-success hover:border-success"
-        @click="onClickAccept(event.id)"
+        @click="onClickUpdate(event.id)"
       >
         <span> Подтверить изменения </span>
       </Button>
@@ -209,6 +209,7 @@ export default {
       maxDescSize: 255,
       errors: [],
       org: false,
+      availableOrganizations: [],
       event: {
         title: "",
         date: null,
@@ -220,33 +221,7 @@ export default {
         link: "",
         selectedOrganization: null,
       },
-      availableOrganizations: [
-        { id: 1, label: "Организация 1" },
-        { id: 2, label: "Организация 2" },
-      ],
     };
-  },
-
-  async mounted() {
-    if (this.editableEvent) {
-      this.event = await api.event
-        .getByEventID(this.editableEvent)
-        .then(({ data }) => {
-          const eventObj = {
-            title: data.title || "",
-            date: { start: data.date_begin, end: data.date_end },
-            selectedPlace: data.place.id,
-            placeDescription: data.place_description || "",
-            selectedCategory: data.category.id,
-            description: data.description || "",
-            tags: data.tags.join(" "),
-            link: "",
-            selectedOrganization: null,
-          };
-
-          return eventObj;
-        });
-    }
   },
 
   computed: {
@@ -257,6 +232,7 @@ export default {
 
     ...mapState("auth/", {
       accessToken: (state) => state.accessToken,
+      userID: (state) => state.user.id,
     }),
 
     selectedPlaceLabel() {
@@ -320,6 +296,33 @@ export default {
     },
   },
 
+  async mounted() {
+    if (this.editableEvent) {
+      this.event = await api.event
+        .getByEventID(this.editableEvent)
+        .then(({ data }) => {
+          const eventObj = {
+            title: data.title || "",
+            date: { start: data.date_begin, end: data.date_end },
+            selectedPlace: data.place.id,
+            placeDescription: data.place_description || "",
+            selectedCategory: data.category.id,
+            description: data.description || "",
+            tags: data.tags.join(" "),
+            link: data.url || "",
+          };
+
+          return eventObj;
+        });
+    } else {
+      setTimeout(async () => {
+        this.availableOrganizations = await api.me
+          .get(this.accessToken)
+          .then(({ data }) => data.organizations);
+      }, 1000);
+    }
+  },
+
   methods: {
     async onClickSubmit() {
       this.errors = this.validateEventForm;
@@ -353,7 +356,7 @@ export default {
       }
     },
 
-    async onClickAccept() {
+    async onClickUpdate() {
       this.errors = this.validateEventForm;
       if (this.errors.length > 0) return;
       const response = await api.event.update(
