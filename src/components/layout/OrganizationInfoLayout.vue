@@ -309,8 +309,9 @@ export default {
       this.addUsersList = true;
       const refUsersList = this.$refs.users;
       if (refUsersList)
-        refUsersList.addEventListener("scroll", () =>
-          this.handleScroll("users")
+        refUsersList.addEventListener(
+          "scroll",
+          _.debounce(() => this.handleScroll("users"), 100)
         );
       this.updateUsersList();
     },
@@ -325,8 +326,9 @@ export default {
       this.eventsList = true;
       const refEventsList = this.$refs.events;
       if (refEventsList)
-        refEventsList.addEventListener("scroll", () =>
-          this.handleScroll("events")
+        refEventsList.addEventListener(
+          "scroll",
+          _.debounce(() => this.handleScroll("events"), 100)
         );
       this.updateEventsList();
     },

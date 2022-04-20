@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import _ from "lodash";
 import api from "@/service/api";
 import { mapState } from "vuex";
 import * as TemplateComponents from "@/components/template";
@@ -119,7 +120,10 @@ export default {
 
   beforeUnmount() {
     const eventsList = this.$refs.events;
-    eventsList.removeEventListener("scroll", () => this.handleScroll());
+    eventsList.removeEventListener(
+      "scroll",
+      _.debounce(() => this.handleScroll(), 100)
+    );
   },
 
   watch: {

@@ -67,6 +67,7 @@
 </style>
 
 <script>
+import _ from "lodash";
 import api from "@/service/api";
 import { mapState } from "vuex";
 import { HashtagIcon, UserIcon, UserGroupIcon } from "@heroicons/vue/outline";
@@ -111,7 +112,10 @@ export default {
     await this.updateEventList();
     const eventsList = this.$refs.events;
     if (eventsList)
-      eventsList.addEventListener("scroll", () => this.handleScroll());
+      eventsList.addEventListener(
+        "scroll",
+        _.debounce(() => this.handleScroll(), 100)
+      );
   },
 
   methods: {
