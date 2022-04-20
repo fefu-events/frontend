@@ -293,6 +293,7 @@ export default {
           this.infoLayouts[toggle] = false;
         }
         this.eventActionLayout = false;
+        this.selectedOrganization = null;
         this.editableEvent = null;
       }
 
@@ -305,6 +306,7 @@ export default {
         this.selectedEvent = null;
         return;
       }
+      this.selectedOrganization = null;
       this.searchLayout = !this.searchLayout;
     },
 
@@ -360,6 +362,7 @@ export default {
     onClickEventActionToggle() {
       // for close others
       if (window.screen.width < 1280) {
+        this.selectedOrganization = null;
         this.selectedEvent = null;
         this.eventListLayout = false;
         this.searchLayout = false;
@@ -371,6 +374,7 @@ export default {
       // main actions
       this.eventActionLayout = !this.eventActionLayout;
       this.editableEvent = null;
+      this.selectedOrganization = null;
     },
   },
 };
