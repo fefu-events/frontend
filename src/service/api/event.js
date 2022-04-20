@@ -86,6 +86,15 @@ const endpoints = {
       },
     }),
 
+  getByOrganizationID: (skip, organization_id) =>
+    axios.get("/api/event", {
+      params: {
+        skip: skip,
+        limit: 10,
+        organization_id: organization_id,
+      },
+    }),
+
   getByEventID: (id, token) => {
     return axios.get(`/api/event/${id}`, {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
