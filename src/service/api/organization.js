@@ -15,6 +15,20 @@ const endpoints = {
       }
     ),
 
+  update: (token, data, organizationID) =>
+    axios.put(
+      `/api/organization/${organizationID}`,
+      {
+        title: data.title,
+        description: data.description,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    ),
+
   delete: (token, organizationID) =>
     axios.delete(`/api/organization/${organizationID}`, {
       headers: {
