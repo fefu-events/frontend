@@ -159,6 +159,7 @@ export default {
   computed: {
     ...mapState("auth/", {
       token: (state) => state.accessToken,
+      meID: (state) => state.user.id,
     }),
 
     filteredAddUsers() {
@@ -166,7 +167,7 @@ export default {
         (user) =>
           !this.organization.members
             .map((member) => member.id)
-            .includes(user.id)
+            .includes(user.id) && user.id !== this.meID
       );
     },
   },
