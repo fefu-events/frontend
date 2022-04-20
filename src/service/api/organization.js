@@ -15,6 +15,15 @@ const endpoints = {
       }
     ),
 
+  delete: (token, organizationID) =>
+    axios.delete(`/api/organization/${organizationID}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }),
+
+  getByID: (organizationID) => axios.get(`/api/organization/${organizationID}`),
+
   addMember: (token, organizationID, userID) => {
     axios.post(
       `/api/organization/${organizationID}/member`,
