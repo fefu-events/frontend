@@ -84,7 +84,7 @@
         </div>
       </div>
       <!-- Members -->
-      <div class="my-5 overflow-y-scroll">
+      <div class="mx-5 my-5 overflow-y-scroll">
         <div
           class="hover:bg-hoverColor cursor-pointer"
           v-for="member in organization.members"

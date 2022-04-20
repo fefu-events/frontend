@@ -1,13 +1,12 @@
 <template>
-  <div class="flex flex-col h-full w-[89%] xl:w-80 mx-auto overflow-hidden">
+  <div class="flex flex-col h-full w-[89%] xl:w-80 mx-auto overflow-scroll">
     <!-- Person -->
     <div class="flex flex-row xl:justify-between items-center mt-10 mx-5">
-      <div class="w-16 h-16 rounded-full bg-gray-300">
+      <div class="min-w-[64px] h-16 rounded-full bg-gray-300">
         <img src="" alt="" srcset="" />
       </div>
-      <div class="mx-4 md:mx-6 xl:mr-8 xl:ml-0">
-        <span class="block text-2xl">{{ user?.name.split(" ")[0] }}</span>
-        <span class="block text-2xl">{{ user?.name.split(" ")[1] }}</span>
+      <div class="mx-4 md:ml-6 md:mr-0">
+        <span class="text-2xl break-words">{{ user?.name }}</span>
       </div>
     </div>
     <!-- Bookmarks -->
@@ -32,23 +31,28 @@
     </div>
     <!-- Events -->
     <span class="mx-5 font-medium">Мои мероприятия: </span>
-    <div v-if="events.length > 0" class="my-1 overflow-y-scroll" ref="events">
+    <div
+      v-if="events.length > 0"
+      class="mt-1 mb-8 overflow-y-scroll"
+      ref="events"
+    >
       <div
         class="hover:bg-hoverColor px-5 cursor-pointer"
         v-for="event in events"
         :key="event.id"
+        @click="selectEvent(event.id)"
       >
         <EventBlock :event="event" :edit="true" />
       </div>
     </div>
-    <div v-else class="my-4">
+    <div v-else class="h-2/5 my-4">
       <img
-        class="w-3/5 h-3/5 mx-auto"
+        class="max-h-full mx-auto"
         src="@/assets/img/svg/emptyList.svg"
         alt=""
       />
     </div>
-    <Button class="mx-10 mb-10" @click="signOut">
+    <Button class="mt-auto mx-10 mb-10" @click="signOut">
       <span> Выйти </span>
     </Button>
   </div>
@@ -76,7 +80,7 @@ export default {
     signOut: Function,
   },
 
-  inject: ["onClickRightsToggle"],
+  inject: ["onClickRightsToggle", "onClickSelectEvent"],
 
   data() {
     return {
@@ -124,6 +128,10 @@ export default {
         this.events = this.events.concat(data);
         this.page++;
       }
+    },
+
+    selectEvent(eventID) {
+      this.onClickSelectEvent(eventID);
     },
   },
 

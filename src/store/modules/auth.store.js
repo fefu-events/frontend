@@ -8,8 +8,8 @@ export default {
 
   actions: {
     async LOGIN({ commit }, token) {
-      const { data } = await api.me.exist(token);
-      const response = data?.exist
+      const isExist = await api.me.exist(token).then(({ data }) => data.exist);
+      const response = isExist
         ? await api.me.get(token)
         : await api.me.register(token);
       commit("login", { token, user: response?.data });
