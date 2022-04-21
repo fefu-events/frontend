@@ -129,6 +129,7 @@ export default {
   watch: {
     filterParams: {
       handler() {
+        this.page = 1;
         this.updateEventList();
       },
       deep: true,

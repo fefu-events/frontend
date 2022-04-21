@@ -30,7 +30,7 @@
       </div>
     </div>
 
-    <!-- Members -->
+    <!-- Members list view -->
     <div
       class="flex-col h-full"
       :class="membersList && !addUsersList ? 'flex' : 'hidden'"
@@ -58,19 +58,19 @@
     </div>
 
     <!-- Organization event list view -->
-    <div class="flex-col h-full mx-5" :class="eventsList ? 'flex' : 'hidden'">
-      <div class="mt-10 font-bold text-lg cursor-pointer">
+    <div class="flex-col h-full" :class="eventsList ? 'flex' : 'hidden'">
+      <div class="mx-5 mt-10 font-bold text-lg cursor-pointer">
         <span>Мероприятия</span>
       </div>
       <!-- Search input -->
       <Search
-        class="mt-4"
-        @update="(value) => (userQuery = value)"
+        class="mx-5 mt-4"
+        @update="(value) => (eventQuery = value)"
         :placeholder="'Поиск'"
       />
       <div class="mb-4 overflow-y-scroll" ref="events">
         <div
-          class="hover:bg-hoverColor cursor-pointer"
+          class="px-5 xl:px-5 hover:bg-hoverColor cursor-pointer"
           v-for="event in events"
           :key="event"
           @click="selectEvent(event.id)"
@@ -352,7 +352,7 @@ export default {
 
     async updateEventsList() {
       this.events = await api.event
-        .getByOrganizationID(0, this.organizationID)
+        .getByOrganizationID(0, this.organizationID, this.eventQuery)
         .then(({ data }) => data);
     },
 
@@ -395,7 +395,13 @@ export default {
 
   watch: {
     userQuery: _.debounce(function () {
+      this.users_page = 1;
       this.updateUsersList();
+    }, 500),
+
+    eventQuery: _.debounce(function () {
+      this.events_page = 1;
+      this.updateEventsList();
     }, 500),
   },
 };
