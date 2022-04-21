@@ -11,7 +11,7 @@ const endpoints = {
         date_end: data.date.end,
         place_description: data.placeDescription,
         tags: data.tags ? data.tags.split(" ").filter(Boolean) : [],
-        url: data.link,
+        url: data.link ? data.link : null,
         place_id: data.selectedPlace,
         category_id: data.selectedCategory,
         organization_id: data.selectedOrganization,
