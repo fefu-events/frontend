@@ -1,5 +1,14 @@
 <template>
   <div class="flex flex-col h-full w-[89%] xl:w-80 mx-auto overflow-scroll">
+    <!-- Back -->
+    <div
+      v-if="selectedUser"
+      class="absolute top-5 right-5 -scale-x-100 hover:text-primary cursor-pointer"
+      @click="backMove"
+    >
+      <ReplyIcon class="w-10 h-10 stroke-1" />
+    </div>
+
     <!-- Person -->
     <div class="flex flex-row items-center mt-10 mx-5">
       <div class="min-w-[64px] h-16 rounded-full bg-gray-300">
@@ -12,7 +21,7 @@
       </div>
     </div>
     <!-- Bookmarks -->
-    <div class="mx-5 mt-8">
+    <div v-if="isMe" class="mx-5 mt-8">
       <ul>
         <li class="flex flex-row my-5 font-bold cursor-pointer group">
           <HashtagIcon class="w-5 h-5 mx-2" />
@@ -32,7 +41,14 @@
       </ul>
     </div>
     <!-- Events -->
-    <span class="mx-5 font-medium">Мои мероприятия: </span>
+    <span
+      class="mx-5 font-medium"
+      :class="{
+        'my-5': !isMe,
+      }"
+    >
+      {{ isMe ? "Мои мероприятия:" : "Мероприятия:" }}
+    </span>
     <div
       v-if="events.length > 0"
       class="mt-1 mb-8 overflow-y-scroll"
@@ -44,7 +60,7 @@
         :key="event.id"
         @click="selectEvent(event.id)"
       >
-        <EventBlock :event="event" :edit="true" />
+        <EventBlock :event="event" :edit="isMe" />
       </div>
     </div>
     <div v-else class="h-2/5 my-4">
@@ -54,7 +70,7 @@
         alt=""
       />
     </div>
-    <Button class="mt-auto mx-10 mb-10" @click="signOut">
+    <Button v-if="isMe" class="mt-auto mx-10 mb-10" @click="signOut">
       <span> Выйти </span>
     </Button>
   </div>
@@ -70,7 +86,12 @@
 import _ from "lodash";
 import api from "@/service/api";
 import { mapState } from "vuex";
-import { HashtagIcon, UserIcon, UserGroupIcon } from "@heroicons/vue/outline";
+import {
+  HashtagIcon,
+  ReplyIcon,
+  UserIcon,
+  UserGroupIcon,
+} from "@heroicons/vue/outline";
 import { EventBlock } from "@/components/template";
 import { Button } from "@/components/interface";
 
@@ -80,6 +101,7 @@ export default {
     EventBlock,
     Button,
     HashtagIcon,
+    ReplyIcon,
     UserIcon,
     UserGroupIcon,
   },
@@ -89,7 +111,12 @@ export default {
     signOut: Function,
   },
 
-  inject: ["onClickRightsToggle", "onClickSelectEvent"],
+  inject: [
+    "onClickRightsToggle",
+    "onClickSelectEvent",
+    "onClickSelectUser",
+    "selectedUser",
+  ],
 
   data() {
     return {
@@ -102,6 +129,18 @@ export default {
     ...mapState("client/", {
       forceUpdateEventList: "forceUpdateEventList",
     }),
+
+    ...mapState("auth/", {
+      meID: (state) => state.user.id,
+    }),
+
+    isMe() {
+      return this.user.id === this.meID;
+    },
+
+    // userOrganizations() {
+    //   return this.user.organizations.map((org) => org.id);
+    // },
 
     skip() {
       return 10 * this.page;
@@ -119,6 +158,10 @@ export default {
   },
 
   methods: {
+    backMove() {
+      this.onClickSelectUser(null);
+    },
+
     openOrganizationsList() {
       this.onClickRightsToggle("myOrgs");
     },
@@ -148,6 +191,10 @@ export default {
   },
 
   watch: {
+    user() {
+      this.page = 1;
+      this.updateEventList();
+    },
     forceUpdateEventList(newValue) {
       if (newValue === true) {
         this.updateEventList();

@@ -56,7 +56,7 @@
               <div class="self-baseline mr-4 my-1">
                 <UserGroupIcon class="w-5 h-5" />
               </div>
-              <span>
+              <span class="cursor-pointer" @click="showOrganizatorInfo">
                 {{
                   event?.organization
                     ? event?.organization.title
@@ -106,7 +106,7 @@
               <span class="">#{{ tag }}</span>
             </div>
           </div>
-          <div class="flex items-center my-4">
+          <div v-if="event?.url" class="flex items-center my-4">
             <div class="self-baseline mr-4 my-1">
               <LinkIcon class="w-5 h-5" />
             </div>
@@ -125,7 +125,7 @@
             class="xl:hidden w-full mt-2 mb-10"
             @click="onClickSelectEvent(event.id)"
           >
-            <span> К списку </span>
+            <span> Назад </span>
           </Button>
         </div>
       </div>
@@ -155,7 +155,11 @@ export default {
     eventID: Number,
   },
 
-  inject: ["onClickSelectEvent"],
+  inject: [
+    "onClickSelectEvent",
+    "onClickSelectOrganization",
+    "onClickSelectUser",
+  ],
 
   data() {
     return {
@@ -191,6 +195,14 @@ export default {
         api.participation.nonpart(this.token, this.eventID);
       }
       this.event.am_i_participation = !this.event.am_i_participation;
+    },
+
+    showOrganizatorInfo() {
+      if (this.event?.organization?.id) {
+        this.onClickSelectOrganization(this.event?.organization.id);
+      } else {
+        this.onClickSelectUser(this.event.user);
+      }
     },
   },
 

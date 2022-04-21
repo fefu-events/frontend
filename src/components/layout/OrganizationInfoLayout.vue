@@ -25,7 +25,7 @@
           v-for="user in filteredAddUsers"
           :key="user"
         >
-          <MemberBlock :user="user" :createMode="true" :addMode="true" />
+          <MemberBlock :user="user" :addMode="true" :addMember="addMember" />
         </div>
       </div>
     </div>
@@ -50,8 +50,10 @@
         >
           <MemberBlock
             :user="member"
-            :removeMode="isAdmin"
-            :promoteMode="isAdmin"
+            :removeMode="isAdmin && member.id != userID"
+            :removeMember="removeMember"
+            :promoteMode="isAdmin && member.id != userID"
+            :promoteMember="promoteMember"
           />
         </div>
       </div>
@@ -191,13 +193,6 @@ export default {
 
   props: {
     organizationID: Number,
-  },
-
-  provide() {
-    return {
-      addMemberToArray: this.addMemberToArray,
-      removeMemberFromArray: this.removeMemberFromArray,
-    };
   },
 
   inject: ["onClickSelectOrganization", "onClickSelectEvent"],
@@ -360,6 +355,32 @@ export default {
       this.onClickSelectEvent(eventID);
     },
 
+    // Members Action
+    async promoteMember(memberID) {
+      await api.organization
+        .promoteMember(this.token, memberID, this.organizationID)
+        .then(() => {
+          this.initOrganization();
+        });
+    },
+
+    async addMember(memberID) {
+      console.log(memberID);
+      await api.organization
+        .addMember(this.token, this.organizationID, memberID)
+        .then(() => {
+          this.initOrganization();
+        });
+    },
+
+    async removeMember(memberID) {
+      await api.organization
+        .removeMember(this.token, this.organizationID, memberID)
+        .then(() => {
+          this.initOrganization();
+        });
+    },
+
     // Control
     async onClickAcceptEdits() {
       await api.organization.update(
@@ -394,6 +415,12 @@ export default {
   },
 
   watch: {
+    organizationID() {
+      this.initOrganization();
+      for (const list of ["members", "events", "addUser"])
+        this[`${list}List`] = false;
+    },
+
     userQuery: _.debounce(function () {
       this.users_page = 1;
       this.updateUsersList();

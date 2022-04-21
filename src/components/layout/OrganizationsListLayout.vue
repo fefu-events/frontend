@@ -19,7 +19,7 @@
     <!-- Organization types -->
     <div class="flex flex-row justify-between mb-4">
       <div
-        class="w-[140px] text-center group cursor-pointer"
+        class="w-1/2 mx-2 text-center group cursor-pointer"
         @click="adminType = false"
       >
         <span>Участник</span>
@@ -29,7 +29,7 @@
         />
       </div>
       <div
-        class="w-[140px] text-center group cursor-pointer"
+        class="w-1/2 mx-2 text-center group cursor-pointer"
         @click="adminType = true"
       >
         <span>Администратор</span>

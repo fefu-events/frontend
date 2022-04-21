@@ -33,6 +33,7 @@
             :user="user"
             :createMode="true"
             :addMode="true"
+            :addMemberToArray="addMemberToArray"
           />
         </div>
       </div>
@@ -106,6 +107,7 @@
             :user="member"
             :createMode="true"
             :removeMode="true"
+            :removeMemberFromArray="removeMemberFromArray"
           />
         </div>
       </div>
@@ -134,13 +136,6 @@ export default {
     Search: InterfaceComponents.Search,
     MemberBlock,
     ReplyIcon,
-  },
-
-  provide() {
-    return {
-      addMemberToArray: this.addMemberToArray,
-      removeMemberFromArray: this.removeMemberFromArray,
-    };
   },
 
   inject: ["onClickRightsToggle"],

@@ -9,26 +9,28 @@
           <span> {{ user?.name }} </span>
         </div>
       </div>
-      <div
-        v-if="addMode"
-        class="mx-2 hover:text-primary"
-        @click.stop="addMember()"
-      >
-        <PlusIcon class="w-6 h-6 mx-auto" />
-      </div>
-      <div
-        v-if="removeMode"
-        class="mx-2 hover:text-primary"
-        @click.stop="removeMember()"
-      >
-        <TrashIcon class="w-6 h-6 mx-auto" />
-      </div>
-      <div
-        v-if="promoteMode"
-        class="hover:text-primary"
-        @click.stop="removeMember()"
-      >
-        <StarIcon class="w-6 h-6 mx-auto" />
+      <div class="flex flex-row">
+        <div
+          v-if="addMode"
+          class="mx-2 hover:text-primary"
+          @click.stop="addMember_()"
+        >
+          <PlusIcon class="w-6 h-6 mx-auto" />
+        </div>
+        <div
+          v-if="removeMode"
+          class="mx-2 hover:text-primary"
+          @click.stop="removeMember_()"
+        >
+          <TrashIcon class="w-6 h-6 mx-auto" />
+        </div>
+        <div
+          v-if="promoteMode"
+          class="hover:text-primary"
+          @click.stop="promoteMember_()"
+        >
+          <StarIcon class="w-6 h-6 mx-auto" />
+        </div>
       </div>
     </div>
     <hr class="border-black" />
@@ -64,28 +66,35 @@ export default {
       type: Boolean,
       default: false,
     },
-
+    addMemberToArray: Function,
+    removeMemberFromArray: Function,
+    promoteMember: Function,
+    addMember: Function,
+    removeMember: Function,
     user: Object,
   },
-
-  inject: ["addMemberToArray", "removeMemberFromArray"],
 
   computed: {},
 
   methods: {
-    async addMember() {
+    async addMember_() {
       if (this.createMode) {
         this.addMemberToArray(this.user);
-        return;
+      } else {
+        this.addMember(this.user.id);
       }
     },
-    async removeMember() {
+    async removeMember_() {
       if (this.createMode) {
         this.removeMemberFromArray(this.user);
-        return;
+      } else {
+        this.removeMember(this.user.id);
       }
     },
-    // async promoteMember(userID) {},
+
+    async promoteMember_() {
+      this.promoteMember(this.user.id);
+    },
   },
 };
 </script>
