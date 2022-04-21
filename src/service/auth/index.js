@@ -52,7 +52,7 @@ export default class MsalAuth {
       .catch(async (error) => {
         if (error instanceof InteractionRequiredAuthError) {
           return await this.msalInstance
-            .acquireTokenPopup(refreshRequest)
+            .acquireTokenRedirect(refreshRequest)
             .catch(() => console.error("Unavailable token"));
         }
       });
@@ -86,10 +86,5 @@ export default class MsalAuth {
       .catch((error) => {
         console.error(error);
       });
-  }
-
-  async refreshToken() {
-    const response = await this.msalInstance.acquireTokenSilent(refreshRequest);
-    return response.accessToken;
   }
 }

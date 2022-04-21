@@ -65,10 +65,9 @@
             }"
           />
         </div>
-        <hr class="border-black" />
-        <!-- <hr
+        <hr
           :class="errors.includes('title') ? 'border-danger' : 'border-black'"
-        /> -->
+        />
       </div>
       <!-- Description -->
       <div class="relative mt-4 xl:!mt-10 mx-5">
@@ -148,6 +147,8 @@ export default {
       addUsersList: false,
       maxTitleSize: 50,
       maxDescSize: 255,
+
+      errors: [],
 
       organization: {
         title: "",
@@ -230,6 +231,10 @@ export default {
     },
 
     async onClickSubmit() {
+      if (this.organization.title.length < 1) {
+        this.errors.push("title");
+        return;
+      }
       const response = await api.organization.create(
         this.token,
         this.organization

@@ -141,10 +141,6 @@ export default {
       return this.user.id === this.meID;
     },
 
-    // userOrganizations() {
-    //   return this.user.organizations.map((org) => org.id);
-    // },
-
     skip() {
       return 10 * this.page;
     },

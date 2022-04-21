@@ -224,6 +224,8 @@ export default {
 
       membersList: false,
 
+      toggleRequest: true,
+
       maxTitleSize: 50,
       orgTitle: "",
       maxDescSize: 255,
@@ -277,36 +279,30 @@ export default {
     },
 
     backMove() {
+      if (!this.addUsersList && !this.eventsList && !this.membersList) {
+        this.onClickSelectOrganization(null);
+      }
+
       if (this.addUsersList) {
-        // remove listener
         const refUsersList = this.$refs.users;
         refUsersList.removeEventListener("scroll", () => this.handleScroll());
-
-        //init states
-        this.userQuery = "";
-        this.users = [];
-        this.users_page = 1;
-        this.addUsersList = false;
-        return;
       } else if (this.eventsList) {
-        // remove listener
         const refEventsList = this.$refs.events;
         refEventsList.removeEventListener("scroll", () => this.handleScroll());
-
-        //init states
-        this.eventQuery = "";
-        this.events = [];
-        this.events_page = 1;
-        this.eventsList = false;
-        return;
       } else if (this.membersList) {
         this.membersList = false;
-        return;
       }
-      this.onClickSelectOrganization(null);
+
+      //init states
+      this.userQuery = this.eventQuery = "";
+      this.users = this.events = [];
+      this.users_page = this.events_page = 1;
+      this.addUsersList = this.eventsList = false;
     },
 
     async handleScroll(listType) {
+      if (!this.toggleRequest) return;
+
       const refList = this.$refs[listType];
       const scrolling = refList.scrollTop + refList.clientHeight;
       if (
@@ -315,13 +311,21 @@ export default {
       ) {
         let data = [];
         if (listType === "users") {
+          this.toggleRequest = false;
           data = await api.user
             .getAll(this.users_page * 10, this.userQuery)
-            .then(({ data }) => data);
+            .then(({ data }) => {
+              this.toggleRequest = true;
+              return data;
+            });
         } else {
+          this.toggleRequest = false;
           data = await api.event
             .getByOrganizationID(this.events_page * 10, this.organizationID)
-            .then(({ data }) => data);
+            .then(({ data }) => {
+              this.toggleRequest = true;
+              return data;
+            });
         }
         this[listType] = this[listType].concat(data);
         this[`${listType}_page`]++;
@@ -340,7 +344,7 @@ export default {
       if (refUsersList)
         refUsersList.addEventListener(
           "scroll",
-          _.debounce(() => this.handleScroll("users"), 100)
+          _.debounce(() => this.handleScroll("users"), 500)
         );
       this.updateUsersList();
     },
@@ -358,7 +362,7 @@ export default {
       if (refEventsList)
         refEventsList.addEventListener(
           "scroll",
-          _.debounce(() => this.handleScroll("events"), 100)
+          _.debounce(() => this.handleScroll("events"), 500)
         );
       this.updateEventsList();
     },
@@ -383,7 +387,6 @@ export default {
     },
 
     async addMember(memberID) {
-      console.log(memberID);
       await api.organization
         .addMember(this.token, this.organizationID, memberID)
         .then(() => {

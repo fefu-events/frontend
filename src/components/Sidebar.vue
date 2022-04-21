@@ -62,7 +62,12 @@
 
   <!-- RIGHT SIDEBAR -->
 
-  <div class="flex z-500 absolute h-screen xl:right-0">
+  <div
+    class="flex z-500 absolute h-screen xl:right-0"
+    :class="{
+      'hidden xl:flex': selectedEvent && !selectedUser && !selectedOrganization,
+    }"
+  >
     <!-- Navigation -->
     <div v-if="isLoaded" class="hidden xl:block fixed top-10 right-10 w-max">
       <section v-if="user">
@@ -97,7 +102,9 @@
     <!-- Profile info layout -->
     <div
       class="right-sidebar"
-      :class="{ 'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.me }"
+      :class="{
+        'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.me || selectedUser,
+      }"
     >
       <ProfileInfoLayout
         v-if="selectedUser || user"
@@ -107,6 +114,7 @@
     </div>
     <!-- Organizations list layout -->
     <div
+      v-if="!selectedUser"
       class="right-sidebar"
       :class="{
         'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.myOrgs,
@@ -116,6 +124,7 @@
     </div>
     <!-- Create organization layout -->
     <div
+      v-if="!selectedUser"
       class="right-sidebar"
       :class="{
         'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.createOrg,
@@ -125,6 +134,7 @@
     </div>
     <!-- Organization info layout -->
     <div
+      v-if="!selectedUser"
       class="right-sidebar"
       :class="{
         'h-9/10 xl:h-[85%] xl:!w-90 outline': selectedOrganization,
@@ -178,6 +188,7 @@
 </template>
 
 <script>
+import { computed } from "vue";
 import { mapState } from "vuex";
 import { Button } from "@/components/interface";
 import * as LayoutComponents from "@/components/layout/";
@@ -217,7 +228,10 @@ export default {
       onClickEventActionToggle: this.onClickEventActionToggle,
 
       onClickRightsToggle: this.onClickRightsToggle,
+      onClickSelectUser: this.onClickSelectUser,
       onClickSelectOrganization: this.onClickSelectOrganization,
+
+      selectedUser: computed(() => this.selectedUser),
     };
   },
 
@@ -284,6 +298,29 @@ export default {
         });
     },
 
+    // Select objects
+
+    onClickSelectEvent(id) {
+      if (this.selectedEvent === id) {
+        this.selectedEvent = null;
+      } else {
+        this.selectedEvent = id;
+      }
+    },
+
+    onClickSelectEditEvent(id) {
+      this.editableEvent = id;
+    },
+
+    onClickSelectOrganization(id) {
+      this.selectedUser = null;
+      this.selectedOrganization = id;
+    },
+
+    onClickSelectUser(user) {
+      this.selectedUser = user;
+    },
+
     // LEFT SIDEBAR ACTIONS
 
     onClickSidebarToggle() {
@@ -292,8 +329,9 @@ export default {
         for (let toggle in this.infoLayouts) {
           this.infoLayouts[toggle] = false;
         }
-        this.eventActionLayout = false;
         this.selectedOrganization = null;
+        this.selectedUser = null;
+        this.eventActionLayout = false;
         this.editableEvent = null;
       }
 
@@ -306,20 +344,11 @@ export default {
         this.selectedEvent = null;
         return;
       }
-      this.selectedOrganization = null;
       this.searchLayout = !this.searchLayout;
     },
 
     onClickEventsListToggle() {
       this.eventListLayout = !this.eventListLayout;
-    },
-
-    onClickSelectEvent(id) {
-      if (this.selectedEvent === id) {
-        this.selectedEvent = null;
-      } else {
-        this.selectedEvent = id;
-      }
     },
 
     // RIGHT SIDEBAR ACTIONS
@@ -334,6 +363,12 @@ export default {
       this.eventActionLayout = false;
 
       // main actions
+      if (this.selectedUser && this.selectedUser.id == this.user.id) {
+        this.selectedUser = null;
+        return;
+      } else {
+        this.selectedUser = null;
+      }
       if (this.oneOfInfo) {
         for (let toggle in this.infoLayouts) {
           this.infoLayouts[toggle] = false;
@@ -346,23 +381,11 @@ export default {
       }
     },
 
-    // others right loayouts
-    onClickRightsToggle(layout) {
-      this.infoLayouts[layout] = !this.infoLayouts[layout];
-    },
-
-    onClickSelectEditEvent(id) {
-      this.editableEvent = id;
-    },
-
-    onClickSelectOrganization(id) {
-      this.selectedOrganization = id;
-    },
-
     onClickEventActionToggle() {
       // for close others
       if (window.screen.width < 1280) {
         this.selectedOrganization = null;
+        this.selectedUser = null;
         this.selectedEvent = null;
         this.eventListLayout = false;
         this.searchLayout = false;
@@ -372,9 +395,16 @@ export default {
       }
 
       // main actions
-      this.eventActionLayout = !this.eventActionLayout;
       this.editableEvent = null;
+      this.selectedUser = null;
       this.selectedOrganization = null;
+
+      this.eventActionLayout = !this.eventActionLayout;
+    },
+
+    // others right loayouts
+    onClickRightsToggle(layout) {
+      this.infoLayouts[layout] = !this.infoLayouts[layout];
     },
   },
 };

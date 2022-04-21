@@ -290,7 +290,6 @@ export default {
       if (this.errors.length > 0) {
         const form = document.getElementById("form");
         form.scroll({ top: 0, left: 0, behavior: "smooth" });
-        return errors;
       }
       return errors;
     },
@@ -377,5 +376,3 @@ export default {
   },
 };
 </script>
-
-<style></style>

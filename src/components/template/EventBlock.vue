@@ -4,7 +4,7 @@
       <div class="flex items-center col-span-4 text-left text-lg">
         <span> {{ event.title }} </span>
       </div>
-      <div class="min-w-[40px] rounded-full overflow-hidden">
+      <div class="max-w-[40px] rounded-full overflow-hidden">
         <img
           class="self-center justify-self-center w-10 h-10 m-auto"
           src="@/assets/img/svg/logo.svg"

@@ -122,7 +122,7 @@ export default {
     const eventsList = this.$refs.events;
     eventsList.removeEventListener(
       "scroll",
-      _.debounce(() => this.handleScroll(), 100)
+      _.debounce(() => this.handleScroll(), 500)
     );
   },
 
