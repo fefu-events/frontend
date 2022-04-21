@@ -86,11 +86,12 @@ const endpoints = {
       },
     }),
 
-  getByOrganizationID: (skip, organization_id) =>
+  getByOrganizationID: (skip, organization_id, query) =>
     axios.get("/api/event", {
       params: {
         skip: skip,
         limit: 10,
+        title: query,
         organization_id: organization_id,
       },
     }),
