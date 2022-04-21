@@ -7,6 +7,7 @@ const endpoints = {
       {
         title: data.title,
         description: data.description,
+        members_ids: data.members.map((member) => member.id),
       },
       {
         headers: {
@@ -38,19 +39,32 @@ const endpoints = {
 
   getByID: (organizationID) => axios.get(`/api/organization/${organizationID}`),
 
-  addMember: (token, organizationID, userID) => {
+  promoteMember: (token, memberID, organizationID) =>
     axios.post(
-      `/api/organization/${organizationID}/member`,
+      `/api/organization/${organizationID}/transfer-ownership`,
       {
-        user_id: userID,
+        user_id: memberID,
       },
       {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       }
-    );
-  },
+    ),
+
+  addMember: (token, organizationID, userID) =>
+    axios.post(
+      `/api/organization/${organizationID}/member`,
+      {},
+      {
+        params: {
+          user_id: userID,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    ),
 
   removeMember: (token, organizationID, userID) =>
     axios.delete(`/api/organization/${organizationID}/member`, {
