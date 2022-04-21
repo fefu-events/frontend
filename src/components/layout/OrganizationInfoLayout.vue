@@ -9,22 +9,19 @@
     </div>
 
     <!-- Add user list view -->
-    <div
-      class="flex flex-col h-full mx-5"
-      :class="addUsersList ? 'flex' : 'hidden'"
-    >
-      <div class="mt-10 font-bold text-lg cursor-pointer">
+    <div class="flex-col h-full" :class="addUsersList ? 'flex' : 'hidden'">
+      <div class="mx-5 mt-10 font-bold text-lg cursor-pointer">
         <span>Добавить участника</span>
       </div>
       <!-- Search input -->
       <Search
-        class="mt-4"
-        @update="(value) => (userQuery = value)"
+        class="mx-5 mt-4"
+        @update="(value) => (eventQuery = value)"
         :placeholder="'Поиск'"
       />
       <div class="mb-4 overflow-y-scroll" ref="users">
         <div
-          class="hover:bg-hoverColor cursor-pointer"
+          class="px-5 xl:px-0 hover:bg-hoverColor cursor-pointer"
           v-for="user in filteredAddUsers"
           :key="user"
         >
@@ -33,20 +30,44 @@
       </div>
     </div>
 
-    <!-- Organization event list view -->
+    <!-- Members -->
     <div
-      class="flex flex-col h-full mx-5"
-      :class="eventsList ? 'flex' : 'hidden'"
+      class="flex-col h-full"
+      :class="membersList && !addUsersList ? 'flex' : 'hidden'"
     >
+      <div class="mx-5 mt-10 font-bold text-lg cursor-pointer">
+        <span>Список участников</span>
+      </div>
+      <!-- Add members -->
+      <Button v-if="isAdmin" class="mx-10 my-7" @click="openAddUserList">
+        <span> Добавить участника </span>
+      </Button>
+      <div class="mb-2 overflow-y-scroll">
+        <div
+          class="px-5 xl:px-0 hover:bg-hoverColor cursor-pointer"
+          v-for="member in organization?.members"
+          :key="member"
+        >
+          <MemberBlock
+            :user="member"
+            :removeMode="isAdmin"
+            :promoteMode="isAdmin"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Organization event list view -->
+    <div class="flex-col h-full mx-5" :class="eventsList ? 'flex' : 'hidden'">
       <div class="mt-10 font-bold text-lg cursor-pointer">
         <span>Мероприятия</span>
       </div>
       <!-- Search input -->
-      <!-- <Search
+      <Search
         class="mt-4"
         @update="(value) => (userQuery = value)"
         :placeholder="'Поиск'"
-      /> -->
+      />
       <div class="mb-4 overflow-y-scroll" ref="events">
         <div
           class="hover:bg-hoverColor cursor-pointer"
@@ -62,7 +83,7 @@
     <!-- Info view -->
     <div
       class="flex-col h-full mt-6 overflow-hidden"
-      :class="!addUsersList && !eventsList ? 'flex' : 'hidden'"
+      :class="allPanelClosed ? 'flex' : 'hidden'"
     >
       <!-- Organization avatar and title -->
       <div class="flex flex-row items-center mt-10 mx-5">
@@ -94,16 +115,16 @@
         </div>
       </div>
       <!-- Description -->
-      <div class="mt-4 xl:!mt-10 mx-5">
-        <div v-if="editMode" class="relative">
+      <div class="relative mt-4 xl:!mt-8 mx-5">
+        <div v-if="editMode" class="relative w-11/12 group">
           <textarea
             v-model="orgDescription"
-            class="w-full h-24 xl:h-32 px-6 py-2 rounded text-sm resize-none ring-offset-0 focus:ring-0 focus:border-primary"
+            class="w-full h-24 xl:h-32 px-6 py-2 rounded text-sm resize-none ring-offset-0 focus:ring-0 group-focus-within:border-primary"
             :maxlength="maxDescSize"
             placeholder="Описание"
           />
           <span
-            class="absolute bottom-2 right-2 text-xs"
+            class="absolute bottom-2 right-2 text-xs group-focus-within:text-primary"
             :class="{
               'text-danger': maxDescSize - orgDescription.length < 1,
             }"
@@ -113,57 +134,34 @@
         <p v-else class="mx-5">
           {{ organization?.description }}
         </p>
-      </div>
-      <!-- Control -->
-      <div class="flex flex-row justify-evenly items-center">
-        <Button class="w-60 h-10 mx-2 my-5 leading-none" @click="openEventList">
-          <span> Посмотреть мероприятия </span>
-        </Button>
         <PencilAltIcon
           v-if="isAdmin && !editMode"
-          class="w-7 h-7 hover:text-primary cursor-pointer"
+          class="absolute bottom-0 -right-5 w-7 h-7 hover:text-primary cursor-pointer"
           @click="editMode = true"
         />
         <CheckIcon
           v-else-if="isAdmin && editMode"
-          class="w-8 h-8 hover:text-primary cursor-pointer"
+          class="absolute bottom-0 -right-5 w-7 h-7 hover:text-primary cursor-pointer"
           @click="onClickAcceptEdits"
         />
       </div>
-      <!-- Add members -->
-      <div class="mx-5 xl:mx-0">
-        <div class="flex flex-row items-center justify-between xl:mx-5">
-          <span class="text-lg"> Участники </span>
-          <Button
-            v-if="isAdmin"
-            class="w-28 h-9 my-0 leading-none"
-            @click="openAddUserList"
-          >
-            <span class="text-sm"> Добавить </span>
-          </Button>
-        </div>
-      </div>
-      <!-- Members -->
-      <div class="mx-5 mt-5 mb-2 overflow-y-scroll">
-        <div
-          class="hover:bg-hoverColor cursor-pointer"
-          v-for="member in organization?.members"
-          :key="member"
-        >
-          <MemberBlock
-            class="px-2"
-            :user="member"
-            :removeMode="isAdmin"
-            :promoteMode="isAdmin"
-          />
-        </div>
-      </div>
-      <!-- Leave and Delete -->
-      <div class="flex flex-col mt-auto mb-10">
-        <Button class="mx-10 my-3" :disabled="isAdmin" @click="onClickLeave">
+
+      <!-- Control -->
+      <div class="flex flex-col my-10">
+        <Button class="mx-10 my-0" @click="openEventList">
+          <span> Посмотреть мероприятия </span>
+        </Button>
+        <Button class="mx-10 my-0 mt-3" @click="openMembersList">
+          <span> Список участников </span>
+        </Button>
+        <Button class="mx-10" :disabled="isAdmin" @click="onClickLeave">
           <span> Выйти из организации </span>
         </Button>
-        <Button class="mx-10 my-0" v-if="isAdmin" @click="onClickDelete">
+        <Button
+          class="mx-10 my-0 hover:border-danger hover:text-danger"
+          v-if="isAdmin"
+          @click="onClickDelete"
+        >
           <span> Удалить организацию </span>
         </Button>
       </div>
@@ -216,6 +214,8 @@ export default {
       events: [],
       events_page: 1,
 
+      membersList: false,
+
       maxTitleSize: 50,
       orgTitle: "",
       maxDescSize: 255,
@@ -244,6 +244,10 @@ export default {
     isAdmin() {
       return this.organization?.owner_id === this.userID;
     },
+
+    allPanelClosed() {
+      return !this.addUsersList && !this.eventsList && !this.membersList;
+    },
   },
 
   async mounted() {
@@ -271,13 +275,19 @@ export default {
         this.users_page = 1;
         this.addUsersList = false;
         return;
-      }
-      if (this.eventsList) {
+      } else if (this.eventsList) {
+        // remove listener
         const refEventsList = this.$refs.events;
         refEventsList.removeEventListener("scroll", () => this.handleScroll());
+
+        //init states
+        this.eventQuery = "";
         this.events = [];
         this.events_page = 1;
         this.eventsList = false;
+        return;
+      } else if (this.membersList) {
+        this.membersList = false;
         return;
       }
       this.onClickSelectOrganization(null);
@@ -305,6 +315,12 @@ export default {
       }
     },
 
+    // Members List
+    openMembersList() {
+      this.membersList = true;
+    },
+
+    // Add Users List
     openAddUserList() {
       this.addUsersList = true;
       const refUsersList = this.$refs.users;
@@ -322,6 +338,7 @@ export default {
         .then(({ data }) => data);
     },
 
+    // Events List
     openEventList() {
       this.eventsList = true;
       const refEventsList = this.$refs.events;
@@ -343,6 +360,7 @@ export default {
       this.onClickSelectEvent(eventID);
     },
 
+    // Control
     async onClickAcceptEdits() {
       await api.organization.update(
         this.token,
