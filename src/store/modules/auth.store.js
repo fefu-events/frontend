@@ -12,22 +12,32 @@ export default {
       const response = isExist
         ? await api.me.get(token)
         : await api.me.register(token);
-      commit("login", { token, user: response?.data });
+      commit("accessToken", token);
+      commit("user", response?.data);
+    },
+
+    async SET_NEW_ORGANIZATIONS({ commit }, token) {
+      const orgs = await api.me
+        .get(token)
+        .then(({ data }) => data.organizations);
+      commit("user_organizations", orgs);
     },
 
     LOGOUT({ commit }) {
-      commit("logout");
+      commit("accessToken", undefined);
+      commit("user", null);
     },
   },
 
   mutations: {
-    login(state, payload) {
-      state.accessToken = payload.token;
-      state.user = payload.user;
+    user_organizations(state, payload) {
+      state.user.organizations = payload;
     },
-    logout(state) {
-      state.accessToken = undefined;
-      state.user = null;
+    user(state, payload) {
+      state.user = payload;
+    },
+    accessToken(state, payload) {
+      state.accessToken = payload;
     },
   },
 
