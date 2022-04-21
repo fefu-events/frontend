@@ -150,14 +150,27 @@
 
       <!-- Control -->
       <div class="flex flex-col my-10">
-        <Button class="mx-10 my-0" @click="openEventList">
+        <Button class="mx-10 mb-3" @click="openEventList">
           <span> Посмотреть мероприятия </span>
         </Button>
-        <Button class="mx-10 my-0 mt-3" @click="openMembersList">
+        <Button class="mx-10 my-0" @click="openMembersList">
           <span> Список участников </span>
         </Button>
-        <Button class="mx-10" :disabled="isAdmin" @click="onClickLeave">
+        <Button
+          v-if="isMember"
+          class="mx-10 my-3"
+          :disabled="isAdmin"
+          @click="onClickLeave"
+        >
           <span> Выйти из организации </span>
+        </Button>
+        <Button
+          v-if="!isMember"
+          class="mx-10 mt-3"
+          :disabled="isAdmin"
+          @click="onClickLeave"
+        >
+          <span> Подписаться </span>
         </Button>
         <Button
           class="mx-10 my-0 hover:border-danger hover:text-danger"
@@ -225,6 +238,7 @@ export default {
     ...mapState("auth/", {
       token: (state) => state.accessToken,
       userID: (state) => state.user.id,
+      userOrgs: (state) => state.user.organizations,
     }),
 
     filteredAddUsers() {
@@ -238,6 +252,10 @@ export default {
 
     isAdmin() {
       return this.organization?.owner_id === this.userID;
+    },
+
+    isMember() {
+      return this.userOrgs.map((org) => org.id).includes(this.organization?.id);
     },
 
     allPanelClosed() {

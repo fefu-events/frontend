@@ -73,6 +73,9 @@
     <Button v-if="isMe" class="mt-auto mx-10 mb-10" @click="signOut">
       <span> Выйти </span>
     </Button>
+    <Button v-else class="mt-auto mx-10 mb-10">
+      <span> Подписаться </span>
+    </Button>
   </div>
 </template>
 
