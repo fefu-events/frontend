@@ -209,7 +209,6 @@ export default {
       maxDescSize: 255,
       errors: [],
       org: false,
-      availableOrganizations: [],
       event: {
         title: "",
         date: null,
@@ -233,6 +232,7 @@ export default {
     ...mapState("auth/", {
       accessToken: (state) => state.accessToken,
       userID: (state) => state.user.id,
+      availableOrganizations: (state) => state.user.organizations,
     }),
 
     selectedPlaceLabel() {
@@ -314,12 +314,6 @@ export default {
 
           return eventObj;
         });
-    } else {
-      setTimeout(async () => {
-        this.availableOrganizations = await api.me
-          .get(this.accessToken)
-          .then(({ data }) => data.organizations);
-      }, 1000);
     }
   },
 
@@ -367,6 +361,17 @@ export default {
       if (response.status === 200) {
         this.onClickSelectEditEvent(null);
         this.$store.dispatch("client/SET_FORCE_UPDATE_EVENT_LIST", true);
+      }
+    },
+  },
+
+  watch: {
+    async org(newValue) {
+      if (newValue) {
+        await this.$store.dispatch(
+          "auth/SET_NEW_ORGANIZATIONS",
+          this.accessToken
+        );
       }
     },
   },
