@@ -41,9 +41,8 @@ export default {
       type: Boolean,
       default: false,
     },
+    onClickSelectEditEvent: Function,
   },
-
-  inject: ["onClickSelectEditEvent"],
 
   computed: {
     normalizedDate() {

@@ -60,7 +60,11 @@
         :key="event.id"
         @click="selectEvent(event.id)"
       >
-        <EventBlock :event="event" :edit="isMe" />
+        <EventBlock
+          :event="event"
+          :edit="isMe"
+          :onClickSelectEditEvent="onClickSelectEditEvent"
+        />
       </div>
     </div>
     <div v-else class="h-2/5 my-4">
@@ -118,6 +122,7 @@ export default {
     "onClickRightsToggle",
     "onClickSelectEvent",
     "onClickSelectUser",
+    "onClickSelectEditEvent",
     "selectedUser",
   ],
 

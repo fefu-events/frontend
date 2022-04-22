@@ -77,7 +77,12 @@
           :key="event"
           @click="selectEvent(event.id)"
         >
-          <EventBlock class="px-2" :event="event" :edit="isAdmin" />
+          <EventBlock
+            class="px-2"
+            :event="event"
+            :edit="isAdmin"
+            :onClickSelectEditEvent="onClickSelectEditEvent"
+          />
         </div>
       </div>
     </div>
@@ -208,7 +213,11 @@ export default {
     organizationID: Number,
   },
 
-  inject: ["onClickSelectOrganization", "onClickSelectEvent"],
+  inject: [
+    "onClickSelectOrganization",
+    "onClickSelectEvent",
+    "onClickSelectEditEvent",
+  ],
 
   data() {
     return {

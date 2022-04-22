@@ -164,24 +164,25 @@
   >
     <div
       v-if="user"
-      class="basis-1/4 hover:text-primary"
+      class="flex-1 hover:text-primary"
       @click.stop="onClickUserInfoToggle"
     >
       <UserIcon class="w-full h-5" />
     </div>
-    <div v-else class="basis-1/4 hover:text-primary" @click.stop="signIn">
+    <div v-else class="flex-1 hover:text-primary" @click.stop="signIn">
       <LoginIcon class="w-full h-5 rotate-180" />
     </div>
-    <div
-      class="basis-1/4 hover:text-primary"
-      @click.stop="onClickSidebarToggle"
-    >
+    <div class="flex-1 hover:text-primary" @click.stop="onClickSidebarToggle">
       <SearchIcon class="w-full h-5" />
     </div>
-    <div class="basis-1/4 hover:text-primary" @click="onClickEventActionToggle">
+    <div
+      v-if="user"
+      class="flex-1 hover:text-primary"
+      @click="onClickEventActionToggle"
+    >
       <PlusIcon class="w-full h-5" />
     </div>
-    <div class="basis-1/4 hover:text-primary">
+    <div class="flex-1 hover:text-primary">
       <MenuIcon class="w-full h-5" />
     </div>
   </div>
