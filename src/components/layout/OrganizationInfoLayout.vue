@@ -73,7 +73,7 @@
       <div class="mb-4 overflow-y-scroll" ref="events">
         <div
           class="px-5 xl:px-5 hover:bg-hoverColor cursor-pointer"
-          v-for="event in events"
+          v-for="event in filteredEvents"
           :key="event"
           @click="selectEvent(event.id)"
         >
@@ -257,6 +257,12 @@ export default {
           !this.organization.members
             .map((member) => member.id)
             .includes(user.id)
+      );
+    },
+
+    filteredEvents() {
+      return this.events.filter((event) =>
+        event.title.toLowerCase().includes(this.eventQuery)
       );
     },
 

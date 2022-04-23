@@ -39,7 +39,7 @@
       <div class="mt-4 xl:mx-5">
         <Autolist
           class="px-4"
-          categoryName="Место"
+          :categoryName="selectedPlaceLabel || 'Место'"
           :availablePlaces="availablePlaces"
           v-slot="{ filteredData }"
         >
@@ -147,7 +147,7 @@
         <div v-if="org" class="mt-2">
           <Disclosure
             class="px-4"
-            :categoryName="selectedOrgLabel || 'Выбрать организацию'"
+            :categoryName="selectedOrganizationLabel || 'Выбрать организацию'"
           >
             <div v-if="availableOrganizations" class="flex flex-col">
               <label
@@ -254,30 +254,21 @@ export default {
     }),
 
     selectedPlaceLabel() {
-      for (const place of this.availablePlaces) {
-        if (place.id == this.event.selectedPlace) {
-          return place.label;
-        }
-      }
-      return "";
+      return this.availablePlaces.find(
+        (place) => place.id == this.event.selectedPlace
+      )?.label;
     },
 
     selectedCategoryLabel() {
-      for (const category of this.availableCategories) {
-        if (category.id == this.event.selectedCategory) {
-          return category.label;
-        }
-      }
-      return "";
+      return this.availableCategories.find(
+        (category) => category.id == this.event.selectedCategory
+      )?.label;
     },
 
-    selectedOrgLabel() {
-      for (const category of this.availableOrganizations) {
-        if (category.id == this.event.selectedOrganization) {
-          return category.label;
-        }
-      }
-      return "";
+    selectedOrganizationLabel() {
+      return this.availableOrganizations.find(
+        (organization) => organization.id == this.event.selectedOrganization
+      )?.title;
     },
 
     validateEventForm() {
