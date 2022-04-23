@@ -39,12 +39,30 @@
       <div class="mt-4 xl:mx-5">
         <Autolist
           class="px-4"
-          @update="(value) => (event.selectedPlace = value)"
-          :propData="event.selectedPlace"
+          categoryName="Место"
           :availablePlaces="availablePlaces"
-          :dataType="'radio'"
-          :categoryName="selectedPlaceLabel || 'Место'"
-        />
+          v-slot="{ filteredData }"
+        >
+          <div class="flex flex-col">
+            <label
+              v-for="place in filteredData"
+              :key="place"
+              class="inline-flex items-center my-2 cursor-pointer"
+              :for="`${place.id}_${place.label}`"
+            >
+              <input
+                class="form-radio py-2 w-5 h-5 text-primary"
+                type="radio"
+                :id="`${place.id}_${place.label}`"
+                :value="place.id"
+                v-model="event.selectedPlace"
+              />
+              <span class="block truncate ml-2">
+                {{ place.label }}
+              </span>
+            </label>
+          </div>
+        </Autolist>
         <hr
           :class="errors.includes('place') ? 'border-danger' : 'border-black'"
         />

@@ -37,7 +37,7 @@
               :for="`${category.id}`"
             >
               <input
-                class="form-checkbox text-primary w-5 h-5 rounded"
+                class="form-checkbox w-5 h-5 text-primary rounded"
                 type="checkbox"
                 :id="`${category.id}`"
                 :value="category.id"
@@ -73,11 +73,30 @@
         <!-- Places list -->
         <Autolist
           class="px-4"
-          @update="(value) => (places = value)"
-          :availablePlaces="availablePlaces"
-          dataType="checkbox"
           categoryName="Место"
-        />
+          :availablePlaces="availablePlaces"
+          v-slot="{ filteredData }"
+        >
+          <div class="flex flex-col">
+            <label
+              v-for="place in filteredData"
+              :key="place"
+              class="inline-flex items-center my-2 cursor-pointer"
+              :for="`${place.id}_${place.label}`"
+            >
+              <input
+                class="form-checkbox py-2 w-5 h-5 text-primary rounded"
+                type="checkbox"
+                :id="`${place.id}_${place.label}`"
+                :value="place.id"
+                v-model="places"
+              />
+              <span class="block truncate ml-2">
+                {{ place.label }}
+              </span>
+            </label>
+          </div>
+        </Autolist>
         <hr class="border-black" />
       </div>
     </div>
@@ -146,30 +165,35 @@ export default {
         value: newValue,
       });
     }, 500),
+
     followToggle(newValue) {
       this.$store.dispatch("filter/UPDATE_FILTER", {
         key: "followToggle",
         value: newValue,
       });
     },
+
     recommendToggle(newValue) {
       this.$store.dispatch("filter/UPDATE_FILTER", {
         key: "recommendToggle",
         value: newValue,
       });
     },
+
     categories(newValue) {
       this.$store.dispatch("filter/UPDATE_FILTER", {
         key: "categories",
         value: newValue,
       });
     },
+
     date(newValue) {
       this.$store.dispatch("filter/UPDATE_FILTER", {
         key: "date",
         value: newValue,
       });
     },
+
     places(newValue) {
       this.$store.dispatch("filter/UPDATE_FILTER", {
         key: "places",

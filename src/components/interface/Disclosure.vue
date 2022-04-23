@@ -53,11 +53,5 @@ export default {
     },
     categoryName: String,
   },
-
-  data() {
-    return {
-      open: false,
-    };
-  },
 };
 </script>

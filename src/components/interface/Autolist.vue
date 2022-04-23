@@ -42,30 +42,7 @@
           >
             Ничего не найдено
           </div>
-          <div class="flex flex-col">
-            <label
-              v-for="row in filteredData"
-              :key="row"
-              class="inline-flex items-center my-2 cursor-pointer"
-              :for="`${row.id}_${row.label}`"
-            >
-              <input
-                class="py-2 w-5 h-5 text-primary cursor-default select-none"
-                :class="{
-                  'form-checkbox rounded': dataType === 'checkbox',
-                  'form-radio': dataType === 'radio',
-                }"
-                :type="dataType"
-                :id="`${row.id}_${row.label}`"
-                :value="row.id"
-                v-model="checkedData"
-              />
-              <span class="block truncate ml-2">
-                {{ row.label }}
-              </span>
-            </label>
-            <slot />
-          </div>
+          <slot :filteredData="filteredData" />
         </ComboboxOptions>
       </TransitionRoot>
     </div>
@@ -94,14 +71,11 @@ export default {
   },
   props: {
     availablePlaces: Object,
-    propData: [Array, Number],
-    dataType: String,
     categoryName: String,
   },
   data() {
     return {
       query: "",
-      checkedData: [],
     };
   },
 
@@ -115,15 +89,6 @@ export default {
               .replace(/\s+/g, "")
               .includes(this.query.toLowerCase().replace(/\s+/g, ""))
           );
-    },
-  },
-
-  watch: {
-    propData() {
-      this.checkedData = this.propData;
-    },
-    checkedData() {
-      this.$emit("update", this.checkedData);
     },
   },
 };
