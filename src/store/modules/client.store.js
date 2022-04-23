@@ -32,12 +32,15 @@ export default {
     categories(state, payload) {
       state.categories = payload;
     },
+
     places(state, payload) {
       state.places = payload;
     },
+
     forceUpdateEventList(state, payload) {
       state.forceUpdateEventList = payload;
     },
+
     forceUpdateOrganizationList(state, payload) {
       state.forceUpdateOrganizationList = payload;
     },

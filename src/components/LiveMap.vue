@@ -32,41 +32,9 @@
           :icon-size="iconSize"
           :icon-url="iconUrl"
         />
-        <LTooltip>{{ place.event_count }} events</LTooltip>
-        <LPopup class="w-70">
-          <div v-if="!isLoaded" class="flex items-center h-full py-5">
-            <svg
-              class="animate-spin h-12 w-12 text-primary mx-auto"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                class="opacity-40"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="2"
-              ></circle>
-              <path
-                class="opacity-80"
-                stroke="currentColor"
-                stroke-width="2"
-                d="M4.85857 5C3.09032 6.80375 2 9.27455 2 12C2 17.5228 6.47715 22 12 22"
-              />
-            </svg>
-          </div>
-          <div v-else class="max-h-80 overflow-y-scroll">
-            <div
-              v-for="event in selectedPlaceEvents"
-              :key="event"
-              class="hover:bg-hoverColor cursor-pointer"
-            >
-              <EventBlock class="w-4/5 xl:px-4" :event="event" />
-            </div>
-          </div>
-        </LPopup>
+        <LTooltip @click="onClickSelectPlace">
+          {{ place.event_count }} events
+        </LTooltip>
       </LMarker>
     </LMap>
   </div>
@@ -79,15 +47,13 @@
 </style>
 
 <script>
-import { mapState } from "vuex";
-import { EventBlock } from "@/components/template";
+import { mapState, mapGetters } from "vuex";
 import {
   LMap,
   LTileLayer,
   LPolygon,
   LMarker,
   LTooltip,
-  LPopup,
   LIcon,
 } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -98,13 +64,11 @@ import api from "@/service/api";
 export default {
   name: "LiveMapComponent",
   components: {
-    EventBlock,
     LMap,
     LTileLayer,
     LPolygon,
     LMarker,
     LTooltip,
-    LPopup,
     LIcon,
   },
 
@@ -115,9 +79,6 @@ export default {
       mapInfo: null,
 
       isLoaded: false,
-      page: 1,
-      selectedPlace: null,
-      selectedPlaceEvents: [],
 
       poly_campus: geojson.FEFU_POLY,
 
@@ -145,12 +106,16 @@ export default {
   },
 
   computed: {
-    ...mapState("filter", {
-      filterParams: (state) => state,
+    ...mapGetters("filter", {
+      filterParams: "filterParams",
     }),
 
     ...mapState("auth", {
       userID: (state) => state.user?.id,
+    }),
+
+    ...mapState("filter", {
+      cachePlaces: (state) => state.cachePlaces,
     }),
 
     skip() {
@@ -181,15 +146,9 @@ export default {
     },
 
     async onClickSelectPlace(placeID) {
-      this.isLoaded = false;
-
-      this.selectedPlace = placeID;
-      this.selectedPlaceEvents = await api.map
-        .getByPlaceID(0, this.filterParams, this.selectedPlace, this.user)
-        .then(({ data }) => {
-          this.isLoaded = true;
-          return data;
-        });
+      if (this.cachePlaces?.mapPlace === placeID)
+        this.$store.dispatch("filter/SET_MAP_PLACE", null);
+      else this.$store.dispatch("filter/SET_MAP_PLACE", placeID);
     },
 
     log_move(move) {
@@ -198,13 +157,8 @@ export default {
   },
 
   watch: {
-    selectedPlace() {
-      this.page = 1;
-    },
-
     filterParams: {
       handler() {
-        this.page = 1;
         this.updateEventList();
       },
       deep: true,

@@ -6,17 +6,45 @@ export default {
     categories: [],
     date: null,
     places: [],
+
+    cachePlaces: null,
   }),
 
   actions: {
     UPDATE_FILTER({ commit }, payload) {
-      commit("setNewFilter", payload);
+      commit("updateFilter", payload);
+    },
+    async SET_MAP_PLACE({ commit }, payload) {
+      commit("setMapPlace", payload);
+    },
+  },
+
+  getters: {
+    filterParams(state) {
+      return {
+        query: state.query,
+        followToggle: state.followToggle,
+        recommendToggle: state.recommendToggle,
+        categories: state.categories,
+        date: state.date,
+        places: state.places,
+      };
     },
   },
 
   mutations: {
-    async setNewFilter(state, payload) {
+    async updateFilter(state, payload) {
       state[payload.key] = payload.value;
+    },
+
+    setMapPlace(state, payload) {
+      if (payload) {
+        state.cachePlaces = { cachePlaces: state.places, mapPlace: payload };
+        state.places = [payload];
+      } else {
+        state.places = state.cachePlaces.cachePlaces;
+        state.cachePlaces = null;
+      }
     },
   },
 

@@ -54,7 +54,8 @@
       <ChevronRightIcon
         class="w-5 h-14"
         :class="{
-          'transform rotate-180': searchLayout || selectedEvent,
+          'transform rotate-180':
+            searchLayout || selectedEvent || eventListLayout,
         }"
       />
     </div>
@@ -99,7 +100,7 @@
         </Button>
       </section>
     </div>
-    <!-- Profile info layout -->
+    <!-- My Profile info layout -->
     <div
       class="right-sidebar"
       :class="{
@@ -114,7 +115,6 @@
     </div>
     <!-- Organizations list layout -->
     <div
-      v-if="!selectedUser"
       class="right-sidebar"
       :class="{
         'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.myOrgs,
@@ -124,7 +124,6 @@
     </div>
     <!-- Create organization layout -->
     <div
-      v-if="!selectedUser"
       class="right-sidebar"
       :class="{
         'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.createOrg,
@@ -134,7 +133,6 @@
     </div>
     <!-- Organization info layout -->
     <div
-      v-if="!selectedUser"
       class="right-sidebar"
       :class="{
         'h-9/10 xl:h-[85%] xl:!w-90 outline': selectedOrganization,
@@ -155,6 +153,15 @@
     >
       <EventActionLayout v-if="editableEvent" :editableEvent="editableEvent" />
       <EventActionLayout v-else />
+    </div>
+    <!-- Other user profile info layout -->
+    <div
+      class="right-sidebar"
+      :class="{
+        'h-9/10 xl:h-[85%] xl:!w-90 outline': selectedUser,
+      }"
+    >
+      <ProfileInfoLayout v-if="selectedUser" :user="selectedUser" />
     </div>
   </div>
 
@@ -268,6 +275,10 @@ export default {
       user: (state) => state.user,
     }),
 
+    ...mapState("filter/", {
+      cachePlaces: (state) => state.cachePlaces,
+    }),
+
     oneOfInfo() {
       let answer = false;
       for (let toggle in this.infoLayouts) {
@@ -337,18 +348,31 @@ export default {
       }
 
       // main actions
-      if (this.searchLayout) {
-        this.eventListLayout = false;
-        this.selectedEvent = null;
-      }
       if (this.selectedEvent) {
         this.selectedEvent = null;
         return;
       }
+
+      if (this.eventListLayout) {
+        if (this.cachePlaces?.mapPlace) {
+          this.$store.dispatch("filter/SET_MAP_PLACE", null);
+        }
+        this.eventListLayout = false;
+        return;
+      }
+
+      if (this.searchLayout) {
+        this.eventListLayout = false;
+        this.selectedEvent = null;
+      }
+
       this.searchLayout = !this.searchLayout;
     },
 
     onClickEventsListToggle() {
+      if (this.cachePlaces?.mapPlace && this.eventListLayout) {
+        this.$store.dispatch("filter/SET_MAP_PLACE", null);
+      }
       this.eventListLayout = !this.eventListLayout;
     },
 
@@ -406,6 +430,18 @@ export default {
     // others right loayouts
     onClickRightsToggle(layout) {
       this.infoLayouts[layout] = !this.infoLayouts[layout];
+    },
+  },
+
+  watch: {
+    cachePlaces: {
+      handler(newValue) {
+        if (newValue?.mapPlace) {
+          this.eventListLayout = true;
+        }
+      },
+
+      deep: true,
     },
   },
 };

@@ -48,7 +48,7 @@
 <script>
 import _ from "lodash";
 import api from "@/service/api";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import * as TemplateComponents from "@/components/template";
 
 export default {
@@ -68,8 +68,12 @@ export default {
   },
 
   computed: {
-    ...mapState("filter", {
-      filterParams: (state) => state,
+    ...mapGetters("filter", {
+      filterParams: "filterParams",
+    }),
+
+    ...mapState("client", {
+      availablePlaces: (state) => state.places,
     }),
 
     ...mapState("auth", {
@@ -81,23 +85,23 @@ export default {
     },
   },
 
-  mounted() {
-    setTimeout(() => {
-      const eventsList = this.$refs.events;
-      if (eventsList)
-        eventsList.addEventListener("scroll", () => this.handleScroll());
-      this.updateEventList();
-    }, 1000);
+  async mounted() {
+    const eventsList = this.$refs.events;
+    if (eventsList)
+      eventsList.addEventListener("scroll", () => this.handleScroll());
+    this.events = await this.loadEventList(0);
   },
 
   methods: {
-    async updateEventList() {
-      this.events = await api.event
-        .getAll(0, this.filterParams, this.user)
+    async loadEventList(skip) {
+      const data = await api.event
+        .getAll(skip, this.filterParams, this.user)
         .then(({ data }) => {
           this.isLoaded = true;
           return data;
         });
+
+      return data;
     },
 
     async handleScroll() {
@@ -107,11 +111,8 @@ export default {
         scrolling >= eventsList.scrollHeight &&
         this.events.length >= this.page * 10
       ) {
-        const { data } = await api.event.getAll(
-          this.skip,
-          this.filterParams,
-          this.user
-        );
+        const data = await this.loadEventList(0);
+
         this.events = this.events.concat(data);
         this.page++;
       }
@@ -122,15 +123,16 @@ export default {
     const eventsList = this.$refs.events;
     eventsList.removeEventListener(
       "scroll",
-      _.debounce(() => this.handleScroll(), 500)
+      _.debounce(() => this.handleScroll(), 100)
     );
   },
 
   watch: {
     filterParams: {
-      handler() {
+      async handler() {
+        this.isLoaded = false;
         this.page = 1;
-        this.updateEventList();
+        this.events = await this.loadEventList(0);
       },
       deep: true,
     },
