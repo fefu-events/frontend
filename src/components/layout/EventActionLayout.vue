@@ -134,7 +134,7 @@
       <div class="mt-4 xl:mx-5">
         <input
           v-model="event.link"
-          class="w-full py-2 px-4 text-sm focus:outline-none placeholder:italic"
+          class="w-full py-2 px-4 text-sm bg-transparent focus:outline-none placeholder:italic"
           placeholder="https://fefuevent.ru"
         />
         <hr class="border-black" />
