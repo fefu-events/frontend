@@ -47,14 +47,7 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
-import {
-  LMap,
-  LTileLayer,
-  LPolygon,
-  LMarker,
-  LTooltip,
-  LIcon,
-} from "@vue-leaflet/vue-leaflet";
+import * as mapComponents from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
 import MapIcon from "@/assets/img/svg/logo.svg";
 import geojson from "../assets/json/geojson";
@@ -63,12 +56,12 @@ import api from "@/service/api";
 export default {
   name: "LiveMapComponent",
   components: {
-    LMap,
-    LTileLayer,
-    LPolygon,
-    LMarker,
-    LTooltip,
-    LIcon,
+    LMap: mapComponents.LMap,
+    LTileLayer: mapComponents.LTileLayer,
+    LPolygon: mapComponents.LPolygon,
+    LMarker: mapComponents.LMarker,
+    LTooltip: mapComponents.LTooltip,
+    LIcon: mapComponents.LIcon,
   },
 
   data() {
@@ -76,8 +69,6 @@ export default {
       mapInterval: null,
       mapTimeout: 30,
       mapInfo: null,
-
-      isLoaded: false,
 
       poly_campus: geojson.FEFU_POLY,
 
