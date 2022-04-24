@@ -229,6 +229,10 @@ export default {
     UserIcon,
   },
 
+  props: {
+    singleEvent: Number,
+  },
+
   provide() {
     return {
       onClickSelectEvent: this.onClickSelectEvent,
@@ -434,6 +438,10 @@ export default {
   },
 
   watch: {
+    singleEvent(newValue) {
+      this.selectedEvent = newValue;
+    },
+
     cachePlaces: {
       handler(newValue) {
         if (newValue?.mapPlace) {

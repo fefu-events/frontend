@@ -14,7 +14,7 @@ export default {
     UPDATE_FILTER({ commit }, payload) {
       commit("updateFilter", payload);
     },
-    async SET_MAP_PLACE({ commit }, payload) {
+    SET_MAP_PLACE({ commit }, payload) {
       commit("setMapPlace", payload);
     },
   },
@@ -33,7 +33,7 @@ export default {
   },
 
   mutations: {
-    async updateFilter(state, payload) {
+    updateFilter(state, payload) {
       state[payload.key] = payload.value;
     },
 

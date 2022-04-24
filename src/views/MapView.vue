@@ -1,6 +1,6 @@
 <template>
-  <Sidebar />
-  <LiveMap class="w-screen h-screen" />
+  <Sidebar :singleEvent="singleEvent" />
+  <LiveMap class="w-screen h-screen" @setSingleEvent="setSingleEvent" />
 </template>
 
 <script>
@@ -12,6 +12,18 @@ export default {
   components: {
     LiveMap,
     Sidebar,
+  },
+
+  data() {
+    return {
+      singleEvent: null,
+    };
+  },
+
+  methods: {
+    setSingleEvent(eventID) {
+      this.singleEvent = eventID;
+    },
   },
 };
 </script>

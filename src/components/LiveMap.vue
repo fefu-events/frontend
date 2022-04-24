@@ -23,12 +23,11 @@
         v-for="place in mapInfo"
         :key="place.id"
         :lat-lng="[place.latitude, place.longitude]"
-        @click="onClickSelectPlace(place.id)"
+        @click="onClickSelectPlace(place.id, place.event_count)"
         @moveend="log_move('moveend')"
       >
         <LIcon
           :icon-anchor="staticAnchor"
-          :popup-anchor="popupAnchor"
           :icon-size="iconSize"
           :icon-url="iconUrl"
         />
@@ -98,7 +97,6 @@ export default {
         [42.998232, 131.935496],
       ],
 
-      popupAnchor: [0, -28],
       staticAnchor: [28, 56],
       iconWidth: 56,
       iconHeight: 56,
@@ -117,10 +115,6 @@ export default {
     ...mapState("filter", {
       cachePlaces: (state) => state.cachePlaces,
     }),
-
-    skip() {
-      return 10 * this.page;
-    },
 
     iconUrl() {
       return MapIcon;
@@ -145,7 +139,15 @@ export default {
         .then(({ data }) => data);
     },
 
-    async onClickSelectPlace(placeID) {
+    async onClickSelectPlace(placeID, eventCount) {
+      if (eventCount === 1) {
+        const singleEvent = await api.map
+          .getByPlaceID(0, this.filterParams, placeID, this.userID)
+          .then(({ data }) => data[0].id);
+
+        this.$emit("setSingleEvent", singleEvent);
+        return;
+      }
       if (this.cachePlaces?.mapPlace === placeID)
         this.$store.dispatch("filter/SET_MAP_PLACE", null);
       else this.$store.dispatch("filter/SET_MAP_PLACE", placeID);
