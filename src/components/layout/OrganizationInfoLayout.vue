@@ -10,7 +10,7 @@
 
     <!-- Add user list view -->
     <div class="flex-col h-full" :class="addUsersList ? 'flex' : 'hidden'">
-      <div class="mx-5 mt-10 font-bold text-lg cursor-pointer">
+      <div class="mx-5 mt-10 font-bold text-lg">
         <span>Добавить участника</span>
       </div>
       <!-- Search input -->
@@ -35,7 +35,7 @@
       class="flex-col h-full"
       :class="membersList && !addUsersList ? 'flex' : 'hidden'"
     >
-      <div class="mx-5 mt-10 font-bold text-lg cursor-pointer">
+      <div class="mx-5 mt-10 font-bold text-lg">
         <span>Список участников</span>
       </div>
       <!-- Add members -->
@@ -46,6 +46,7 @@
         <div
           class="px-5 xl:px-0 hover:bg-hoverColor cursor-pointer"
           v-for="member in organization?.members"
+          @click="onClickSelectUser(member)"
           :key="member"
         >
           <MemberBlock
@@ -61,7 +62,7 @@
 
     <!-- Organization event list view -->
     <div class="flex-col h-full" :class="eventsList ? 'flex' : 'hidden'">
-      <div class="mx-5 mt-10 font-bold text-lg cursor-pointer">
+      <div class="mx-5 mt-10 font-bold text-lg">
         <span>Мероприятия</span>
       </div>
       <!-- Search input -->
@@ -217,6 +218,7 @@ export default {
     "onClickSelectOrganization",
     "onClickSelectEvent",
     "onClickSelectEditEvent",
+    "onClickSelectUser",
   ],
 
   data() {
@@ -296,15 +298,16 @@ export default {
       if (!this.addUsersList && !this.eventsList && !this.membersList) {
         this.onClickSelectOrganization(null);
       }
-      if (this.membersList) {
-        this.membersList = false;
+      if (this.addUsersList) {
+        this.addUsersList = false;
+        return;
       }
 
       //init states
       this.userQuery = this.eventQuery = "";
       this.users = this.events = [];
       this.users_page = this.events_page = 1;
-      this.addUsersList = this.eventsList = false;
+      this.membersList = this.eventsList = false;
     },
 
     removeHandleScroll(refBlock) {
