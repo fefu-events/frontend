@@ -18,9 +18,7 @@
             }"
           />
         </div>
-        <hr
-          :class="errors.includes('title') ? 'border-danger' : 'border-black'"
-        />
+        <hr :class="v$.event.title.$error ? 'border-danger' : 'border-black'" />
       </div>
       <!-- Calendar -->
       <div class="mt-4 xl:mx-5">
@@ -31,9 +29,7 @@
             @update="(value) => (event.date = value)"
           />
         </Disclosure>
-        <hr
-          :class="errors.includes('date') ? 'border-danger' : 'border-black'"
-        />
+        <hr :class="v$.event.date.$error ? 'border-danger' : 'border-black'" />
       </div>
       <!-- Place -->
       <div class="mt-4 xl:mx-5">
@@ -64,7 +60,9 @@
           </div>
         </Autolist>
         <hr
-          :class="errors.includes('place') ? 'border-danger' : 'border-black'"
+          :class="
+            v$.event.selectedPlace.$error ? 'border-danger' : 'border-black'
+          "
         />
       </div>
       <!-- Place description -->
@@ -102,7 +100,7 @@
         </Disclosure>
         <hr
           :class="
-            errors.includes('category') ? 'border-danger' : 'border-black'
+            v$.event.selectedCategory.$error ? 'border-danger' : 'border-black'
           "
         />
       </div>
@@ -196,6 +194,8 @@
 
 <script>
 import api from "@/service/api";
+import useVuelidate from "@vuelidate/core";
+import { required } from "@vuelidate/validators";
 import { mapState } from "vuex";
 import {
   Autolist,
@@ -206,6 +206,8 @@ import {
 } from "@/components/interface";
 
 export default {
+  setup: () => ({ v$: useVuelidate() }),
+
   name: "EventActionLayout",
   components: {
     Autolist,
@@ -241,6 +243,34 @@ export default {
     };
   },
 
+  validations() {
+    return {
+      event: {
+        title: {
+          required,
+        },
+        date: {
+          start: {
+            required,
+            minValue: (value) => value > new Date().toISOString(),
+          },
+          end: {
+            required,
+            minValue: (value) => value > new Date().toISOString(),
+          },
+        },
+        selectedPlace: {
+          $lazy: true,
+          required,
+        },
+
+        selectedCategory: {
+          required,
+        },
+      },
+    };
+  },
+
   computed: {
     ...mapState("client/", {
       availablePlaces: (state) => state.places,
@@ -254,53 +284,27 @@ export default {
     }),
 
     selectedPlaceLabel() {
-      return this.availablePlaces.find(
-        (place) => place.id == this.event.selectedPlace
-      )?.label;
+      return (
+        this.availablePlaces.find(
+          (place) => place.id == this.event.selectedPlace
+        )?.label || null
+      );
     },
 
     selectedCategoryLabel() {
-      return this.availableCategories.find(
-        (category) => category.id == this.event.selectedCategory
-      )?.label;
+      return (
+        this.availableCategories.find(
+          (category) => category.id == this.event.selectedCategory
+        )?.label || null
+      );
     },
 
     selectedOrganizationLabel() {
-      return this.availableOrganizations.find(
-        (organization) => organization.id == this.event.selectedOrganization
-      )?.title;
-    },
-
-    validateEventForm() {
-      let errors = [];
-      // Title validate
-      if (this.event.title === "") {
-        errors.push("title");
-      }
-      // Date validate
-      if (this.event.date !== null) {
-        const { start, end } = this.event.date;
-        const now = new Date().toISOString();
-        if (start < now || end < now) {
-          errors.push("date");
-        }
-      } else {
-        errors.push("date");
-      }
-      // Place validate
-      if (this.event.selectedPlace === null) {
-        errors.push("place");
-      }
-      // Category validate
-      if (this.event.selectedCategory === null) {
-        errors.push("category");
-      }
-      // Scroll on error
-      if (this.errors.length > 0) {
-        const form = document.getElementById("form");
-        form.scroll({ top: 0, left: 0, behavior: "smooth" });
-      }
-      return errors;
+      return (
+        this.availableOrganizations.find(
+          (organization) => organization.id == this.event.selectedOrganization
+        )?.title || null
+      );
     },
   },
 
@@ -326,9 +330,19 @@ export default {
   },
 
   methods: {
+    async validate() {
+      const result = await this.v$.$validate();
+      if (!result) {
+        const form = document.getElementById("form");
+        form.scroll({ top: 0, left: 0, behavior: "smooth" });
+      }
+      return result;
+    },
+
     async onClickSubmit() {
-      this.errors = this.validateEventForm;
-      if (this.errors.length > 0) return;
+      const result = await this.validate();
+      if (!result) return;
+
       const response = await api.event.create(this.accessToken, this.event);
       if (response.status === 201) {
         this.event = {
@@ -361,8 +375,9 @@ export default {
     },
 
     async onClickUpdate() {
-      this.errors = this.validateEventForm;
-      if (this.errors.length > 0) return;
+      const result = await this.validate();
+      if (!result) return;
+
       const response = await api.event.update(
         this.accessToken,
         this.event,
@@ -382,6 +397,8 @@ export default {
           "auth/SET_NEW_ORGANIZATIONS",
           this.accessToken
         );
+      } else {
+        this.event.selectedOrganization = null;
       }
     },
   },
