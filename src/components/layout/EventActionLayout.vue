@@ -348,6 +348,8 @@ export default {
     },
 
     async onClickDelete() {
+      if (!window.confirm("Ты действительно хочешь удалить мероприятие?"))
+        return;
       const response = await api.event.delete(
         this.accessToken,
         this.editableEvent

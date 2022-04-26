@@ -432,6 +432,8 @@ export default {
     },
 
     async onClickDelete() {
+      if (!window.confirm("Ты действительно хочешь удалить организацию?"))
+        return;
       await api.organization
         .delete(this.token, this.organizationID)
         .then(() => {
