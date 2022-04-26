@@ -69,6 +69,7 @@ export default {
       mapInterval: null,
       mapTimeout: 30,
       mapInfo: null,
+      mapSelectedPlace: null,
 
       poly_campus: geojson.FEFU_POLY,
 
@@ -132,10 +133,14 @@ export default {
 
     async onClickSelectPlace(placeID, eventCount) {
       if (eventCount === 1) {
-        const singleEvent = await api.map
+        let singleEvent = await api.map
           .getByPlaceID(0, this.filterParams, placeID, this.userID)
           .then(({ data }) => data[0].id);
+        if (this.mapSelectedPlace === singleEvent) {
+          singleEvent = null;
+        }
 
+        this.mapSelectedPlace = singleEvent;
         this.$emit("setSingleEvent", singleEvent);
         return;
       }
