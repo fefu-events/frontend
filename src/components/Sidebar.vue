@@ -152,7 +152,11 @@
       }"
     >
       <EventActionLayout v-if="editableEvent" :editableEvent="editableEvent" />
-      <EventActionLayout v-else />
+      <EventActionLayout
+        v-else
+        :key="eventActionLayoutWatcher"
+        @rerender="() => ++eventActionLayoutWatcher"
+      />
     </div>
     <!-- Other user profile info layout -->
     <div
@@ -258,6 +262,7 @@ export default {
       searchLayout: false,
       eventListLayout: false,
       eventActionLayout: false,
+      eventActionLayoutWatcher: 1,
       infoLayouts: {
         me: false,
         myOrgs: false,

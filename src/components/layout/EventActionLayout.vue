@@ -345,17 +345,7 @@ export default {
 
       const response = await api.event.create(this.accessToken, this.event);
       if (response.status === 201) {
-        this.event = {
-          title: "",
-          date: null,
-          selectedPlace: null,
-          placeDescription: "",
-          selectedCategory: null,
-          description: "",
-          tags: "",
-          link: "",
-          selectedOrganization: null,
-        };
+        this.$emit("rerender");
         this.onClickEventActionToggle();
         this.$store.dispatch("client/SET_FORCE_UPDATE_EVENT_LIST", true);
       }
