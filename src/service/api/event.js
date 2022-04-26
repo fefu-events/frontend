@@ -3,7 +3,7 @@ import axios from "axios";
 const endpoints = {
   create: (token, data) =>
     axios.post(
-      "/api/event",
+      "/api/event/",
       {
         title: data.title,
         description: data.description,
@@ -24,7 +24,7 @@ const endpoints = {
     ),
   update: (token, data, id) =>
     axios.put(
-      `/api/event/${id}`,
+      `/api/event/${id}/`,
       {
         title: data.title,
         description: data.description,
@@ -44,7 +44,7 @@ const endpoints = {
     ),
 
   delete: (token, id) =>
-    axios.delete(`/api/event/${id}`, {
+    axios.delete(`/api/event/${id}/`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -72,13 +72,13 @@ const endpoints = {
       }
     }
 
-    return axios.get("/api/event", {
+    return axios.get("/api/event/", {
       params: queryParams,
     });
   },
 
   getByUserID: (skip, user_id) =>
-    axios.get("/api/event", {
+    axios.get("/api/event/", {
       params: {
         skip: skip,
         limit: 10,
@@ -87,7 +87,7 @@ const endpoints = {
     }),
 
   getByOrganizationID: (skip, organization_id, query) =>
-    axios.get("/api/event", {
+    axios.get("/api/event/", {
       params: {
         skip: skip,
         limit: 10,
@@ -97,7 +97,7 @@ const endpoints = {
     }),
 
   getByEventID: (id, token) => {
-    return axios.get(`/api/event/${id}`, {
+    return axios.get(`/api/event/${id}/`, {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
   },

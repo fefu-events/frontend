@@ -21,7 +21,7 @@ const endpoints = {
       }
     }
 
-    return axios.get("/api/map", {
+    return axios.get("/api/map/", {
       params: queryParams,
     });
   },
@@ -48,7 +48,7 @@ const endpoints = {
       }
     }
 
-    return axios.get("/api/event", {
+    return axios.get("/api/event/", {
       params: queryParams,
     });
   },

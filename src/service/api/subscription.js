@@ -1,13 +1,15 @@
 import axios from "axios";
 
 const endpoints = {
-  getFollowersByUserID: (userID) => axios.get(`/api/user/${userID}/followers`),
+  getFollowersByUserID: (userID) =>
+    axios.get(`/api/user/${userID}/followers/`),
 
-  getFollowingByUserID: (userID) => axios.get(`/api/user/${userID}/following`),
+  getFollowingByUserID: (userID) =>
+    axios.get(`/api/user/${userID}/following/`),
 
   addOrganization: (token, organizationID) =>
     axios.post(
-      `/api/organization/${organizationID}/follow`,
+      `/api/organization/${organizationID}/follow/`,
       {},
       {
         headers: {
@@ -18,7 +20,7 @@ const endpoints = {
 
   addUser: (token, userID) =>
     axios.post(
-      `/api/user/${userID}/follow`,
+      `/api/user/${userID}/follow/`,
       {},
       {
         headers: {
@@ -28,14 +30,14 @@ const endpoints = {
     ),
 
   removeOrganization: (token, organizationID) =>
-    axios.delete(`/api/organization/${organizationID}/unfollow`, {
+    axios.delete(`/api/organization/${organizationID}/unfollow/`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     }),
 
   removeUser: (token, userID) =>
-    axios.delete(`/api/user/${userID}/unfollow`, {
+    axios.delete(`/api/user/${userID}/unfollow/`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
