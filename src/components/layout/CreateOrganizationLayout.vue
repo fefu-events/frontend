@@ -66,7 +66,9 @@
           />
         </div>
         <hr
-          :class="errors.includes('title') ? 'border-danger' : 'border-black'"
+          :class="
+            v$.organization.title.$error ? 'border-danger' : 'border-black'
+          "
         />
       </div>
       <!-- Description -->
@@ -122,13 +124,19 @@
 
 <script>
 import _ from "lodash";
-import api from "@/service/api";
+import useVuelidate from "@vuelidate/core";
+import { required } from "@vuelidate/validators";
+
 import { mapState } from "vuex";
+import api from "@/service/api";
+
 import { ReplyIcon } from "@heroicons/vue/outline";
 import * as InterfaceComponents from "@/components/interface";
 import { MemberBlock } from "@/components/template";
 
 export default {
+  setup: () => ({ v$: useVuelidate() }),
+
   name: "CreateOrganizationLayout",
   components: {
     Button: InterfaceComponents.Button,
@@ -154,6 +162,16 @@ export default {
         title: "",
         description: "",
         members: [],
+      },
+    };
+  },
+
+  validations() {
+    return {
+      organization: {
+        title: {
+          required,
+        },
       },
     };
   },
@@ -231,10 +249,9 @@ export default {
     },
 
     async onClickSubmit() {
-      if (this.organization.title.length < 1) {
-        this.errors.push("title");
-        return;
-      }
+      const result = await this.v$.$validate();
+      if (!result) return;
+
       const response = await api.organization.create(
         this.token,
         this.organization
