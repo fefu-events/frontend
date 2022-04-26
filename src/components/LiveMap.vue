@@ -21,7 +21,7 @@
       />
       <LMarker
         v-for="place in mapInfo"
-        :key="place.id"
+        :key="place.id + place.event_count"
         :lat-lng="[place.latitude, place.longitude]"
         @click="onClickSelectPlace(place.id, place.event_count)"
         @moveend="log_move('moveend')"
@@ -31,9 +31,7 @@
           :icon-size="iconSize"
           :icon-url="iconUrl"
         />
-        <LTooltip @click="onClickSelectPlace">
-          {{ place.event_count }} events
-        </LTooltip>
+        <LTooltip> {{ place.event_count }} events </LTooltip>
       </LMarker>
     </LMap>
   </div>
