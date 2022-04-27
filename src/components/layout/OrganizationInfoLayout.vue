@@ -263,7 +263,7 @@ export default {
   },
 
   computed: {
-    ...mapState("auth/", {
+    ...mapState("me/", {
       token: (state) => state.accessToken,
       userID: (state) => state.user.id,
       userOrgs: (state) => state.user.organizations,

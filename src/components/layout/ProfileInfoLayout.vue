@@ -138,7 +138,7 @@ export default {
       forceUpdateEventList: "forceUpdateEventList",
     }),
 
-    ...mapState("auth/", {
+    ...mapState("me/", {
       meID: (state) => state.user.id,
     }),
 

@@ -98,7 +98,7 @@ export default {
       filterParams: "filterParams",
     }),
 
-    ...mapState("auth", {
+    ...mapState("me", {
       userID: (state) => state.user?.id,
     }),
 

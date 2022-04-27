@@ -274,13 +274,13 @@ export default {
   async mounted() {
     const response = await this.$msal.silentAuth();
     if (response) {
-      await this.$store.dispatch("auth/LOGIN", response);
+      await this.$store.dispatch("me/LOGIN", response);
     }
     this.isLoaded = true;
   },
 
   computed: {
-    ...mapState("auth/", {
+    ...mapState("me/", {
       user: (state) => state.user,
     }),
 
@@ -302,7 +302,7 @@ export default {
     async signIn() {
       const response = await this.$msal.signIn();
       if (response) {
-        await this.$store.dispatch("auth/LOGIN", response);
+        await this.$store.dispatch("me/LOGIN", response);
         this.auth = true;
       }
     },
@@ -312,7 +312,7 @@ export default {
         .signOut()
         .then(() => {
           this.auth = false;
-          this.$store.dispatch("auth/LOGOUT");
+          this.$store.dispatch("me/LOGOUT");
         })
         .then(() => {
           this.infoLayouts.me = false;

@@ -281,7 +281,7 @@ export default {
       availableCategories: (state) => state.categories,
     }),
 
-    ...mapState("auth/", {
+    ...mapState("me/", {
       accessToken: (state) => state.accessToken,
       userID: (state) => state.user.id,
       availableOrganizations: (state) => state.user.organizations,
@@ -388,7 +388,7 @@ export default {
     async org(newValue) {
       if (newValue) {
         await this.$store.dispatch(
-          "auth/SET_NEW_ORGANIZATIONS",
+          "me/SET_NEW_ORGANIZATIONS",
           this.accessToken
         );
       } else {

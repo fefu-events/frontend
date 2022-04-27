@@ -147,7 +147,7 @@ export default {
       availableCategories: (state) => state.categories,
     }),
 
-    ...mapState("auth/", {
+    ...mapState("me/", {
       user: (state) => state.user,
     }),
   },

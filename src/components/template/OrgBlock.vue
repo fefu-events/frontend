@@ -40,7 +40,7 @@ export default {
   inject: ["updateOrganizations"],
 
   computed: {
-    ...mapState("auth/", {
+    ...mapState("me/", {
       userID: (state) => state.user.id,
       token: (state) => state.accessToken,
     }),

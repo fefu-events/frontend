@@ -177,7 +177,7 @@ export default {
   },
 
   computed: {
-    ...mapState("auth/", {
+    ...mapState("me/", {
       token: (state) => state.accessToken,
       meID: (state) => state.user.id,
     }),

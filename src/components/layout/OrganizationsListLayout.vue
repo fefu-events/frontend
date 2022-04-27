@@ -84,7 +84,7 @@ export default {
   },
 
   computed: {
-    ...mapState("auth/", {
+    ...mapState("me/", {
       token: (state) => state.accessToken,
       userID: (state) => state.user.id,
     }),
@@ -134,7 +134,7 @@ export default {
     forceUpdateOrganizationList(newValue) {
       if (newValue === true) {
         this.updateOrganizations();
-        this.$store.dispatch("auth/SET_NEW_ORGANIZATIONS", this.token);
+        this.$store.dispatch("me/SET_NEW_ORGANIZATIONS", this.token);
       }
       this.$store.dispatch("client/SET_FORCE_UPDATE_ORG_LIST", false);
     },

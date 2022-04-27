@@ -16,16 +16,16 @@ export default {
       commit("user", response?.data);
     },
 
+    LOGOUT({ commit }) {
+      commit("accessToken", undefined);
+      commit("user", null);
+    },
+
     async SET_NEW_ORGANIZATIONS({ commit }, token) {
       const orgs = await api.me
         .get(token)
         .then(({ data }) => data.organizations);
       commit("user_organizations", orgs);
-    },
-
-    LOGOUT({ commit }) {
-      commit("accessToken", undefined);
-      commit("user", null);
     },
   },
 

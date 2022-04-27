@@ -76,7 +76,7 @@ export default {
       availablePlaces: (state) => state.places,
     }),
 
-    ...mapState("auth", {
+    ...mapState("me", {
       user: (state) => state.user,
     }),
 
