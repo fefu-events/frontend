@@ -2,9 +2,7 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-html,
-body {
-  //TODO: настроить скроллбар для Mozila
+* {
   scrollbar-width: none;
   -webkit-tap-highlight-color: transparent;
 }
