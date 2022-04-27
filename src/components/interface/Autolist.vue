@@ -1,6 +1,6 @@
 <template>
-  <Combobox>
-    <div class="relative">
+  <div class="relative">
+    <Combobox>
       <div
         class="relative w-full text-left rounded-lg cursor-default focus:outline-none focus-visible:ring-2 sm:text-sm overflow-hidden"
       >
@@ -45,8 +45,8 @@
           <slot :filteredData="filteredData" />
         </ComboboxOptions>
       </TransitionRoot>
-    </div>
-  </Combobox>
+    </Combobox>
+  </div>
 </template>
 
 <script>
