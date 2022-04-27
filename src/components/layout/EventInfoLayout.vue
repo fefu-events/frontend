@@ -25,17 +25,15 @@
     </div>
     <div v-else class="flex flex-col h-full">
       <div
-        class="grid grid-cols-10 xl:flex pt-10 pb-4 xl:py-0 flex-row content-between items-center xl:flex-col"
+        class="flex pt-10 pb-4 xl:py-0 flex-row content-between items-center xl:flex-col"
       >
-        <div
-          class="bg-black col-span-3 xl:w-28 xl:my-7 rounded-full overflow-hidden"
-        >
+        <div class="bg-black w-28 xl:my-7 rounded-full overflow-hidden">
           <img
             class="self-center justify-self-center"
             src="@/assets/img/svg/logo.svg"
           />
         </div>
-        <div class="flex flex-col pl-5 xl:pl-0 col-span-7 xl:w-full">
+        <div class="flex flex-col pl-5 xl:pl-0 col-span-7 w-full">
           <span class="text-left text-xl xl:text-2xl mb-3 uppercase">
             {{ event?.title }}
           </span>

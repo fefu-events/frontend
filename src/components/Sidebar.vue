@@ -294,7 +294,7 @@ export default {
         if (toggle === "me") continue;
         answer += this.infoLayouts[toggle];
       }
-      return answer || this.editableEvent;
+      return answer || this.editableEvent || this.selectedOrganization;
     },
   },
 
