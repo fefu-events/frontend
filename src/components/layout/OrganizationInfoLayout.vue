@@ -115,7 +115,9 @@
                 }"
               />
             </div>
-            <hr class="border-black" />
+            <hr
+              :class="v$.orgTitle.$error ? 'border-danger' : 'border-black'"
+            />
           </div>
           <span v-else class="self-center text-2xl break-words">{{
             organization?.title
@@ -192,13 +194,19 @@
 
 <script>
 import _ from "lodash";
+import useVuelidate from "@vuelidate/core";
+import { required } from "@vuelidate/validators";
+
 import api from "@/service/api";
 import { mapState } from "vuex";
+
 import { ReplyIcon, PencilAltIcon, CheckIcon } from "@heroicons/vue/outline";
 import * as InterfaceComponents from "@/components/interface";
 import { MemberBlock, EventBlock } from "@/components/template";
 
 export default {
+  setup: () => ({ v$: useVuelidate() }),
+
   name: "OrganizationInfoLayout",
   components: {
     Button: InterfaceComponents.Button,
@@ -243,6 +251,14 @@ export default {
       orgTitle: "",
       maxDescSize: 255,
       orgDescription: "",
+    };
+  },
+
+  validations() {
+    return {
+      orgTitle: {
+        required,
+      },
     };
   },
 
@@ -410,6 +426,9 @@ export default {
 
     // Control
     async onClickAcceptEdits() {
+      const result = await this.v$.$validate();
+      if (!result) return;
+
       await api.organization.update(
         this.token,
         { title: this.orgTitle, description: this.orgDescription },
