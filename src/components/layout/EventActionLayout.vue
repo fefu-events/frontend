@@ -135,7 +135,7 @@
           class="w-full py-2 px-4 text-sm bg-transparent focus:outline-none placeholder:italic"
           placeholder="https://fefuevent.ru"
         />
-        <hr class="border-black" />
+        <hr :class="v$.event.link.$error ? 'border-danger' : 'border-black'" />
       </div>
       <!-- Organization -->
       <div v-if="!editableEvent" class="mt-4 xl:!mt-8 xl:mx-5">
@@ -195,7 +195,7 @@
 <script>
 import api from "@/service/api";
 import useVuelidate from "@vuelidate/core";
-import { required } from "@vuelidate/validators";
+import { required, url } from "@vuelidate/validators";
 import { mapState } from "vuex";
 import {
   Autolist,
@@ -266,6 +266,10 @@ export default {
 
         selectedCategory: {
           required,
+        },
+
+        link: {
+          url,
         },
       },
     };
