@@ -94,17 +94,11 @@ export default {
     }),
 
     filteredOrganizations() {
-      let organizations = [];
-      if (this.adminType) {
-        organizations = this.organizations.filter(
-          (org) => org.owner_id === this.userID
-        );
-      } else {
-        organizations = this.organizations.filter(
-          (org) => org.owner_id !== this.userID
-        );
-      }
-      return organizations;
+      return this.organizations.filter((org) =>
+        this.adminType
+          ? org.owner_id === this.userID
+          : org.owner_id !== this.userID
+      );
     },
   },
 
@@ -120,9 +114,7 @@ export default {
     async updateOrganizations() {
       this.organizations = await api.user
         .getByUserID(this.userID)
-        .then(({ data }) => {
-          return data.organizations;
-        });
+        .then(({ data }) => data.organizations);
     },
 
     openCreateOrganizationPage() {

@@ -104,7 +104,7 @@
     <div
       class="right-sidebar"
       :class="{
-        'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.me || selectedUser,
+        'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.me,
       }"
     >
       <ProfileInfoLayout v-if="meID" :userID="meID" :signOut="signOut" />
@@ -181,7 +181,12 @@
         'h-9/10 xl:h-[85%] xl:!w-90 outline': selectedUser,
       }"
     >
-      <ProfileInfoLayout v-if="selectedUser" :userID="selectedUser" />
+      <ProfileInfoLayout
+        v-if="selectedUser"
+        :key="selectedUser"
+        :userID="selectedUser"
+        :signOut="signOut"
+      />
     </div>
   </div>
 

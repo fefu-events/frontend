@@ -224,10 +224,6 @@ export default {
   },
 
   watch: {
-    user() {
-      this.page = 1;
-      this.updateEventList();
-    },
     forceUpdateEventList(newValue) {
       if (newValue === true) {
         this.updateEventList();

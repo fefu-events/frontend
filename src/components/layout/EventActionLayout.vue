@@ -310,6 +310,13 @@ export default {
         )?.title || null
       );
     },
+
+    normalizeTags() {
+      return this.event.tags
+        .split(" ")
+        .map((tag) => (tag.includes("#") ? tag.slice(1) : tag))
+        .join(" ");
+    },
   },
 
   async mounted() {
@@ -347,6 +354,7 @@ export default {
       const result = await this.validate();
       if (!result) return;
 
+      this.event.tags = this.normalizeTags;
       const response = await api.event.create(this.accessToken, this.event);
       if (response.status === 201) {
         this.$emit("rerender");
@@ -372,6 +380,7 @@ export default {
       const result = await this.validate();
       if (!result) return;
 
+      this.event.tags = this.normalizeTags;
       const response = await api.event.update(
         this.accessToken,
         this.event,

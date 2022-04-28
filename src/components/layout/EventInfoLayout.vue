@@ -100,7 +100,7 @@
               v-for="tag in event?.tags"
               :key="tag"
               @click="storeTag(tag)"
-              class="px-2 mr-2 mt-2 border border-black rounded hover:bg-primary hover:border-primary hover:text-white hover:cursor-pointer"
+              class="px-2 mr-2 mb-2 border border-black rounded hover:bg-primary hover:border-primary hover:text-white hover:cursor-pointer"
               :class="{
                 'bg-primary border-primary text-white hover:bg-transparent hover:border-black hover:text-black':
                   tags.includes(tag),

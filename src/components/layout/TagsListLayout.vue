@@ -20,7 +20,9 @@
               @click="removeTag(tag)"
             />
           </div>
-          <span>#{{ tag }}</span>
+          <div class="px-2 border border-black rounded">
+            <span>#{{ tag }}</span>
+          </div>
         </div>
       </div>
     </div>

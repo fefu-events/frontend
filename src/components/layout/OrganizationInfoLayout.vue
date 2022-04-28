@@ -275,10 +275,6 @@ export default {
       userOrgs: (state) => state.user?.organizations,
     }),
 
-    isFollowing() {
-      return true;
-    },
-
     filteredAddUsers() {
       return this.users.filter(
         (user) =>
