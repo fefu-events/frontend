@@ -37,8 +37,10 @@ const endpoints = {
       },
     }),
 
-  getByID: (organizationID) =>
-    axios.get(`/api/organization/${organizationID}/`),
+  getByOrganizationID: (organizationID, token) =>
+    axios.get(`/api/organization/${organizationID}/`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    }),
 
   promoteMember: (token, memberID, organizationID) =>
     axios.post(

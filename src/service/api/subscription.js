@@ -1,11 +1,9 @@
 import axios from "axios";
 
 const endpoints = {
-  getFollowersByUserID: (userID) =>
-    axios.get(`/api/user/${userID}/followers/`),
+  getFollowersByUserID: (userID) => axios.get(`/api/user/${userID}/followers/`),
 
-  getFollowingByUserID: (userID) =>
-    axios.get(`/api/user/${userID}/following/`),
+  getFollowingByUserID: (userID) => axios.get(`/api/user/${userID}/following/`),
 
   addOrganization: (token, organizationID) =>
     axios.post(

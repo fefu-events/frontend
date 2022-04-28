@@ -46,7 +46,7 @@
         <div
           class="px-5 xl:px-0 hover:bg-hoverColor cursor-pointer"
           v-for="member in organization?.members"
-          @click="onClickSelectUser(member)"
+          @click="onClickSelectUser(member.id)"
           :key="member"
         >
           <MemberBlock
@@ -173,12 +173,18 @@
           <span> Выйти из организации </span>
         </Button>
         <Button
-          v-if="!isMember"
+          v-if="!isMember && userID"
           class="mx-10 mt-3"
+          :class="{
+            'hover:border-danger hover:text-danger':
+              organization?.am_i_following,
+          }"
           :disabled="isAdmin"
-          @click="onClickLeave"
+          @click="onClickSubscription"
         >
-          <span> Подписаться </span>
+          <span>
+            {{ organization?.am_i_following ? "Отписаться" : "Подписаться" }}
+          </span>
         </Button>
         <Button
           class="mx-10 my-0 hover:border-danger hover:text-danger"
@@ -243,7 +249,7 @@ export default {
 
       membersList: false,
 
-      toggleRequest: true,
+      debounceToggle: true,
       editMode: false,
 
       organization: null,
@@ -265,9 +271,13 @@ export default {
   computed: {
     ...mapState("me/", {
       token: (state) => state.accessToken,
-      userID: (state) => state.user.id,
-      userOrgs: (state) => state.user.organizations,
+      userID: (state) => state.user?.id,
+      userOrgs: (state) => state.user?.organizations,
     }),
+
+    isFollowing() {
+      return true;
+    },
 
     filteredAddUsers() {
       return this.users.filter(
@@ -289,7 +299,9 @@ export default {
     },
 
     isMember() {
-      return this.userOrgs.map((org) => org.id).includes(this.organization?.id);
+      return this.userOrgs
+        ?.map((org) => org.id)
+        .includes(this.organization?.id);
     },
 
     allPanelClosed() {
@@ -304,7 +316,7 @@ export default {
   methods: {
     async initOrganization() {
       this.organization = await api.organization
-        .getByID(this.organizationID)
+        .getByOrganizationID(this.organizationID, this.token)
         .then(({ data }) => data);
       this.orgTitle = this.organization.title;
       this.orgDescription = this.organization.description;
@@ -331,7 +343,7 @@ export default {
     },
 
     async handleScroll(listType) {
-      if (!this.toggleRequest) return;
+      if (!this.debounceToggle) return;
 
       const refList = this.$refs[listType];
       const scrolling = refList.scrollTop + refList.clientHeight;
@@ -339,7 +351,7 @@ export default {
 
       if (scrolling >= refList.scrollHeight && limitData) {
         let data = [];
-        this.toggleRequest = false;
+        this.debounceToggle = false;
         if (listType === "users") {
           data = await this.loadEventsList(this.users_page * 10);
         } else {
@@ -381,7 +393,7 @@ export default {
 
     async loadUsersList(skip) {
       return await api.user.getAll(skip, this.userQuery).then(({ data }) => {
-        this.toggleRequest = true;
+        this.debounceToggle = true;
         return data;
       });
     },
@@ -390,7 +402,7 @@ export default {
       return await api.event
         .getByOrganizationID(skip, this.organizationID, this.eventQuery)
         .then(({ data }) => {
-          this.toggleRequest = true;
+          this.debounceToggle = true;
           return data;
         });
     },
@@ -436,6 +448,18 @@ export default {
       );
       this.initOrganization();
       this.editMode = false;
+    },
+
+    async onClickSubscription() {
+      if (!this.organization.am_i_following) {
+        await api.subscription.addOrganization(this.token, this.organizationID);
+      } else {
+        await api.subscription.removeOrganization(
+          this.token,
+          this.organizationID
+        );
+      }
+      this.organization.am_i_following = !this.organization.am_i_following;
     },
 
     async onClickLeave() {

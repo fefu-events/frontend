@@ -9,7 +9,11 @@ const endpoints = {
         search_query: query,
       },
     }),
-  getByUserID: (userID) => axios.get(`/api/user/${userID}/`),
+
+  getByUserID: (userID, token) =>
+    axios.get(`/api/user/${userID}/`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    }),
 };
 
 export default endpoints;

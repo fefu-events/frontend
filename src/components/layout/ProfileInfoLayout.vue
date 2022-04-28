@@ -77,8 +77,15 @@
     <Button v-if="isMe" class="mt-auto mx-10 mb-10" @click="signOut">
       <span> Выйти </span>
     </Button>
-    <Button v-else class="mt-auto mx-10 mb-10">
-      <span> Подписаться </span>
+    <Button
+      v-if="!isMe && meID"
+      class="mt-auto mx-10 mb-10"
+      :class="{
+        'hover:border-danger hover:text-danger': user?.am_i_following,
+      }"
+      @click="onClickSubscription"
+    >
+      <span> {{ user?.am_i_following ? "Отписаться" : "Подписаться" }} </span>
     </Button>
   </div>
 </template>
@@ -114,7 +121,7 @@ export default {
   },
 
   props: {
-    user: Object,
+    userID: Number,
     signOut: Function,
   },
 
@@ -130,6 +137,8 @@ export default {
     return {
       page: 1,
       events: [],
+
+      user: null,
     };
   },
 
@@ -139,11 +148,12 @@ export default {
     }),
 
     ...mapState("me/", {
-      meID: (state) => state.user.id,
+      token: (state) => state.accessToken,
+      meID: (state) => state.user?.id,
     }),
 
     isMe() {
-      return this.user.id === this.meID;
+      return this.userID === this.meID;
     },
 
     skip() {
@@ -152,6 +162,10 @@ export default {
   },
 
   async mounted() {
+    this.user = await api.user
+      .getByUserID(this.userID, this.token)
+      .then(({ data }) => data);
+
     await this.updateEventList();
     const eventsList = this.$refs.events;
     if (eventsList)
@@ -172,7 +186,7 @@ export default {
 
     async updateEventList() {
       this.events = await api.event
-        .getByUserID(0, this.user?.id)
+        .getByUserID(0, this.userID)
         .then((response) => response.data);
     },
 
@@ -183,7 +197,7 @@ export default {
         scrolling >= eventsList.scrollHeight &&
         this.events.length >= this.page * 10
       ) {
-        const { data } = await api.event.getByUserID(this.skip, this.user?.id);
+        const { data } = await api.event.getByUserID(this.skip, this.userID);
         this.events = this.events.concat(data);
         this.page++;
       }
@@ -191,6 +205,15 @@ export default {
 
     selectEvent(eventID) {
       this.onClickSelectEvent(eventID);
+    },
+
+    async onClickSubscription() {
+      if (!this.user.am_i_following) {
+        await api.subscription.addUser(this.token, this.userID);
+      } else {
+        await api.subscription.removeUser(this.token, this.userID);
+      }
+      this.user.am_i_following = !this.user.am_i_following;
     },
   },
 

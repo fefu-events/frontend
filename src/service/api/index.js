@@ -4,6 +4,7 @@ import map from "./map";
 import me from "./me";
 import organization from "./organization";
 import participation from "./participation";
+import subscription from "./subscription";
 import user from "./user";
 
 const api = {
@@ -13,6 +14,7 @@ const api = {
   me,
   organization,
   participation,
+  subscription,
   user,
 };
 
