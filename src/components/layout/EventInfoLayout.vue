@@ -199,7 +199,7 @@ export default {
       if (this.event?.organization?.id) {
         this.onClickSelectOrganization(this.event?.organization.id);
       } else {
-        this.onClickSelectUser(this.event.user);
+        this.onClickSelectUser(this.event.user.id);
       }
     },
   },

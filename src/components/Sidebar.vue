@@ -71,7 +71,7 @@
   >
     <!-- Navigation -->
     <div v-if="isLoaded" class="hidden xl:block fixed top-10 right-10 w-max">
-      <section v-if="user">
+      <section v-if="meID">
         <Button
           class="w-15 h-15 mx-5 !my-0 bg-white"
           @click="onClickEventActionToggle()"
@@ -107,11 +107,7 @@
         'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.me || selectedUser,
       }"
     >
-      <ProfileInfoLayout
-        v-if="selectedUser || user"
-        :user="selectedUser || user"
-        :signOut="signOut"
-      />
+      <ProfileInfoLayout v-if="meID" :userID="meID" :signOut="signOut" />
     </div>
     <!-- Organizations list layout -->
     <div
@@ -165,7 +161,7 @@
         'h-9/10 xl:h-[85%] xl:!w-90 outline': selectedUser,
       }"
     >
-      <ProfileInfoLayout v-if="selectedUser" :user="selectedUser" />
+      <ProfileInfoLayout v-if="selectedUser" :userID="selectedUser" />
     </div>
   </div>
 
@@ -174,7 +170,7 @@
     class="xl:hidden z-500 fixed bottom-0 flex flex-row h-10 w-screen bg-white border-y border-black items-center mx-auto"
   >
     <div
-      v-if="user"
+      v-if="meID"
       class="flex-1 hover:text-primary"
       @click.stop="onClickUserInfoToggle"
     >
@@ -187,7 +183,7 @@
       <SearchIcon class="w-full h-5" />
     </div>
     <div
-      v-if="user"
+      v-if="meID"
       class="flex-1 hover:text-primary"
       @click="onClickEventActionToggle"
     >
@@ -281,7 +277,7 @@ export default {
 
   computed: {
     ...mapState("me/", {
-      user: (state) => state.user,
+      meID: (state) => state.user?.id,
     }),
 
     ...mapState("filter/", {
@@ -338,8 +334,8 @@ export default {
       this.selectedOrganization = id;
     },
 
-    onClickSelectUser(user) {
-      this.selectedUser = user;
+    onClickSelectUser(userID) {
+      this.selectedUser = userID;
     },
 
     // LEFT SIDEBAR ACTIONS
@@ -397,7 +393,7 @@ export default {
       this.eventActionLayout = false;
 
       // main actions
-      if (this.selectedUser && this.selectedUser.id == this.user.id) {
+      if (this.selectedUser && this.selectedUser == this.meID) {
         this.selectedUser = null;
         return;
       } else {

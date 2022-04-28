@@ -179,7 +179,7 @@ export default {
   computed: {
     ...mapState("me/", {
       token: (state) => state.accessToken,
-      meID: (state) => state.user.id,
+      meID: (state) => state.user?.id,
     }),
 
     filteredAddUsers() {

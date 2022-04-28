@@ -41,7 +41,7 @@ export default {
 
   computed: {
     ...mapState("me/", {
-      userID: (state) => state.user.id,
+      userID: (state) => state.user?.id,
       token: (state) => state.accessToken,
     }),
   },

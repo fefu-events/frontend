@@ -1,10 +1,10 @@
 import axios from "axios";
 
 const endpoints = {
-  getInfo: (data, user) => {
+  getInfo: (data, userID) => {
     const queryParams = {
       title: data.query,
-      for_user_id: user?.id,
+      for_user_id: userID,
       category_ids: data.categories,
       place_ids: data.places,
       subscriptions: data.followToggle,

@@ -283,7 +283,7 @@ export default {
 
     ...mapState("me/", {
       accessToken: (state) => state.accessToken,
-      userID: (state) => state.user.id,
+      userID: (state) => state.user?.id,
       availableOrganizations: (state) => state.user.organizations,
     }),
 
