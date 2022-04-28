@@ -1,9 +1,9 @@
 import axios from "axios";
 
 const endpoints = {
-  part: (token, event_id) =>
+  part: (token, eventID) =>
     axios.post(
-      `/api/event/${event_id}/participant/`,
+      `/api/event/${eventID}/participant/`,
       {},
       {
         headers: {
@@ -12,8 +12,8 @@ const endpoints = {
       }
     ),
 
-  nonpart: (token, event_id) =>
-    axios.delete(`/api/event/${event_id}/participant/`, {
+  nonpart: (token, eventID) =>
+    axios.delete(`/api/event/${eventID}/participant/`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
