@@ -6,3 +6,5 @@ export { default as FilterLayout } from "./FilterLayout.vue";
 export { default as OrganizationInfoLayout } from "./OrganizationInfoLayout.vue";
 export { default as OrganizationsListLayout } from "./OrganizationsListLayout.vue";
 export { default as ProfileInfoLayout } from "./ProfileInfoLayout.vue";
+export { default as SubscriptionsListLayout } from "./SubscriptionsListLayout.vue";
+export { default as TagsListLayout } from "./TagsListLayout.vue";

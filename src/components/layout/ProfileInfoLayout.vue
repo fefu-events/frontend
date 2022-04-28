@@ -23,17 +23,23 @@
     <!-- Bookmarks -->
     <div v-if="isMe" class="mx-5 mt-8">
       <ul>
-        <li class="flex flex-row my-5 font-bold cursor-pointer group">
+        <li
+          class="flex flex-row my-5 font-bold cursor-pointer group"
+          @click="openBookmark('tags')"
+        >
           <HashtagIcon class="w-5 h-5 mx-2" />
           <span class="group-hover:text-primary">Мои теги</span>
         </li>
-        <li class="flex flex-row my-5 font-bold cursor-pointer group">
+        <li
+          class="flex flex-row my-5 font-bold cursor-pointer group"
+          @click="openBookmark('subscriptions')"
+        >
           <UserIcon class="w-5 h-5 mx-2" />
           <span class="group-hover:text-primary"> Мои подписки </span>
         </li>
         <li
           class="flex flex-row my-5 font-bold cursor-pointer group"
-          @click="openOrganizationsList"
+          @click="openBookmark('myOrgs')"
         >
           <UserGroupIcon class="w-5 h-5 mx-2" />
           <span class="group-hover:text-primary">Мои организации</span>
@@ -180,8 +186,8 @@ export default {
       this.onClickSelectUser(null);
     },
 
-    openOrganizationsList() {
-      this.onClickRightsToggle("myOrgs");
+    openBookmark(bookmark) {
+      this.onClickRightsToggle(bookmark);
     },
 
     async updateEventList() {

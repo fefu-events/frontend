@@ -7,12 +7,27 @@ const endpoints = {
         Authorization: `Bearer ${token}`,
       },
     }),
+
   get: (token) =>
     axios.get("/api/me/", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     }),
+
+  update: (token, tags) =>
+    axios.put(
+      "/api/me/",
+      {
+        tags: tags,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    ),
+
   register: (token) =>
     axios.post(
       "/api/me/",

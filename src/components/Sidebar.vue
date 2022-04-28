@@ -109,6 +109,26 @@
     >
       <ProfileInfoLayout v-if="meID" :userID="meID" :signOut="signOut" />
     </div>
+
+    <!-- Subscriptions list layout -->
+    <div
+      class="right-sidebar"
+      :class="{
+        'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.tags,
+      }"
+    >
+      <TagsListLayout v-if="infoLayouts.tags" />
+    </div>
+
+    <!-- Tags list layout -->
+    <div
+      class="right-sidebar"
+      :class="{
+        'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.subscriptions,
+      }"
+    >
+      <SubscriptionsListLayout v-if="infoLayouts.subscriptions" />
+    </div>
     <!-- Organizations list layout -->
     <div
       class="right-sidebar"
@@ -216,6 +236,8 @@ export default {
     EventInfoLayout: LayoutComponents.EventInfoLayout,
     EventsListLayout: LayoutComponents.EventsListLayout,
     ProfileInfoLayout: LayoutComponents.ProfileInfoLayout,
+    TagsListLayout: LayoutComponents.TagsListLayout,
+    SubscriptionsListLayout: LayoutComponents.SubscriptionsListLayout,
     OrganizationsListLayout: LayoutComponents.OrganizationsListLayout,
     OrganizationInfoLayout: LayoutComponents.OrganizationInfoLayout,
     CreateOrganizationLayout: LayoutComponents.CreateOrganizationLayout,
@@ -263,6 +285,8 @@ export default {
         me: false,
         myOrgs: false,
         createOrg: false,
+        tags: false,
+        subscriptions: false,
       },
     };
   },

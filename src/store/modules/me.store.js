@@ -27,6 +27,11 @@ export default {
         .then(({ data }) => data.organizations);
       commit("user_organizations", orgs);
     },
+
+    async SET_NEW_TAGS({ commit }, token) {
+      const tags = await api.me.get(token).then(({ data }) => data.tags);
+      commit("user_tags", tags);
+    },
   },
 
   mutations: {
@@ -35,6 +40,9 @@ export default {
     },
     user(state, payload) {
       state.user = payload;
+    },
+    user_tags(state, payload) {
+      state.user.tags = payload;
     },
     accessToken(state, payload) {
       state.accessToken = payload;

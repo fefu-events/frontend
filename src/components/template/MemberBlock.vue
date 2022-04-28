@@ -66,11 +66,16 @@ export default {
       type: Boolean,
       default: false,
     },
+    subscriptionMode: {
+      type: Boolean,
+      default: false,
+    },
     addMemberToArray: Function,
     removeMemberFromArray: Function,
     promoteMember: Function,
     addMember: Function,
     removeMember: Function,
+    unfollowMember: Function,
     user: Object,
   },
 
@@ -85,6 +90,10 @@ export default {
       }
     },
     async removeMember_() {
+      if (this.subscriptionMode) {
+        this.unfollowMember(this.user.id);
+        return;
+      }
       if (this.createMode) {
         this.removeMemberFromArray(this.user);
       } else {
