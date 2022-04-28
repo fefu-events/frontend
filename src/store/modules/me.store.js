@@ -28,8 +28,7 @@ export default {
       commit("user_organizations", orgs);
     },
 
-    async SET_NEW_TAGS({ commit }, token) {
-      const tags = await api.me.get(token).then(({ data }) => data.tags);
+    async SET_NEW_TAGS({ commit }, tags) {
       commit("user_tags", tags);
     },
   },

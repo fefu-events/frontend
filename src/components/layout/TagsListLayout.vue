@@ -57,7 +57,7 @@ export default {
     async removeTag(tag) {
       const tags = this.tags.filter((tag_) => tag_ !== tag);
       await api.me.update(this.token, tags);
-      this.$store.dispatch("me/SET_NEW_TAGS", this.token);
+      this.$store.dispatch("me/SET_NEW_TAGS", tags);
     },
   },
 };

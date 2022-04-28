@@ -99,9 +99,14 @@
             <div
               v-for="tag in event?.tags"
               :key="tag"
+              @click="storeTag(tag)"
               class="px-2 mr-2 mt-2 border border-black rounded hover:bg-primary hover:border-primary hover:text-white hover:cursor-pointer"
+              :class="{
+                'bg-primary border-primary text-white hover:bg-transparent hover:border-black hover:text-black':
+                  tags.includes(tag),
+              }"
             >
-              <span class="">#{{ tag }}</span>
+              <span>#{{ tag }}</span>
             </div>
           </div>
           <div v-if="event?.url" class="flex items-center my-4">
@@ -169,6 +174,7 @@ export default {
   computed: {
     ...mapState("me", {
       token: (state) => state.accessToken,
+      tags: (state) => state.user?.tags,
     }),
 
     normalizedDate() {
@@ -184,6 +190,17 @@ export default {
   },
 
   methods: {
+    async storeTag(tag) {
+      let newTags = this.tags.slice(0);
+      if (newTags.includes(tag)) {
+        newTags = this.tags.filter((tag_) => tag_ !== tag);
+      } else {
+        newTags.push(tag);
+      }
+      await api.me.update(this.token, newTags);
+      this.$store.dispatch("me/SET_NEW_TAGS", newTags);
+    },
+
     takePart() {
       if (!this.event.am_i_participation) {
         this.event.participant_count += 1;
