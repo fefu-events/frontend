@@ -30,21 +30,23 @@ TODO
 
 # Структура проекта
 ```
-public
-src
-├───assets
-│   ├───css
-│   ├───img
-│   │   └───svg
-│   └───json
-├───components
-│   ├───interface
-│   ├───layout
-│   └───template
-├───router
-├───service
-│   └───auth
-├───store
-│   └───modules
-└───views
+├───public
+└───src
+    ├───assets
+    │   ├───css
+    │   ├───img
+    │   │   └───svg
+    │   └───json
+    ├───components
+    │   ├───icon
+    │   ├───interface
+    │   ├───layout
+    │   └───template
+    ├───router
+    ├───service
+    │   ├───api
+    │   └───auth
+    ├───store
+    │   └───modules
+    └───views
 ```
