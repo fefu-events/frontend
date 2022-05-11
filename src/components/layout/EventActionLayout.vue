@@ -200,6 +200,7 @@
 </template>
 
 <script>
+import _ from "lodash";
 import api from "@/service/api";
 import useVuelidate from "@vuelidate/core";
 import { required, url } from "@vuelidate/validators";
@@ -400,7 +401,7 @@ export default {
   },
 
   watch: {
-    async org(newValue) {
+    org: _.debounce(async function (newValue) {
       if (newValue) {
         await this.$store.dispatch(
           "me/SET_NEW_ORGANIZATIONS",
@@ -409,7 +410,7 @@ export default {
       } else {
         this.event.selectedOrganization = null;
       }
-    },
+    }, 500),
   },
 };
 </script>

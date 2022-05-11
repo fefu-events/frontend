@@ -156,6 +156,7 @@ export default {
       maxTitleSize: 50,
       maxDescSize: 255,
 
+      debounceToggle: true,
       errors: [],
 
       organization: {
@@ -218,13 +219,20 @@ export default {
     },
 
     async handleScroll() {
+      if (!this.debounceToggle) return;
+
       const refUsersList = this.$refs.users;
       const scrolling = refUsersList.scrollTop + refUsersList.clientHeight;
-      if (
-        scrolling >= refUsersList.scrollHeight &&
-        this.users.length >= this.page * 10
-      ) {
-        const { data } = await api.user.getAll(this.page * 10, this.userQuery);
+      const limitData = this.users.length >= this.page * 10;
+
+      if (scrolling >= refUsersList.scrollHeight && limitData) {
+        this.debounceToggle = false;
+        const data = await api.user
+          .getAll(this.page * 10, this.userQuery)
+          .then(({ data }) => {
+            this.debounceToggle = true;
+            return data;
+          });
         this.users = this.users.concat(data);
         this.page++;
       }

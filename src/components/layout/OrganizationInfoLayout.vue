@@ -16,7 +16,7 @@
       <!-- Search input -->
       <Search
         class="mx-5 mt-4"
-        @update="(value) => (eventQuery = value)"
+        @update="(value) => (userQuery = value)"
         :placeholder="'Поиск'"
       />
       <div class="mb-4 overflow-y-scroll" ref="users">
@@ -78,7 +78,7 @@
       <div class="mb-4 overflow-y-scroll" ref="events">
         <div
           class="px-5 xl:px-5 hover:bg-hoverColor cursor-pointer"
-          v-for="event in filteredEvents"
+          v-for="event in events"
           :key="event"
           @click="selectEvent(event.id)"
         >
@@ -306,12 +306,6 @@ export default {
       );
     },
 
-    filteredEvents() {
-      return this.events.filter((event) =>
-        event.title.toLowerCase().includes(this.eventQuery)
-      );
-    },
-
     isOwner() {
       return this.organization?.owner_id === this.userID;
     },
@@ -371,7 +365,7 @@ export default {
         let data = [];
         this.debounceToggle = false;
         if (listType === "users") {
-          data = await this.loadEventsList(this.users_page * 10);
+          data = await this.loadUsersList(this.users_page * 10);
         } else {
           data = await this.loadEventsList(this.events_page * 10);
         }
@@ -517,11 +511,8 @@ export default {
   },
 
   beforeUnmount() {
-    if (this.addUsersList) {
-      this.removeHandleScroll(this.$refs.users);
-    } else if (this.eventsList) {
-      this.removeHandleScroll(this.$refs.events);
-    }
+    this.removeHandleScroll(this.$refs.users);
+    this.removeHandleScroll(this.$refs.events);
   },
 
   watch: {
@@ -531,14 +522,14 @@ export default {
         this[`${list}List`] = false;
     },
 
-    userQuery: _.debounce(function () {
+    userQuery: _.debounce(async function () {
       this.users_page = 1;
-      this.loadUsersList(0);
+      this.users = await this.loadUsersList(0);
     }, 500),
 
-    eventQuery: _.debounce(function () {
+    eventQuery: _.debounce(async function () {
       this.events_page = 1;
-      this.loadEventsList(0);
+      this.events = await this.loadEventsList(0);
     }, 500),
   },
 };

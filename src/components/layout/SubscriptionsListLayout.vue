@@ -7,7 +7,7 @@
     >
       <ReplyIcon class="w-10 h-10 stroke-1" />
     </div>
-    <div class="mt-10 mb-5 font-bold text-lg">
+    <div class="mt-10 mb-5 mx-5 font-bold text-lg">
       <span>Мои подписки</span>
     </div>
     <div class="overflow-y-scroll mb-4">
