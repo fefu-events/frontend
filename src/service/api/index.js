@@ -6,6 +6,7 @@ import organization from "./organization";
 import participation from "./participation";
 import subscription from "./subscription";
 import user from "./user";
+import verification from "./verification";
 
 const api = {
   client,
@@ -16,6 +17,7 @@ const api = {
   participation,
   subscription,
   user,
+  verification,
 };
 
 export default api;

@@ -5,7 +5,13 @@
         <div class="min-w-[40px] mr-3 rounded-full overflow-hidden">
           <img class="w-10 h-10 bg-gray-dark" />
         </div>
-        <div class="text-left text-lg">
+        <div
+          class="text-left text-lg"
+          :class="{
+            'after:mx-2 after:content-[\'✓\'] after:text-primary':
+              organization?.is_verified,
+          }"
+        >
           <span> {{ organization.title }} </span>
         </div>
       </div>

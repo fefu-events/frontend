@@ -54,7 +54,14 @@
               <div class="self-baseline mr-4 my-1">
                 <UserGroupIcon class="w-5 h-5" />
               </div>
-              <span class="cursor-pointer" @click="showOrganizatorInfo">
+              <span
+                class="cursor-pointer"
+                @click="showOrganizatorInfo"
+                :class="{
+                  'after:mx-2 after:content-[\'✓\'] after:text-primary':
+                    event?.organization?.is_verified,
+                }"
+              >
                 {{
                   event?.organization
                     ? event?.organization.title

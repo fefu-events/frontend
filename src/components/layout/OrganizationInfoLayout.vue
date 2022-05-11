@@ -40,7 +40,7 @@
       </div>
       <!-- Add members -->
       <Button
-        v-if="isAdmin || userPerms"
+        v-if="isOwner || userPerms"
         class="mx-10 my-7"
         @click="openAddUserList"
       >
@@ -55,9 +55,9 @@
         >
           <MemberBlock
             :user="member"
-            :removeMode="(isAdmin || userPerms) && member.id != userID"
+            :removeMode="(isOwner || userPerms) && member.id != userID"
             :removeMember="removeMember"
-            :promoteMode="(isAdmin || userPerms) && member.id != userID"
+            :promoteMode="(isOwner || userPerms) && member.id != userID"
             :promoteMember="promoteMember"
           />
         </div>
@@ -85,7 +85,7 @@
           <EventBlock
             class="px-2"
             :event="event"
-            :edit="isAdmin || userPerms"
+            :edit="isOwner || userPerms"
             :onClickSelectEditEvent="onClickSelectEditEvent"
           />
         </div>
@@ -123,9 +123,16 @@
               :class="v$.orgTitle.$error ? 'border-danger' : 'border-black'"
             />
           </div>
-          <span v-else class="self-center text-2xl break-words">{{
-            organization?.title
-          }}</span>
+          <span
+            v-else
+            class="self-center text-2xl break-words"
+            :class="{
+              'after:mx-2 after:content-[\'✓\'] after:text-primary':
+                organization?.is_verified,
+            }"
+          >
+            {{ organization?.title }}
+          </span>
         </div>
       </div>
       <!-- Description -->
@@ -149,12 +156,12 @@
           {{ organization?.description }}
         </p>
         <PencilAltIcon
-          v-if="(isAdmin || userPerms) && !editMode"
+          v-if="(isOwner || userPerms) && !editMode"
           class="absolute bottom-0 -right-5 w-7 h-7 hover:text-primary cursor-pointer"
           @click="editMode = true"
         />
         <CheckIcon
-          v-else-if="(isAdmin || userPerms) && editMode"
+          v-else-if="(isOwner || userPerms) && editMode"
           class="absolute bottom-0 -right-5 w-7 h-7 hover:text-primary cursor-pointer"
           @click="onClickAcceptEdits"
         />
@@ -169,9 +176,18 @@
           <span> Список участников </span>
         </Button>
         <Button
+          v-if="isAdmin"
+          class="mx-10 mb-0 mt-3"
+          @click="verifyOrganization"
+        >
+          <span>
+            {{ organization?.is_verified ? "Аннулировать" : "Верифицировать" }}
+          </span>
+        </Button>
+        <Button
           v-if="isMember"
           class="mx-10 my-3"
-          :disabled="isAdmin"
+          :disabled="isOwner"
           @click="onClickLeave"
         >
           <span> Выйти из организации </span>
@@ -183,7 +199,7 @@
             'hover:border-danger hover:text-danger':
               organization?.am_i_following,
           }"
-          :disabled="isAdmin"
+          :disabled="isOwner"
           @click="onClickSubscription"
         >
           <span>
@@ -192,7 +208,7 @@
         </Button>
         <Button
           class="mx-10 my-0 hover:border-danger hover:text-danger"
-          v-if="isAdmin || userPerms"
+          v-if="isOwner || userPerms"
           @click="onClickDelete"
         >
           <span> Удалить организацию </span>
@@ -277,6 +293,7 @@ export default {
       token: (state) => state.accessToken,
       userID: (state) => state.user?.id,
       userPerms: (state) => state.user?.is_admin || state.user?.is_moderator,
+      isAdmin: (state) => state.user?.is_admin,
       userOrgs: (state) => state.user?.organizations,
     }),
 
@@ -295,7 +312,7 @@ export default {
       );
     },
 
-    isAdmin() {
+    isOwner() {
       return this.organization?.owner_id === this.userID;
     },
 
@@ -380,6 +397,13 @@ export default {
       this.users = await this.loadUsersList(0);
     },
 
+    async loadUsersList(skip) {
+      return await api.user.getAll(skip, this.userQuery).then(({ data }) => {
+        this.debounceToggle = true;
+        return data;
+      });
+    },
+
     // Events List
     async openEventList() {
       this.eventsList = true;
@@ -390,13 +414,6 @@ export default {
           _.debounce(() => this.handleScroll("events"), 100)
         );
       this.events = await this.loadEventsList(0);
-    },
-
-    async loadUsersList(skip) {
-      return await api.user.getAll(skip, this.userQuery).then(({ data }) => {
-        this.debounceToggle = true;
-        return data;
-      });
     },
 
     async loadEventsList(skip) {
@@ -450,6 +467,21 @@ export default {
       this.organization.am_i_following = !this.organization.am_i_following;
     },
 
+    async verifyOrganization() {
+      if (this.organization?.is_verified) {
+        await api.verification.organizationUnverify(
+          this.token,
+          this.organizationID
+        );
+      } else {
+        await api.verification.organizationVerify(
+          this.token,
+          this.organizationID
+        );
+      }
+      this.initOrganization();
+    },
+
     async onClickAcceptEdits() {
       const result = await this.v$.$validate();
       if (!result) return;
@@ -474,14 +506,13 @@ export default {
     },
 
     async onClickDelete() {
-      if (!window.confirm("Ты действительно хочешь удалить организацию?"))
-        return;
-      await api.organization
-        .delete(this.token, this.organizationID)
-        .then(() => {
-          this.onClickSelectOrganization(null);
-          this.$emit("rerender");
-        });
+      if (window.confirm("Ты действительно хочешь удалить организацию?"))
+        await api.organization
+          .delete(this.token, this.organizationID)
+          .then(() => {
+            this.onClickSelectOrganization(null);
+            this.$emit("rerender");
+          });
     },
   },
 

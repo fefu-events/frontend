@@ -161,7 +161,14 @@
                   :value="organization.id"
                   v-model="event.selectedOrganization"
                 />
-                <span class="ml-2">{{ organization.title }}</span>
+                <span
+                  class="ml-2"
+                  :class="{
+                    'after:mx-2 after:content-[\'✓\'] after:text-primary':
+                      organization.is_verified,
+                  }"
+                  >{{ organization.title }}</span
+                >
               </label>
             </div>
           </Disclosure>
