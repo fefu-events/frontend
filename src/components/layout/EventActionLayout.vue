@@ -305,7 +305,7 @@ export default {
 
     selectedOrganizationLabel() {
       return (
-        this.availableOrganizations.find(
+        this.availableOrganizations?.find(
           (organization) => organization.id == this.event.selectedOrganization
         )?.title || null
       );
@@ -359,7 +359,6 @@ export default {
       if (response.status === 201) {
         this.$emit("rerender");
         this.onClickEventActionToggle();
-        this.$store.dispatch("client/SET_FORCE_UPDATE_EVENT_LIST", true);
       }
     },
 
@@ -371,8 +370,8 @@ export default {
         this.editableEvent
       );
       if (response.status === 200) {
+        this.$emit("rerender");
         this.onClickSelectEditEvent(null);
-        this.$store.dispatch("client/SET_FORCE_UPDATE_EVENT_LIST", true);
       }
     },
 
@@ -387,8 +386,8 @@ export default {
         this.editableEvent
       );
       if (response.status === 200) {
+        this.$emit("rerender");
         this.onClickSelectEditEvent(null);
-        this.$store.dispatch("client/SET_FORCE_UPDATE_EVENT_LIST", true);
       }
     },
   },

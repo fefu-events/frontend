@@ -257,13 +257,8 @@ export default {
         this.organization
       );
       if (response.status == 201) {
-        this.organization = {
-          title: "",
-          description: "",
-          members: [],
-        };
         this.onClickRightsToggle("createOrg");
-        this.$store.dispatch("client/SET_FORCE_UPDATE_ORG_LIST", true);
+        this.$emit("rerender");
       }
     },
   },

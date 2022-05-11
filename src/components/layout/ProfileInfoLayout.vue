@@ -149,10 +149,6 @@ export default {
   },
 
   computed: {
-    ...mapState("client/", {
-      forceUpdateEventList: "forceUpdateEventList",
-    }),
-
     ...mapState("me/", {
       token: (state) => state.accessToken,
       meID: (state) => state.user?.id,
@@ -221,15 +217,6 @@ export default {
         await api.subscription.removeUser(this.token, this.userID);
       }
       this.user.am_i_following = !this.user.am_i_following;
-    },
-  },
-
-  watch: {
-    forceUpdateEventList(newValue) {
-      if (newValue === true) {
-        this.updateEventList();
-      }
-      this.$store.dispatch("client/SET_FORCE_UPDATE_EVENT_LIST", false);
     },
   },
 };

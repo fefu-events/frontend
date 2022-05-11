@@ -101,93 +101,67 @@
       </section>
     </div>
     <!-- My Profile info layout -->
-    <div
-      class="right-sidebar"
-      :class="{
-        'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.me,
-      }"
-    >
+    <LayoutShell :renderTerm="infoLayouts.me">
       <ProfileInfoLayout v-if="meID" :userID="meID" :signOut="signOut" />
-    </div>
+    </LayoutShell>
 
     <!-- Subscriptions list layout -->
-    <div
-      class="right-sidebar"
-      :class="{
-        'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.tags,
-      }"
-    >
+    <LayoutShell :renderTerm="infoLayouts.tags">
       <TagsListLayout v-if="infoLayouts.tags" />
-    </div>
+    </LayoutShell>
 
     <!-- Tags list layout -->
-    <div
-      class="right-sidebar"
-      :class="{
-        'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.subscriptions,
-      }"
-    >
+    <LayoutShell :renderTerm="infoLayouts.subscriptions">
       <SubscriptionsListLayout v-if="infoLayouts.subscriptions" />
-    </div>
+    </LayoutShell>
+
     <!-- Organizations list layout -->
-    <div
-      class="right-sidebar"
-      :class="{
-        'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.myOrgs,
-      }"
-    >
-      <OrganizationsListLayout v-if="infoLayouts.myOrgs" />
-    </div>
+    <LayoutShell :renderTerm="infoLayouts.myOrgs">
+      <OrganizationsListLayout
+        v-if="infoLayouts.myOrgs"
+        :key="organizationListLayoutWatcher"
+      />
+    </LayoutShell>
+
     <!-- Create organization layout -->
-    <div
-      class="right-sidebar"
-      :class="{
-        'h-9/10 xl:h-[85%] xl:!w-90 outline': infoLayouts.createOrg,
-      }"
-    >
-      <CreateOrganizationLayout v-if="infoLayouts.createOrg" />
-    </div>
+    <LayoutShell :renderTerm="infoLayouts.createOrg">
+      <CreateOrganizationLayout
+        v-if="infoLayouts.createOrg"
+        @rerender="() => ++organizationListLayoutWatcher"
+      />
+    </LayoutShell>
+
     <!-- Organization info layout -->
-    <div
-      class="right-sidebar"
-      :class="{
-        'h-9/10 xl:h-[85%] xl:!w-90 outline': selectedOrganization,
-      }"
-    >
+    <LayoutShell :renderTerm="selectedOrganization">
       <OrganizationInfoLayout
         :organizationID="selectedOrganization"
         v-if="selectedOrganization"
+        @rerender="() => ++organizationListLayoutWatcher"
       />
-    </div>
+    </LayoutShell>
+
     <!-- Event action layout -->
-    <div
-      class="right-sidebar"
-      :class="{
-        'h-9/10 xl:h-[85%] xl:!w-90 outline':
-          eventActionLayout || editableEvent,
-      }"
-    >
-      <EventActionLayout v-if="editableEvent" :editableEvent="editableEvent" />
+    <LayoutShell :renderTerm="eventActionLayout || editableEvent">
+      <EventActionLayout
+        v-if="editableEvent"
+        :editableEvent="editableEvent"
+        @rerender="() => ++eventActionLayoutWatcher"
+      />
       <EventActionLayout
         v-else
         :key="eventActionLayoutWatcher"
         @rerender="() => ++eventActionLayoutWatcher"
       />
-    </div>
+    </LayoutShell>
     <!-- Other user profile info layout -->
-    <div
-      class="right-sidebar"
-      :class="{
-        'h-9/10 xl:h-[85%] xl:!w-90 outline': selectedUser,
-      }"
-    >
+    <LayoutShell :renderTerm="selectedUser">
       <ProfileInfoLayout
         v-if="selectedUser"
         :key="selectedUser"
         :userID="selectedUser"
         :signOut="signOut"
       />
-    </div>
+    </LayoutShell>
   </div>
 
   <!-- MOBILE BAR -->
@@ -225,6 +199,7 @@ import { computed } from "vue";
 import { mapState } from "vuex";
 import { Button } from "@/components/interface";
 import * as LayoutComponents from "@/components/layout/";
+import { LayoutShell } from "@/components/template";
 import { UserIcon } from "@heroicons/vue/solid";
 import {
   ChevronRightIcon,
@@ -247,6 +222,7 @@ export default {
     OrganizationInfoLayout: LayoutComponents.OrganizationInfoLayout,
     CreateOrganizationLayout: LayoutComponents.CreateOrganizationLayout,
     EventActionLayout: LayoutComponents.EventActionLayout,
+    LayoutShell,
     Button,
     ChevronRightIcon,
     MenuIcon,
@@ -285,7 +261,6 @@ export default {
       searchLayout: false,
       eventListLayout: false,
       eventActionLayout: false,
-      eventActionLayoutWatcher: 1,
       infoLayouts: {
         me: false,
         myOrgs: false,
@@ -293,6 +268,10 @@ export default {
         tags: false,
         subscriptions: false,
       },
+
+      // rerender keys
+      eventActionLayoutWatcher: 1,
+      organizationListLayoutWatcher: 1,
     };
   },
 

@@ -174,7 +174,7 @@ export default {
   computed: {
     ...mapState("me", {
       token: (state) => state.accessToken,
-      tags: (state) => state.user?.tags,
+      tags: (state) => state.user?.tags || [],
     }),
 
     normalizedDate() {
@@ -184,13 +184,14 @@ export default {
     },
 
     normalizedTime() {
-      const time = moment(this.event?.date_begin).format("HH:mm");
-      return time;
+      return moment(this.event?.date_begin).format("HH:mm");
     },
   },
 
   methods: {
     async storeTag(tag) {
+      if (!this.token) return;
+
       let newTags = this.tags.slice(0);
       if (newTags.includes(tag)) {
         newTags = this.tags.filter((tag_) => tag_ !== tag);

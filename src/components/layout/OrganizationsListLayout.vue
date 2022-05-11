@@ -89,10 +89,6 @@ export default {
       userID: (state) => state.user?.id,
     }),
 
-    ...mapState("client/", {
-      forceUpdateOrganizationList: "forceUpdateOrganizationList",
-    }),
-
     filteredOrganizations() {
       return this.organizations.filter((org) =>
         this.adminType
@@ -119,16 +115,6 @@ export default {
 
     openCreateOrganizationPage() {
       this.onClickRightsToggle("createOrg");
-    },
-  },
-
-  watch: {
-    forceUpdateOrganizationList(newValue) {
-      if (newValue === true) {
-        this.updateOrganizations();
-        this.$store.dispatch("me/SET_NEW_ORGANIZATIONS", this.token);
-      }
-      this.$store.dispatch("client/SET_FORCE_UPDATE_ORG_LIST", false);
     },
   },
 };

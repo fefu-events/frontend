@@ -438,19 +438,6 @@ export default {
     },
 
     // Control
-    async onClickAcceptEdits() {
-      const result = await this.v$.$validate();
-      if (!result) return;
-
-      await api.organization.update(
-        this.token,
-        { title: this.orgTitle, description: this.orgDescription },
-        this.organizationID
-      );
-      this.initOrganization();
-      this.editMode = false;
-    },
-
     async onClickSubscription() {
       if (!this.organization.am_i_following) {
         await api.subscription.addOrganization(this.token, this.organizationID);
@@ -463,16 +450,27 @@ export default {
       this.organization.am_i_following = !this.organization.am_i_following;
     },
 
-    async onClickLeave() {
-      const response = await api.organization.removeMember(
+    async onClickAcceptEdits() {
+      const result = await this.v$.$validate();
+      if (!result) return;
+
+      await api.organization.update(
         this.token,
-        this.organizationID,
-        this.userID
+        { title: this.orgTitle, description: this.orgDescription },
+        this.organizationID
       );
-      if (response.status === 200) {
-        this.onClickSelectOrganization(null);
-        this.$store.dispatch("client/SET_FORCE_UPDATE_ORG_LIST", true);
-      }
+      this.initOrganization();
+      this.$emit("rerender");
+      this.editMode = false;
+    },
+
+    async onClickLeave() {
+      await api.organization
+        .removeMember(this.token, this.organizationID, this.userID)
+        .then(() => {
+          this.onClickSelectOrganization(null);
+          this.$emit("rerender");
+        });
     },
 
     async onClickDelete() {
@@ -482,7 +480,7 @@ export default {
         .delete(this.token, this.organizationID)
         .then(() => {
           this.onClickSelectOrganization(null);
-          this.$store.dispatch("client/SET_FORCE_UPDATE_ORG_LIST", true);
+          this.$emit("rerender");
         });
     },
   },
