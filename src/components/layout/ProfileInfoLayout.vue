@@ -68,7 +68,7 @@
       >
         <EventBlock
           :event="event"
-          :edit="isMe"
+          :edit="isMe || userPerms"
           :onClickSelectEditEvent="onClickSelectEditEvent"
         />
       </div>
@@ -156,6 +156,7 @@ export default {
     ...mapState("me/", {
       token: (state) => state.accessToken,
       meID: (state) => state.user?.id,
+      userPerms: (state) => state.user?.is_admin || state.user?.is_moderator,
     }),
 
     isMe() {

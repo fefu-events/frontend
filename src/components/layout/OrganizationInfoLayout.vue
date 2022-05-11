@@ -39,7 +39,11 @@
         <span>Список участников</span>
       </div>
       <!-- Add members -->
-      <Button v-if="isAdmin" class="mx-10 my-7" @click="openAddUserList">
+      <Button
+        v-if="isAdmin || userPerms"
+        class="mx-10 my-7"
+        @click="openAddUserList"
+      >
         <span> Добавить участника </span>
       </Button>
       <div class="mb-2 overflow-y-scroll">
@@ -51,9 +55,9 @@
         >
           <MemberBlock
             :user="member"
-            :removeMode="isAdmin && member.id != userID"
+            :removeMode="(isAdmin || userPerms) && member.id != userID"
             :removeMember="removeMember"
-            :promoteMode="isAdmin && member.id != userID"
+            :promoteMode="(isAdmin || userPerms) && member.id != userID"
             :promoteMember="promoteMember"
           />
         </div>
@@ -81,7 +85,7 @@
           <EventBlock
             class="px-2"
             :event="event"
-            :edit="isAdmin"
+            :edit="isAdmin || userPerms"
             :onClickSelectEditEvent="onClickSelectEditEvent"
           />
         </div>
@@ -145,12 +149,12 @@
           {{ organization?.description }}
         </p>
         <PencilAltIcon
-          v-if="isAdmin && !editMode"
+          v-if="(isAdmin || userPerms) && !editMode"
           class="absolute bottom-0 -right-5 w-7 h-7 hover:text-primary cursor-pointer"
           @click="editMode = true"
         />
         <CheckIcon
-          v-else-if="isAdmin && editMode"
+          v-else-if="(isAdmin || userPerms) && editMode"
           class="absolute bottom-0 -right-5 w-7 h-7 hover:text-primary cursor-pointer"
           @click="onClickAcceptEdits"
         />
@@ -188,7 +192,7 @@
         </Button>
         <Button
           class="mx-10 my-0 hover:border-danger hover:text-danger"
-          v-if="isAdmin"
+          v-if="isAdmin || userPerms"
           @click="onClickDelete"
         >
           <span> Удалить организацию </span>
@@ -272,6 +276,7 @@ export default {
     ...mapState("me/", {
       token: (state) => state.accessToken,
       userID: (state) => state.user?.id,
+      userPerms: (state) => state.user?.is_admin || state.user?.is_moderator,
       userOrgs: (state) => state.user?.organizations,
     }),
 
