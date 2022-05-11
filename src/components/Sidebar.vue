@@ -115,6 +115,10 @@
       <SubscriptionsListLayout v-if="infoLayouts.subscriptions" />
     </LayoutShell>
 
+    <LayoutShell :renderTerm="infoLayouts.moderators">
+      <ModeratorsListLayout />
+    </LayoutShell>
+
     <!-- Organizations list layout -->
     <LayoutShell :renderTerm="infoLayouts.myOrgs">
       <OrganizationsListLayout
@@ -212,16 +216,17 @@ import {
 export default {
   name: "SidebarComponent",
   components: {
-    FilterLayout: LayoutComponents.FilterLayout,
-    EventInfoLayout: LayoutComponents.EventInfoLayout,
-    EventsListLayout: LayoutComponents.EventsListLayout,
-    ProfileInfoLayout: LayoutComponents.ProfileInfoLayout,
-    TagsListLayout: LayoutComponents.TagsListLayout,
-    SubscriptionsListLayout: LayoutComponents.SubscriptionsListLayout,
-    OrganizationsListLayout: LayoutComponents.OrganizationsListLayout,
-    OrganizationInfoLayout: LayoutComponents.OrganizationInfoLayout,
     CreateOrganizationLayout: LayoutComponents.CreateOrganizationLayout,
     EventActionLayout: LayoutComponents.EventActionLayout,
+    EventInfoLayout: LayoutComponents.EventInfoLayout,
+    EventsListLayout: LayoutComponents.EventsListLayout,
+    FilterLayout: LayoutComponents.FilterLayout,
+    ModeratorsListLayout: LayoutComponents.ModeratorsListLayout,
+    OrganizationInfoLayout: LayoutComponents.OrganizationInfoLayout,
+    OrganizationsListLayout: LayoutComponents.OrganizationsListLayout,
+    ProfileInfoLayout: LayoutComponents.ProfileInfoLayout,
+    SubscriptionsListLayout: LayoutComponents.SubscriptionsListLayout,
+    TagsListLayout: LayoutComponents.TagsListLayout,
     LayoutShell,
     Button,
     ChevronRightIcon,
@@ -267,6 +272,7 @@ export default {
         createOrg: false,
         tags: false,
         subscriptions: false,
+        moderators: false,
       },
 
       // rerender keys

@@ -44,6 +44,13 @@
           <UserGroupIcon class="w-5 h-5 mx-2" />
           <span class="group-hover:text-primary">Мои организации</span>
         </li>
+        <li
+          class="flex flex-row my-5 font-bold cursor-pointer group"
+          @click="openBookmark('moderators')"
+        >
+          <ShieldCheckIcon class="w-5 h-5 mx-2" />
+          <span class="group-hover:text-primary">Модераторы</span>
+        </li>
       </ul>
     </div>
     <!-- Events -->
@@ -106,12 +113,7 @@
 import _ from "lodash";
 import api from "@/service/api";
 import { mapState } from "vuex";
-import {
-  HashtagIcon,
-  ReplyIcon,
-  UserIcon,
-  UserGroupIcon,
-} from "@heroicons/vue/outline";
+import * as Icons from "@heroicons/vue/outline";
 import { EventBlock } from "@/components/template";
 import { Button } from "@/components/interface";
 
@@ -120,10 +122,11 @@ export default {
   components: {
     EventBlock,
     Button,
-    HashtagIcon,
-    ReplyIcon,
-    UserIcon,
-    UserGroupIcon,
+    HashtagIcon: Icons.HashtagIcon,
+    ReplyIcon: Icons.ReplyIcon,
+    ShieldCheckIcon: Icons.ShieldCheckIcon,
+    UserIcon: Icons.UserIcon,
+    UserGroupIcon: Icons.UserGroupIcon,
   },
 
   props: {

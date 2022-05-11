@@ -54,27 +54,39 @@ export default {
       type: Boolean,
       default: false,
     },
-    removeMode: {
-      type: Boolean,
-      default: false,
-    },
+
     createMode: {
       type: Boolean,
       default: false,
     },
+
+    moderMode: {
+      type: Boolean,
+      default: false,
+    },
+
     promoteMode: {
       type: Boolean,
       default: false,
     },
+
+    removeMode: {
+      type: Boolean,
+      default: false,
+    },
+
     subscriptionMode: {
       type: Boolean,
       default: false,
     },
-    addMemberToArray: Function,
-    removeMemberFromArray: Function,
-    promoteMember: Function,
+
     addMember: Function,
+    addMemberToArray: Function,
+    addModerator: Function,
+    promoteMember: Function,
     removeMember: Function,
+    removeMemberFromArray: Function,
+    removeModerator: Function,
     unfollowMember: Function,
     user: Object,
   },
@@ -83,6 +95,10 @@ export default {
 
   methods: {
     async addMember_() {
+      if (this.moderMode) {
+        this.addModerator(this.user.id);
+        return;
+      }
       if (this.createMode) {
         this.addMemberToArray(this.user);
       } else {
@@ -90,6 +106,10 @@ export default {
       }
     },
     async removeMember_() {
+      if (this.moderMode) {
+        this.removeModerator(this.user.id);
+        return;
+      }
       if (this.subscriptionMode) {
         this.unfollowMember(this.user.id);
         return;
