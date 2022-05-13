@@ -137,7 +137,7 @@ import { MemberBlock } from "@/components/template";
 export default {
   setup: () => ({ v$: useVuelidate() }),
 
-  name: "CreateOrganizationLayout",
+  name: "CreateOrganization",
   components: {
     Button: InterfaceComponents.Button,
     Search: InterfaceComponents.Search,

@@ -1,0 +1,11 @@
+export { default as CreateOrganization } from "./CreateOrganization.vue";
+export { default as EventAction } from "./EventAction.vue";
+export { default as EventInfo } from "./EventInfo.vue";
+export { default as EventsFilter } from "./EventsFilter.vue";
+export { default as EventsList } from "./EventsList.vue";
+export { default as ModeratorsList } from "./ModeratorsList.vue";
+export { default as OrganizationInfo } from "./OrganizationInfo.vue";
+export { default as OrganizationsList } from "./OrganizationsList.vue";
+export { default as ProfileInfo } from "./ProfileInfo.vue";
+export { default as SubscriptionsList } from "./SubscriptionsList.vue";
+export { default as TagsList } from "./TagsList.vue";

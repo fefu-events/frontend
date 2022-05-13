@@ -113,7 +113,7 @@ import * as InterfaceComponents from "@/components/interface";
 import { FilterIcon } from "@heroicons/vue/outline";
 
 export default {
-  name: "FilterLayout",
+  name: "EventsFilter",
   components: {
     Autolist: InterfaceComponents.Autolist,
     Button: InterfaceComponents.Button,

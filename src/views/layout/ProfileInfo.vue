@@ -118,7 +118,7 @@ import { EventBlock } from "@/components/template";
 import { Button } from "@/components/interface";
 
 export default {
-  name: "ProfileInfoLayout",
+  name: "ProfileInfo",
   components: {
     EventBlock,
     Button,

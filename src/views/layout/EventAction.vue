@@ -216,7 +216,7 @@ import {
 export default {
   setup: () => ({ v$: useVuelidate() }),
 
-  name: "EventActionLayout",
+  name: "EventAction",
   components: {
     Autolist,
     Button,

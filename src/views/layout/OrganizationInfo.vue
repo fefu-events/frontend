@@ -233,7 +233,7 @@ import { MemberBlock, EventBlock } from "@/components/template";
 export default {
   setup: () => ({ v$: useVuelidate() }),
 
-  name: "OrganizationInfoLayout",
+  name: "OrganizationInfo",
   components: {
     Button: InterfaceComponents.Button,
     Search: InterfaceComponents.Search,

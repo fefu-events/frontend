@@ -52,7 +52,7 @@ import { mapState, mapGetters } from "vuex";
 import * as TemplateComponents from "@/components/template";
 
 export default {
-  name: "EventsListLayout",
+  name: "EventsList",
   components: {
     EventBlock: TemplateComponents.EventBlock,
   },

@@ -34,7 +34,7 @@ import { ReplyIcon } from "@heroicons/vue/outline";
 import { MemberBlock } from "@/components/template";
 
 export default {
-  name: "OrganizationsListLayout",
+  name: "SubscriptionsList",
   components: {
     MemberBlock,
     ReplyIcon,

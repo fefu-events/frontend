@@ -36,7 +36,7 @@ import { ReplyIcon } from "@heroicons/vue/outline";
 import { TrashIcon } from "@heroicons/vue/solid";
 
 export default {
-  name: "OrganizationsListLayout",
+  name: "TagsList",
   components: {
     ReplyIcon,
     TrashIcon,

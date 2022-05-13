@@ -9,7 +9,7 @@
         'h-9/10 xl:!w-80 xl:h-screen outline': searchLayout,
       }"
     >
-      <FilterLayout
+      <EventsFilter
         class="mx-auto"
         :eventsListState="eventListLayout"
         :toggleEventsList="onClickEventsListToggle"
@@ -23,7 +23,7 @@
         'xl:-left-2': searchLayout,
       }"
     >
-      <EventsListLayout v-if="eventListLayout" class="overflow-scroll" />
+      <EventsList v-if="eventListLayout" class="overflow-scroll" />
       <div class="xl:hidden flex flex-col w-4/5 mx-auto">
         <Button class="!mt-4 !my-10 mx-5" @click="onClickEventsListToggle">
           <span> Скрыть список </span>
@@ -39,7 +39,7 @@
         'xl:-left-4': eventListLayout,
       }"
     >
-      <EventInfoLayout :eventID="selectedEvent" />
+      <EventInfo :eventID="selectedEvent" />
     </div>
     <!-- Sidebar toggler -->
     <div
@@ -102,26 +102,26 @@
     </div>
     <!-- My Profile info layout -->
     <LayoutShell :renderTerm="infoLayouts.me">
-      <ProfileInfoLayout v-if="meID" :userID="meID" :signOut="signOut" />
-    </LayoutShell>
-
-    <!-- Subscriptions list layout -->
-    <LayoutShell :renderTerm="infoLayouts.tags">
-      <TagsListLayout v-if="infoLayouts.tags" />
+      <ProfileInfo v-if="meID" :userID="meID" :signOut="signOut" />
     </LayoutShell>
 
     <!-- Tags list layout -->
+    <LayoutShell :renderTerm="infoLayouts.tags">
+      <TagsList v-if="infoLayouts.tags" />
+    </LayoutShell>
+
+    <!-- Subscriptions list layout -->
     <LayoutShell :renderTerm="infoLayouts.subscriptions">
-      <SubscriptionsListLayout v-if="infoLayouts.subscriptions" />
+      <SubscriptionsList v-if="infoLayouts.subscriptions" />
     </LayoutShell>
 
     <LayoutShell :renderTerm="infoLayouts.moderators">
-      <ModeratorsListLayout />
+      <ModeratorsList />
     </LayoutShell>
 
     <!-- Organizations list layout -->
     <LayoutShell :renderTerm="infoLayouts.myOrgs">
-      <OrganizationsListLayout
+      <OrganizationsList
         v-if="infoLayouts.myOrgs"
         :key="organizationListLayoutWatcher"
       />
@@ -129,7 +129,7 @@
 
     <!-- Create organization layout -->
     <LayoutShell :renderTerm="infoLayouts.createOrg">
-      <CreateOrganizationLayout
+      <CreateOrganization
         v-if="infoLayouts.createOrg"
         @rerender="() => ++organizationListLayoutWatcher"
       />
@@ -137,7 +137,7 @@
 
     <!-- Organization info layout -->
     <LayoutShell :renderTerm="selectedOrganization">
-      <OrganizationInfoLayout
+      <OrganizationInfo
         :organizationID="selectedOrganization"
         v-if="selectedOrganization"
         @rerender="() => ++organizationListLayoutWatcher"
@@ -146,12 +146,12 @@
 
     <!-- Event action layout -->
     <LayoutShell :renderTerm="eventActionLayout || editableEvent">
-      <EventActionLayout
+      <EventAction
         v-if="editableEvent"
         :editableEvent="editableEvent"
         @rerender="() => ++eventActionLayoutWatcher"
       />
-      <EventActionLayout
+      <EventAction
         v-else
         :key="eventActionLayoutWatcher"
         @rerender="() => ++eventActionLayoutWatcher"
@@ -159,7 +159,7 @@
     </LayoutShell>
     <!-- Other user profile info layout -->
     <LayoutShell :renderTerm="selectedUser">
-      <ProfileInfoLayout
+      <ProfileInfo
         v-if="selectedUser"
         :key="selectedUser"
         :userID="selectedUser"
@@ -202,7 +202,7 @@
 import { computed } from "vue";
 import { mapState } from "vuex";
 import { Button } from "@/components/interface";
-import * as LayoutComponents from "@/components/layout/";
+import * as LayoutComponents from "@/views/layout";
 import { LayoutShell } from "@/components/template";
 import { UserIcon } from "@heroicons/vue/solid";
 import {
@@ -216,17 +216,17 @@ import {
 export default {
   name: "SidebarComponent",
   components: {
-    CreateOrganizationLayout: LayoutComponents.CreateOrganizationLayout,
-    EventActionLayout: LayoutComponents.EventActionLayout,
-    EventInfoLayout: LayoutComponents.EventInfoLayout,
-    EventsListLayout: LayoutComponents.EventsListLayout,
-    FilterLayout: LayoutComponents.FilterLayout,
-    ModeratorsListLayout: LayoutComponents.ModeratorsListLayout,
-    OrganizationInfoLayout: LayoutComponents.OrganizationInfoLayout,
-    OrganizationsListLayout: LayoutComponents.OrganizationsListLayout,
-    ProfileInfoLayout: LayoutComponents.ProfileInfoLayout,
-    SubscriptionsListLayout: LayoutComponents.SubscriptionsListLayout,
-    TagsListLayout: LayoutComponents.TagsListLayout,
+    CreateOrganization: LayoutComponents.CreateOrganization,
+    EventAction: LayoutComponents.EventAction,
+    EventInfo: LayoutComponents.EventInfo,
+    EventsList: LayoutComponents.EventsList,
+    EventsFilter: LayoutComponents.EventsFilter,
+    ModeratorsList: LayoutComponents.ModeratorsList,
+    OrganizationInfo: LayoutComponents.OrganizationInfo,
+    OrganizationsList: LayoutComponents.OrganizationsList,
+    ProfileInfo: LayoutComponents.ProfileInfo,
+    SubscriptionsList: LayoutComponents.SubscriptionsList,
+    TagsList: LayoutComponents.TagsList,
     LayoutShell,
     Button,
     ChevronRightIcon,

@@ -60,7 +60,7 @@ import { Button } from "@/components/interface";
 import { OrgBlock } from "@/components/template";
 
 export default {
-  name: "OrganizationsListLayout",
+  name: "OrganizationsList",
   components: {
     Button,
     OrgBlock,

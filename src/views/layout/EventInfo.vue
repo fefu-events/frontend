@@ -152,7 +152,7 @@ import { UserGroupIcon, CalendarIcon, ClockIcon } from "@heroicons/vue/outline";
 import { LinkIcon } from "@heroicons/vue/solid";
 
 export default {
-  name: "EventInfoLayout",
+  name: "EventInfo",
   components: {
     Button,
     UserGroupIcon,

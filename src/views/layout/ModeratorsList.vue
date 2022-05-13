@@ -71,7 +71,7 @@ import { MemberBlock } from "@/components/template";
 import { ReplyIcon } from "@heroicons/vue/outline";
 
 export default {
-  name: "ModeratorsListLayout",
+  name: "ModeratorsList",
   components: {
     Button: InterfaceComponents.Button,
     Search: InterfaceComponents.Search,
