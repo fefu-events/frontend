@@ -31,7 +31,7 @@
 import api from "@/service/api";
 import { mapState } from "vuex";
 import { ReplyIcon } from "@heroicons/vue/outline";
-import { MemberBlock } from "@/components/template";
+import { MemberBlock } from "@/components/templates";
 
 export default {
   name: "SubscriptionsList",

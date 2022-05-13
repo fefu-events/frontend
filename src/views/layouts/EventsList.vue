@@ -49,7 +49,7 @@
 import _ from "lodash";
 import api from "@/service/api";
 import { mapState, mapGetters } from "vuex";
-import * as TemplateComponents from "@/components/template";
+import * as TemplateComponents from "@/components/templates";
 
 export default {
   name: "EventsList",

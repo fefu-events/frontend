@@ -57,7 +57,7 @@ import api from "@/service/api";
 import { mapState } from "vuex";
 import { ReplyIcon } from "@heroicons/vue/outline";
 import { Button } from "@/components/interface";
-import { OrgBlock } from "@/components/template";
+import { OrgBlock } from "@/components/templates";
 
 export default {
   name: "OrganizationsList",

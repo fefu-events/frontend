@@ -67,7 +67,7 @@
 import _ from "lodash";
 import api from "@/service/api";
 import * as InterfaceComponents from "@/components/interface";
-import { MemberBlock } from "@/components/template";
+import { MemberBlock } from "@/components/templates";
 import { ReplyIcon } from "@heroicons/vue/outline";
 
 export default {

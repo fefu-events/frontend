@@ -202,8 +202,8 @@
 import { computed } from "vue";
 import { mapState } from "vuex";
 import { Button } from "@/components/interface";
-import * as LayoutComponents from "@/views/layout";
-import { LayoutShell } from "@/components/template";
+import * as LayoutComponents from "@/views/layouts";
+import { LayoutShell } from "@/components/templates";
 import { UserIcon } from "@heroicons/vue/solid";
 import {
   ChevronRightIcon,

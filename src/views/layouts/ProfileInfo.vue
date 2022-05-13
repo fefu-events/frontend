@@ -114,7 +114,7 @@ import _ from "lodash";
 import api from "@/service/api";
 import { mapState } from "vuex";
 import * as Icons from "@heroicons/vue/outline";
-import { EventBlock } from "@/components/template";
+import { EventBlock } from "@/components/templates";
 import { Button } from "@/components/interface";
 
 export default {

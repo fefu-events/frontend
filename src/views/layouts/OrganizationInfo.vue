@@ -228,7 +228,7 @@ import { mapState } from "vuex";
 
 import { ReplyIcon, PencilAltIcon, CheckIcon } from "@heroicons/vue/outline";
 import * as InterfaceComponents from "@/components/interface";
-import { MemberBlock, EventBlock } from "@/components/template";
+import { MemberBlock, EventBlock } from "@/components/templates";
 
 export default {
   setup: () => ({ v$: useVuelidate() }),

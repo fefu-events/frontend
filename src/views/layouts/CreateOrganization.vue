@@ -132,7 +132,7 @@ import api from "@/service/api";
 
 import { ReplyIcon } from "@heroicons/vue/outline";
 import * as InterfaceComponents from "@/components/interface";
-import { MemberBlock } from "@/components/template";
+import { MemberBlock } from "@/components/templates";
 
 export default {
   setup: () => ({ v$: useVuelidate() }),
