@@ -4,13 +4,13 @@
     <LMap
       :bounds="bounds"
       :maxBounds="maxBounds"
-      :zoom="zoom"
+      :zoom="defaut_zoom"
       :minZoom="minZoom"
       :maxZoom="maxZoom"
       :zoomAnimation="true"
       :markerZoomAnimation="true"
       :center="center"
-      @zoom="log_move('move')"
+      @zoom="zoom"
     >
       <LTileLayer :url="url" :attribution="attribution" />
       <LPolygon
@@ -22,17 +22,17 @@
       />
       <LMarker
         v-for="place in mapInfo"
-        :key="place.id + place.event_count"
+        :key="place"
         :lat-lng="[place.latitude, place.longitude]"
         @click="onClickSelectPlace(place.id, place.event_count)"
-        @moveend="log_move('moveend')"
+        @moveend="moveend"
       >
         <LIcon
           :icon-anchor="staticAnchor"
           :icon-size="iconSize"
           :icon-url="iconUrl"
         />
-        <LTooltip> {{ place.event_count }} events </LTooltip>
+        <!-- <LTooltip> {{ place.event_count }} events </LTooltip> -->
       </LMarker>
     </LMap>
   </div>
@@ -60,6 +60,7 @@ export default {
     LTileLayer: mapComponents.LTileLayer,
     LPolygon: mapComponents.LPolygon,
     LMarker: mapComponents.LMarker,
+    /* eslint-disable vue/no-unused-components */
     LTooltip: mapComponents.LTooltip,
     LIcon: mapComponents.LIcon,
     Sidebar,
@@ -79,7 +80,7 @@ export default {
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       attribution:
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-      zoom: 15,
+      defaut_zoom: 15,
       minZoom: 15,
       maxZoom: 18,
       center: [43.029308, 131.892346],
@@ -153,6 +154,14 @@ export default {
 
     log_move(move) {
       return move;
+    },
+
+    moveend() {
+      return;
+    },
+
+    zoom() {
+      return;
     },
   },
 
