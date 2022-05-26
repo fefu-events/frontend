@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-full w-[89%] xl:w-80 mx-auto overflow-y-scroll">
+  <div class="flex flex-col h-full">
     <!-- Back -->
     <div
       class="absolute top-5 right-5 -scale-x-100 hover:text-primary cursor-pointer"
@@ -10,8 +10,8 @@
 
     <!-- Add user list view -->
     <div class="flex-col h-full" :class="addUsersList ? 'flex' : 'hidden'">
-      <div class="mx-5 mt-10 font-bold text-lg">
-        <span>Добавить модератора</span>
+      <div class="mx-10 mt-10 font-bold text-lg">
+        <span>Добавить модера</span>
       </div>
       <!-- Search input -->
       <Search
@@ -22,14 +22,16 @@
       <div class="mb-4 overflow-y-scroll" ref="users">
         <div
           class="px-5 xl:px-0 hover:bg-hoverColor cursor-pointer"
-          v-for="user in filteredAddUsers"
+          v-for="user in users"
           :key="user"
         >
           <MemberBlock
             :user="user"
-            :addMode="true"
+            :addMode="!userIsAdded(user) && user.id != meID"
+            :removeMode="userIsAdded(user) && user.id != meID"
             :moderMode="true"
             :addModerator="addModerator"
+            :removeModerator="removeModerator"
           />
         </div>
       </div>
@@ -37,14 +39,16 @@
 
     <!-- Members list view -->
     <div class="flex-col h-full" :class="!addUsersList ? 'flex' : 'hidden'">
-      <div class="mt-10 mb-5 mx-5 font-bold text-lg">
+      <div class="mt-10 mb-5 mx-10 font-bold text-lg">
         <span>Модераторы</span>
       </div>
-      <!-- Add members -->
+      <!-- Add moderators button -->
       <Button class="mx-10" @click="openAddUserList">
         <span> Добавить модератора </span>
       </Button>
-      <div class="mb-2 overflow-y-scroll">
+
+      <!-- Moderators-->
+      <div class="my-4 overflow-y-scroll">
         <div
           class="px-5 xl:px-0 hover:bg-hoverColor cursor-pointer"
           v-for="moderator in moderators"
@@ -65,7 +69,10 @@
 
 <script>
 import _ from "lodash";
+
 import api from "@/service/api";
+import { mapState } from "vuex";
+
 import * as InterfaceComponents from "@/components/interface";
 import { MemberBlock } from "@/components/templates";
 import { ReplyIcon } from "@heroicons/vue/outline";
@@ -98,8 +105,13 @@ export default {
   },
 
   computed: {
-    filteredAddUsers() {
-      return this.users.filter((user) => !user.is_moderator);
+    ...mapState("me/", {
+      meID: (state) => state.user?.id,
+    }),
+
+    userIsAdded() {
+      return (user) =>
+        this.moderators?.some((moderator) => moderator.id == user.id);
     },
   },
 

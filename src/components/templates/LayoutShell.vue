@@ -2,7 +2,7 @@
   <div
     class="right-sidebar"
     :class="{
-      'h-9/10 xl:h-[85%] xl:!w-90 outline': renderTerm,
+      'h-9/10 xl:h-9/10 xl:!w-80 outline': renderTerm,
     }"
   >
     <slot />

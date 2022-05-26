@@ -6,7 +6,8 @@ module.exports = defineConfig({
     // https: true,
     proxy: {
       "^/api": {
-        target: "http://localhost:8000/",
+        // target: "https://0804-89-113-101-231.jp.ngrok.io/",
+        target: "http://localhost:8000",
         pathRewrite: {
           "^/api": "",
         },

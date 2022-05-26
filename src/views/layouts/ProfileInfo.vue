@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-full w-[89%] xl:w-80 mx-auto overflow-scroll">
+  <div class="flex flex-col h-full overflow-scroll">
     <!-- Back -->
     <div
       v-if="selectedUser"
@@ -10,77 +10,74 @@
     </div>
 
     <!-- Person -->
-    <div class="flex flex-row items-center mt-10 mx-5">
+    <div class="flex flex-row items-center mx-5 mt-5 space-x-4">
       <div class="min-w-[64px] h-16 rounded-full bg-gray-300">
         <img src="" alt="" srcset="" />
       </div>
-      <div class="mx-4 md:ml-6 md:mr-0">
-        <span class="text-2xl break-words word-space-full">{{
-          user?.name
-        }}</span>
-      </div>
+      <span class="text-xl break-words word-space-full">
+        {{ user?.name }}
+      </span>
     </div>
     <!-- Bookmarks -->
-    <div v-if="isMe" class="mx-5 mt-8">
-      <ul>
+    <div v-if="isMe" class="my-4">
+      <ul class="mx-5 space-y-4 text-base">
         <li
-          class="flex flex-row my-5 font-bold cursor-pointer group"
+          class="flex flex-row space-x-2 font-bold cursor-pointer group"
           @click="openBookmark('tags')"
         >
-          <HashtagIcon class="w-5 h-5 mx-2" />
+          <HashtagIcon class="w-5 h-5" />
           <span class="group-hover:text-primary">Мои теги</span>
         </li>
         <li
-          class="flex flex-row my-5 font-bold cursor-pointer group"
+          class="flex flex-row space-x-2 font-bold cursor-pointer group"
           @click="openBookmark('subscriptions')"
         >
-          <UserIcon class="w-5 h-5 mx-2" />
+          <UserIcon class="w-5 h-5" />
           <span class="group-hover:text-primary"> Мои подписки </span>
         </li>
         <li
-          class="flex flex-row my-5 font-bold cursor-pointer group"
+          class="flex flex-row space-x-2 font-bold cursor-pointer group"
           @click="openBookmark('myOrgs')"
         >
-          <UserGroupIcon class="w-5 h-5 mx-2" />
+          <UserGroupIcon class="w-5 h-5" />
           <span class="group-hover:text-primary">Мои организации</span>
         </li>
         <li
-          class="flex flex-row my-5 font-bold cursor-pointer group"
+          class="flex flex-row space-x-2 font-bold cursor-pointer group"
           @click="openBookmark('moderators')"
         >
-          <ShieldCheckIcon class="w-5 h-5 mx-2" />
+          <ShieldCheckIcon class="w-5 h-5" />
           <span class="group-hover:text-primary">Модераторы</span>
         </li>
       </ul>
     </div>
     <!-- Events -->
     <span
+      v-if="events.length > 0"
       class="mx-5 font-medium"
-      :class="{
-        'my-5': !isMe,
-      }"
+      :class="{ 'mt-10': !isMe }"
     >
       {{ isMe ? "Мои мероприятия:" : "Мероприятия:" }}
     </span>
     <div
       v-if="events.length > 0"
-      class="mt-1 mb-8 overflow-y-scroll"
+      class="px-5 xl:px-0 mt-1 mb-6 overflow-y-scroll"
       ref="events"
     >
       <div
-        class="hover:bg-hoverColor px-5 cursor-pointer"
+        class="hover:bg-hoverColor cursor-pointer"
         v-for="event in events"
         :key="event.id"
         @click="selectEvent(event.id)"
       >
         <EventBlock
           :event="event"
-          :edit="isMe || userPerms"
+          :edit="(isMe && userPerms(event)) || statusPerms"
           :onClickSelectEditEvent="onClickSelectEditEvent"
         />
       </div>
     </div>
-    <div v-else class="h-2/5 my-4">
+    <div v-else class="h-2/5 mt-auto mb-4">
       <img
         class="max-h-full mx-auto"
         src="@/assets/img/svg/emptyList.svg"
@@ -155,11 +152,18 @@ export default {
     ...mapState("me/", {
       token: (state) => state.accessToken,
       meID: (state) => state.user?.id,
-      userPerms: (state) => state.user?.is_admin || state.user?.is_moderator,
+      statusPerms: (state) => state.user?.is_admin || state.user?.is_moderator,
     }),
 
     isMe() {
       return this.userID === this.meID;
+    },
+
+    userPerms() {
+      return (event) =>
+        this.user?.organizations
+          .map((org) => org.id)
+          .includes(event.organization?.id) || event.organization === null;
     },
 
     skip() {
@@ -172,7 +176,7 @@ export default {
       .getByUserID(this.userID, this.token)
       .then(({ data }) => data);
 
-    await this.updateEventList();
+    this.events = await this.updateEventList();
     const eventsList = this.$refs.events;
     if (eventsList)
       eventsList.addEventListener(
@@ -191,7 +195,7 @@ export default {
     },
 
     async updateEventList() {
-      this.events = await api.event
+      return api.event
         .getByUserID(0, this.userID)
         .then((response) => response.data);
     },

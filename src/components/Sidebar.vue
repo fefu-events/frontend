@@ -10,25 +10,22 @@
       }"
     >
       <EventsFilter
-        class="mx-auto"
         :eventsListState="eventListLayout"
         :toggleEventsList="onClickEventsListToggle"
       />
     </div>
     <!-- Event list layout -->
     <div
-      class="left-sidebar flex flex-col justify-between items-center xl:-z-10 overflow-y-scroll"
+      class="left-sidebar xl:-z-10"
       :class="{
         'h-9/10 xl:!w-80 xl:h-screen outline': eventListLayout,
         'xl:-left-2': searchLayout,
       }"
     >
-      <EventsList v-if="eventListLayout" class="overflow-scroll" />
-      <div class="xl:hidden flex flex-col w-4/5 mx-auto">
-        <Button class="!mt-4 !my-10 mx-5" @click="onClickEventsListToggle">
-          <span> Скрыть список </span>
-        </Button>
-      </div>
+      <EventsList
+        v-if="eventListLayout"
+        :onClickEventsListToggle="onClickEventsListToggle"
+      />
     </div>
     <!-- Event info layout -->
     <div
@@ -70,32 +67,31 @@
     }"
   >
     <!-- Navigation -->
-    <div v-if="isLoaded" class="hidden xl:block fixed top-10 right-10 w-max">
+    <div v-if="isLoaded" class="hidden xl:block fixed top-5 right-5 w-max">
       <section v-if="meID">
         <Button
-          class="w-15 h-15 mx-5 !my-0 bg-white"
+          class="w-12 h-12 mx-5 bg-white"
           @click="onClickEventActionToggle()"
         >
-          <PlusIcon class="w-10 h-10 text mx-auto" />
+          <PlusIcon class="w-8 h-8 text mx-auto" />
         </Button>
-        <Button
-          class="w-15 h-15 mx-5 !my-0 bg-white"
-          @click="onClickUserInfoToggle"
-        >
-          <UserIcon class="w-10 h-10 text mx-auto" />
+        <Button class="w-12 h-12 mx-5 bg-white" @click="onClickUserInfoToggle">
+          <UserIcon class="w-8 h-8 text mx-auto" />
         </Button>
-        <Button class="w-15 h-15 mx-5 !my-0 bg-white">
-          <MenuIcon class="w-10 h-10 text mx-auto" />
+        <Button class="w-12 h-12 mx-5 bg-white">
+          <router-link to="/about">
+            <MenuIcon class="w-8 h-8 text mx-auto" />
+          </router-link>
         </Button>
       </section>
       <section v-else class="flex">
-        <Button class="w-32 h-15 mx-5 !my-0 bg-white" @click="signIn">
+        <Button nav class="w-32 h-15 mx-5 bg-white" @click="signIn">
           <div class="flex items-center justify-evenly">
             <span class="text-lg font-bold">Войти</span>
             <LoginIcon class="w-10 h-10 rotate-180" />
           </div>
         </Button>
-        <Button class="w-15 h-15 mx-5 !my-0 bg-white">
+        <Button class="w-15 h-15 mx-5 bg-white">
           <MenuIcon class="w-10 h-10 text mx-auto" />
         </Button>
       </section>
@@ -138,8 +134,9 @@
     <!-- Organization info layout -->
     <LayoutShell :renderTerm="selectedOrganization">
       <OrganizationInfo
-        :organizationID="selectedOrganization"
         v-if="selectedOrganization"
+        :key="organizationListLayoutWatcher"
+        :organizationID="selectedOrganization"
         @rerender="() => ++organizationListLayoutWatcher"
       />
     </LayoutShell>

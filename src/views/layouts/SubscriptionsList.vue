@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-full w-[89%] xl:w-80 mx-auto overflow-y-scroll">
+  <div class="flex flex-col h-full">
     <!-- Back -->
     <div
       class="absolute top-5 right-5 -scale-x-100 hover:text-primary cursor-pointer"
@@ -7,12 +7,12 @@
     >
       <ReplyIcon class="w-10 h-10 stroke-1" />
     </div>
-    <div class="mt-10 mb-5 mx-5 font-bold text-lg">
+    <div class="mt-10 mx-10 font-bold text-lg">
       <span>Мои подписки</span>
     </div>
-    <div class="overflow-y-scroll mb-4">
+    <div class="my-4 overflow-y-scroll">
       <div
-        class="hover:bg-hoverColor px-5 cursor-pointer"
+        class="px-5 xl:px-0 hover:bg-hoverColor cursor-pointer"
         v-for="user in following"
         :key="user.id"
       >

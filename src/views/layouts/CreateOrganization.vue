@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-full w-[89%] xl:w-80 mx-auto">
+  <div class="flex flex-col h-full">
     <!-- Back -->
     <div
       class="absolute top-5 right-5 -scale-x-100 hover:text-primary cursor-pointer"
@@ -9,31 +9,29 @@
     </div>
 
     <!-- Add user list view -->
-    <div
-      class="flex flex-col h-full mx-5"
-      :class="addUsersList ? 'flex' : 'hidden'"
-    >
+    <div v-if="addUsersList" class="flex flex-col h-full">
       <div class="mt-10 font-bold text-lg cursor-pointer">
         <span>Добавить участника</span>
       </div>
       <!-- Search input -->
       <Search
         class="mt-4"
-        @update="(value) => (userQuery = value)"
         :placeholder="'Поиск'"
+        @update="(value) => (userQuery = value)"
       />
       <div class="mb-4 overflow-y-scroll" ref="users">
         <div
           class="hover:bg-hoverColor cursor-pointer"
-          v-for="user in filteredAddUsers"
+          v-for="user in users"
           :key="user"
         >
           <MemberBlock
-            class="px-2"
             :user="user"
             :createMode="true"
-            :addMode="true"
+            :addMode="!userIsAdded(user) && user.id != meID"
+            :removeMode="userIsAdded(user) && user.id != meID"
             :addMemberToArray="addMemberToArray"
+            :removeMemberFromArray="removeMemberFromArray"
           />
         </div>
       </div>
@@ -41,21 +39,21 @@
 
     <!-- Create view -->
     <div
-      class="flex flex-col h-full mt-6 overflow-hidden"
-      :class="!addUsersList ? 'flex' : 'hidden'"
+      v-if="!addUsersList"
+      class="flex flex-col h-full mt-5 space-y-4 overflow-hidden"
     >
       <!-- Avatar -->
-      <div class="flex flex-col mx-5 mt-8">
+      <div class="flex flex-col mx-auto">
         <div class="w-24 h-24 mx-auto rounded-full text-center bg-gray-dark" />
       </div>
       <!-- Title -->
-      <div class="xl:mt-11 mx-5">
+      <div class="mx-5">
         <div class="flex justify-between">
           <input
             class="w-10/12 py-2 bg-transparent focus:outline-none"
             placeholder="Название"
             v-model="organization.title"
-            :maxlength="50"
+            :maxlength="maxTitleSize"
           />
           <span
             class="py-2 pr-2 text-sm"
@@ -72,7 +70,7 @@
         />
       </div>
       <!-- Description -->
-      <div class="relative mt-4 xl:!mt-10 mx-5">
+      <div class="relative mx-5">
         <textarea
           v-model="organization.description"
           class="w-full h-24 xl:h-32 px-6 py-2 rounded text-sm resize-none ring-offset-0 focus:ring-0 focus:border-primary"
@@ -87,17 +85,20 @@
           v-text="maxDescSize - organization.description.length"
         />
       </div>
-      <!-- Add members -->
-      <div class="mt-7 mx-5 xl:mx-0">
-        <div class="flex flex-row items-center justify-between xl:mx-5">
+      <!-- Add members button -->
+      <div class="mx-5">
+        <div class="flex flex-row items-center justify-between">
           <span class="text-lg"> Участники </span>
-          <Button class="w-28 h-9 my-0 leading-none" @click="openAddUserList">
+          <Button class="w-28 h-9 leading-none" @click="openAddUserList">
             <span class="text-sm"> Добавить </span>
           </Button>
         </div>
       </div>
       <!-- Members -->
-      <div class="mx-5 my-5 overflow-y-scroll">
+      <div
+        v-if="organization.members.length > 0"
+        class="mx-5 !mb-5 overflow-y-scroll"
+      >
         <div
           class="hover:bg-hoverColor cursor-pointer"
           v-for="member in organization.members"
@@ -113,8 +114,8 @@
         </div>
       </div>
 
-      <div class="flex flex-col mt-auto mb-10">
-        <Button class="mx-10 my-0" @click="onClickSubmit">
+      <div class="flex flex-col !mt-auto !mb-10">
+        <Button class="mx-10" @click="onClickSubmit">
           <span> Создать организацию </span>
         </Button>
       </div>
@@ -183,13 +184,9 @@ export default {
       meID: (state) => state.user?.id,
     }),
 
-    filteredAddUsers() {
-      return this.users.filter(
-        (user) =>
-          !this.organization.members
-            .map((member) => member.id)
-            .includes(user.id) && user.id !== this.meID
-      );
+    userIsAdded() {
+      return (user) =>
+        this.organization.members.some((member) => member.id == user.id);
     },
   },
 
@@ -213,9 +210,7 @@ export default {
     },
 
     async updateUsersList() {
-      this.users = await api.user
-        .getAll(0, this.userQuery)
-        .then(({ data }) => data);
+      return api.user.getAll(0, this.userQuery).then(({ data }) => data);
     },
 
     async handleScroll() {
@@ -224,7 +219,6 @@ export default {
       const refUsersList = this.$refs.users;
       const scrolling = refUsersList.scrollTop + refUsersList.clientHeight;
       const limitData = this.users.length >= this.page * 10;
-
       if (scrolling >= refUsersList.scrollHeight && limitData) {
         this.debounceToggle = false;
         const data = await api.user
@@ -238,21 +232,21 @@ export default {
       }
     },
 
-    openAddUserList() {
+    async openAddUserList() {
       this.addUsersList = true;
-      const refUsersList = this.$refs.users;
-      if (refUsersList)
-        refUsersList.addEventListener("scroll", () => this.handleScroll());
-      this.updateUsersList();
+      this.users = await this.updateUsersList();
+
+      if (this.$refs.users)
+        this.$refs.users.addEventListener("scroll", () => this.handleScroll());
     },
 
-    async addMemberToArray(user) {
-      this.organization.members.push(user);
+    async addMemberToArray(userID) {
+      this.organization.members.push(userID);
     },
 
-    async removeMemberFromArray(user) {
+    async removeMemberFromArray(userID) {
       this.organization.members = this.organization.members.filter(
-        (member) => member.id !== user.id
+        (memberID) => memberID !== userID
       );
     },
 
@@ -272,8 +266,8 @@ export default {
   },
 
   watch: {
-    userQuery: _.debounce(function () {
-      this.updateUsersList();
+    userQuery: _.debounce(async function () {
+      this.users = await this.updateUsersList();
     }, 500),
   },
 };

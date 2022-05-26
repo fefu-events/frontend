@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col justify-between h-full w-4/5 xl:w-60">
+  <div class="flex flex-col justify-between h-full w-4/5 xl:w-60 mx-auto">
     <div class="flex flex-col h-[85%] xl:h-full">
       <!-- Search input -->
       <Search
@@ -8,7 +8,7 @@
         :placeholder="'Посиделки #пати #уют'"
       />
       <!-- Show list button -->
-      <Button class="hidden xl:block w-full" @click="toggleEventsList">
+      <Button class="hidden xl:block w-full my-3" @click="toggleEventsList">
         <span>{{ eventsListState ? "Скрыть список" : "Показать список" }}</span>
       </Button>
       <!-- Filters list -->
@@ -100,7 +100,7 @@
         <hr class="border-black" />
       </div>
     </div>
-    <Button class="xl:hidden mx-5 !mt-4 !my-10" @click="toggleEventsList">
+    <Button class="xl:hidden mx-5 mt-auto mb-10" @click="toggleEventsList">
       <span>{{ eventsListState ? "Скрыть список" : "Показать список" }}</span>
     </Button>
   </div>

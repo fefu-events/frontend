@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-full w-[89%] xl:w-80 mx-auto">
+  <div class="flex flex-col h-full">
     <!-- Back -->
     <div
       class="absolute top-5 right-5 -scale-x-100 hover:text-primary cursor-pointer"
@@ -9,23 +9,29 @@
     </div>
 
     <!-- Add user list view -->
-    <div class="flex-col h-full" :class="addUsersList ? 'flex' : 'hidden'">
-      <div class="mx-5 mt-10 font-bold text-lg">
+    <div v-if="addUsersList" class="flex flex-col h-full">
+      <div class="mx-10 mt-10 font-bold text-lg">
         <span>Добавить участника</span>
       </div>
       <!-- Search input -->
       <Search
         class="mx-5 mt-4"
-        @update="(value) => (userQuery = value)"
         :placeholder="'Поиск'"
+        @update="(value) => (searchQuery = value)"
       />
       <div class="mb-4 overflow-y-scroll" ref="users">
         <div
           class="px-5 xl:px-0 hover:bg-hoverColor cursor-pointer"
-          v-for="user in filteredAddUsers"
+          v-for="user in dataQuery"
           :key="user"
         >
-          <MemberBlock :user="user" :addMode="true" :addMember="addMember" />
+          <MemberBlock
+            :user="user"
+            :addMode="!userIsAdded(user) && user.id != meID"
+            :removeMode="userIsAdded(user) && user.id != meID"
+            :addMember="addMember"
+            :removeMember="removeMember"
+          />
         </div>
       </div>
     </div>
@@ -35,18 +41,18 @@
       class="flex-col h-full"
       :class="membersList && !addUsersList ? 'flex' : 'hidden'"
     >
-      <div class="mx-5 mt-10 font-bold text-lg">
+      <div class="mt-10 mb-5 mx-10 font-bold text-lg">
         <span>Список участников</span>
       </div>
       <!-- Add members -->
       <Button
-        v-if="isOwner || userPerms"
-        class="mx-10 my-7"
-        @click="openAddUserList"
+        v-if="isOwner || statusPerms"
+        class="mx-10"
+        @click="openQueryList('users')"
       >
         <span> Добавить участника </span>
       </Button>
-      <div class="mb-2 overflow-y-scroll">
+      <div class="my-4 overflow-y-scroll">
         <div
           class="px-5 xl:px-0 hover:bg-hoverColor cursor-pointer"
           v-for="member in organization?.members"
@@ -55,9 +61,9 @@
         >
           <MemberBlock
             :user="member"
-            :removeMode="(isOwner || userPerms) && member.id != userID"
+            :removeMode="(isOwner || statusPerms) && member.id != meID"
             :removeMember="removeMember"
-            :promoteMode="(isOwner || userPerms) && member.id != userID"
+            :promoteMode="(isOwner || statusPerms) && member.id != meID"
             :promoteMember="promoteMember"
           />
         </div>
@@ -65,27 +71,27 @@
     </div>
 
     <!-- Organization event list view -->
-    <div class="flex-col h-full" :class="eventsList ? 'flex' : 'hidden'">
-      <div class="mx-5 mt-10 font-bold text-lg">
+    <div v-if="eventsList" class="flex flex-col h-full">
+      <div class="mx-10 mt-10 font-bold text-lg">
         <span>Мероприятия</span>
       </div>
       <!-- Search input -->
       <Search
         class="mx-5 mt-4"
-        @update="(value) => (eventQuery = value)"
+        @update="(value) => (searchQuery = value)"
         :placeholder="'Поиск'"
       />
       <div class="mb-4 overflow-y-scroll" ref="events">
         <div
           class="px-5 xl:px-5 hover:bg-hoverColor cursor-pointer"
-          v-for="event in events"
+          v-for="event in dataQuery"
           :key="event"
           @click="selectEvent(event.id)"
         >
           <EventBlock
             class="px-2"
             :event="event"
-            :edit="isOwner || userPerms"
+            :edit="isOwner || statusPerms"
             :onClickSelectEditEvent="onClickSelectEditEvent"
           />
         </div>
@@ -109,7 +115,7 @@
                 class="w-10/12 py-2 bg-transparent focus:outline-none"
                 placeholder="Название"
                 v-model="orgTitle"
-                :maxlength="50"
+                :maxlength="maxTitleSize"
               />
               <span
                 class="py-2 pr-2 text-sm"
@@ -136,18 +142,21 @@
         </div>
       </div>
       <!-- Description -->
-      <div class="relative mt-4 xl:!mt-8 mx-5">
-        <div v-if="editMode" class="relative w-11/12 group">
+      <div
+        class="relative mt-4 mx-5"
+        :class="{ 'mb-5': organization?.description }"
+      >
+        <div v-if="editMode" class="relative w-11/12">
           <textarea
             v-model="orgDescription"
-            class="w-full h-24 xl:h-32 px-6 py-2 rounded text-sm resize-none ring-offset-0 focus:ring-0 group-focus-within:border-primary"
-            :maxlength="maxDescSize"
+            class="w-full h-24 xl:h-32 px-6 py-2 rounded text-sm resize-none ring-offset-0 focus:ring-0 focus:border-primary"
             placeholder="Описание"
+            :maxlength="maxDescSize"
           />
           <span
-            class="absolute bottom-2 right-2 text-xs group-focus-within:text-primary"
+            class="absolute bottom-2 right-2 text-xs"
             :class="{
-              'text-danger': maxDescSize - orgDescription.length < 1,
+              '!text-danger': maxDescSize - orgDescription.length < 1,
             }"
             v-text="maxDescSize - orgDescription.length"
           />
@@ -156,59 +165,49 @@
           {{ organization?.description }}
         </p>
         <PencilAltIcon
-          v-if="(isOwner || userPerms) && !editMode"
-          class="absolute bottom-0 -right-5 w-7 h-7 hover:text-primary cursor-pointer"
+          v-if="(isOwner || statusPerms) && !editMode"
+          class="absolute bottom-0 right-0 w-6 h-6 hover:text-primary cursor-pointer"
           @click="editMode = true"
         />
         <CheckIcon
-          v-else-if="(isOwner || userPerms) && editMode"
-          class="absolute bottom-0 -right-5 w-7 h-7 hover:text-primary cursor-pointer"
+          v-else-if="(isOwner || statusPerms) && editMode"
+          class="absolute bottom-0 right-0 w-6 h-6 hover:text-success cursor-pointer"
           @click="onClickAcceptEdits"
         />
       </div>
 
       <!-- Control -->
-      <div class="flex flex-col my-10">
-        <Button class="mx-10 mb-3" @click="openEventList">
+      <div class="flex flex-col mx-10 space-y-4">
+        <Button @click="openQueryList('events')">
           <span> Посмотреть мероприятия </span>
         </Button>
-        <Button class="mx-10 my-0" @click="openMembersList">
+        <Button @click="openQueryList('members')">
           <span> Список участников </span>
         </Button>
-        <Button
-          v-if="isAdmin"
-          class="mx-10 mb-0 mt-3"
-          @click="verifyOrganization"
-        >
+        <Button v-if="isAdmin" @click="onClickVerify">
           <span>
             {{ organization?.is_verified ? "Аннулировать" : "Верифицировать" }}
           </span>
         </Button>
-        <Button
-          v-if="isMember"
-          class="mx-10 my-3"
-          :disabled="isOwner"
-          @click="onClickLeave"
-        >
+        <Button v-if="isMember" :disabled="isOwner" @click="onClickLeave">
           <span> Выйти из организации </span>
         </Button>
         <Button
-          v-if="!isMember && userID"
-          class="mx-10 mt-3"
+          v-if="!isMember && meID"
           :class="{
             'hover:border-danger hover:text-danger':
               organization?.am_i_following,
           }"
           :disabled="isOwner"
-          @click="onClickSubscription"
+          @click="onClickSubscribe"
         >
           <span>
             {{ organization?.am_i_following ? "Отписаться" : "Подписаться" }}
           </span>
         </Button>
         <Button
-          class="mx-10 my-0 hover:border-danger hover:text-danger"
-          v-if="isOwner || userPerms"
+          class="hover:border-danger hover:text-danger"
+          v-if="isOwner || statusPerms"
           @click="onClickDelete"
         >
           <span> Удалить организацию </span>
@@ -257,19 +256,16 @@ export default {
 
   data() {
     return {
+      // оставить тогглы переключения, остальные параметры слить
       addUsersList: false,
-      userQuery: "",
-      users: [],
-      users_page: 1,
-
       eventsList: false,
-      eventQuery: "",
-      events: [],
-      events_page: 1,
-
       membersList: false,
 
-      debounceToggle: true,
+      searchQuery: "",
+      pageQuery: 1,
+      dataQuery: [],
+
+      debounceRequestFlag: true,
       editMode: false,
 
       organization: null,
@@ -291,23 +287,14 @@ export default {
   computed: {
     ...mapState("me/", {
       token: (state) => state.accessToken,
-      userID: (state) => state.user?.id,
-      userPerms: (state) => state.user?.is_admin || state.user?.is_moderator,
+      meID: (state) => state.user?.id,
+      statusPerms: (state) => state.user?.is_admin || state.user?.is_moderator,
       isAdmin: (state) => state.user?.is_admin,
       userOrgs: (state) => state.user?.organizations,
     }),
 
-    filteredAddUsers() {
-      return this.users.filter(
-        (user) =>
-          !this.organization.members
-            .map((member) => member.id)
-            .includes(user.id)
-      );
-    },
-
     isOwner() {
-      return this.organization?.owner_id === this.userID;
+      return this.organization?.owner_id === this.meID;
     },
 
     isMember() {
@@ -316,25 +303,33 @@ export default {
         .includes(this.organization?.id);
     },
 
+    userIsAdded() {
+      return (user) =>
+        this.organization?.members.some((member) => member.id == user.id);
+    },
+
     allPanelClosed() {
       return !this.addUsersList && !this.eventsList && !this.membersList;
     },
   },
 
   async mounted() {
-    this.initOrganization();
+    this.organization = await api.organization
+      .getByOrganizationID(this.organizationID, this.token)
+      .then(({ data }) => {
+        this.orgTitle = data.title;
+        this.orgDescription = data.description;
+        return data;
+      });
   },
 
   methods: {
-    async initOrganization() {
-      this.organization = await api.organization
-        .getByOrganizationID(this.organizationID, this.token)
-        .then(({ data }) => data);
-      this.orgTitle = this.organization.title;
-      this.orgDescription = this.organization.description;
-    },
-
     backMove() {
+      //init states
+      this.searchQuery = "";
+      this.dataQuery = [];
+      this.pageQuery = 1;
+
       if (!this.addUsersList && !this.eventsList && !this.membersList) {
         this.onClickSelectOrganization(null);
       }
@@ -343,10 +338,6 @@ export default {
         return;
       }
 
-      //init states
-      this.userQuery = this.eventQuery = "";
-      this.users = this.events = [];
-      this.users_page = this.events_page = 1;
       this.membersList = this.eventsList = false;
     },
 
@@ -354,67 +345,56 @@ export default {
       refBlock.removeEventListener("scroll", () => this.handleScroll());
     },
 
-    async handleScroll(listType) {
-      if (!this.debounceToggle) return;
+    async handleScroll(refList, listType) {
+      if (!this.debounceRequestFlag) return;
 
-      const refList = this.$refs[listType];
       const scrolling = refList.scrollTop + refList.clientHeight;
-      const limitData = this[listType].length >= this[`${listType}_page`] * 10;
-
+      const limitData = this.dataQuery.length >= this.pageQuery * 10;
       if (scrolling >= refList.scrollHeight && limitData) {
         let data = [];
-        this.debounceToggle = false;
+        this.debounceRequestFlag = false;
         if (listType === "users") {
-          data = await this.loadUsersList(this.users_page * 10);
-        } else {
-          data = await this.loadEventsList(this.events_page * 10);
+          data = await this.loadUsersList(this.pageQuery * 10);
+        } else if (listType === "events") {
+          data = await this.loadEventsList(this.pageQuery * 10);
         }
-        this[listType] = this[listType].concat(data);
-        this[`${listType}_page`]++;
+        this.dataQuery = this.dataQuery.concat(data);
+        ++this.pageQuery;
       }
     },
 
-    // Members List
-    openMembersList() {
-      this.membersList = true;
-    },
+    async openQueryList(listType) {
+      if (listType === "events") {
+        this.eventsList = true;
+        this.dataQuery = await this.loadEventsList(0);
+      } else if (listType === "users") {
+        this.addUsersList = true;
+        this.dataQuery = await this.loadUsersList(0);
+      } else if (listType === "members") {
+        this.membersList = true;
+        return;
+      }
 
-    // Add Users List
-    async openAddUserList() {
-      this.addUsersList = true;
-      const refUsersList = this.$refs.users;
-      if (refUsersList)
-        refUsersList.addEventListener(
+      const refList = this.$refs[listType];
+      if (refList)
+        refList.addEventListener(
           "scroll",
-          _.debounce(() => this.handleScroll("users"), 100)
+          _.debounce(() => this.handleScroll(refList, listType), 100)
         );
-      this.users = await this.loadUsersList(0);
     },
 
     async loadUsersList(skip) {
-      return await api.user.getAll(skip, this.userQuery).then(({ data }) => {
-        this.debounceToggle = true;
+      return api.user.getAll(skip, this.searchQuery).then(({ data }) => {
+        this.debounceRequestFlag = true;
         return data;
       });
     },
 
-    // Events List
-    async openEventList() {
-      this.eventsList = true;
-      const refEventsList = this.$refs.events;
-      if (refEventsList)
-        refEventsList.addEventListener(
-          "scroll",
-          _.debounce(() => this.handleScroll("events"), 100)
-        );
-      this.events = await this.loadEventsList(0);
-    },
-
     async loadEventsList(skip) {
-      return await api.event
-        .getByOrganizationID(skip, this.organizationID, this.eventQuery)
+      return api.event
+        .getByOrganizationID(skip, this.organizationID, this.searchQuery)
         .then(({ data }) => {
-          this.debounceToggle = true;
+          this.debounceRequestFlag = true;
           return data;
         });
     },
@@ -428,7 +408,7 @@ export default {
       await api.organization
         .promoteMember(this.token, memberID, this.organizationID)
         .then(() => {
-          this.initOrganization();
+          this.$emit("rerender");
         });
     },
 
@@ -436,7 +416,7 @@ export default {
       await api.organization
         .addMember(this.token, this.organizationID, memberID)
         .then(() => {
-          this.initOrganization();
+          this.$emit("rerender");
         });
     },
 
@@ -444,12 +424,12 @@ export default {
       await api.organization
         .removeMember(this.token, this.organizationID, memberID)
         .then(() => {
-          this.initOrganization();
+          this.$emit("rerender");
         });
     },
 
     // Control
-    async onClickSubscription() {
+    async onClickSubscribe() {
       if (!this.organization.am_i_following) {
         await api.subscription.addOrganization(this.token, this.organizationID);
       } else {
@@ -461,7 +441,7 @@ export default {
       this.organization.am_i_following = !this.organization.am_i_following;
     },
 
-    async verifyOrganization() {
+    async onClickVerify() {
       if (this.organization?.is_verified) {
         await api.verification.organizationUnverify(
           this.token,
@@ -473,7 +453,7 @@ export default {
           this.organizationID
         );
       }
-      this.initOrganization();
+      this.$emit("rerender");
     },
 
     async onClickAcceptEdits() {
@@ -485,14 +465,13 @@ export default {
         { title: this.orgTitle, description: this.orgDescription },
         this.organizationID
       );
-      this.initOrganization();
       this.$emit("rerender");
       this.editMode = false;
     },
 
     async onClickLeave() {
       await api.organization
-        .removeMember(this.token, this.organizationID, this.userID)
+        .removeMember(this.token, this.organizationID, this.meID)
         .then(() => {
           this.onClickSelectOrganization(null);
           this.$emit("rerender");
@@ -511,25 +490,22 @@ export default {
   },
 
   beforeUnmount() {
-    this.removeHandleScroll(this.$refs.users);
-    this.removeHandleScroll(this.$refs.events);
+    this.$refs.users && this.removeHandleScroll(this.$refs.users);
+    this.$refs.events && this.removeHandleScroll(this.$refs.events);
   },
 
   watch: {
     organizationID() {
-      this.initOrganization();
-      for (const list of ["members", "events", "addUser"])
-        this[`${list}List`] = false;
+      this.$emit("rerender");
     },
 
-    userQuery: _.debounce(async function () {
-      this.users_page = 1;
-      this.users = await this.loadUsersList(0);
-    }, 500),
-
-    eventQuery: _.debounce(async function () {
-      this.events_page = 1;
-      this.events = await this.loadEventsList(0);
+    searchQuery: _.debounce(async function () {
+      this.pageQuery = 1;
+      this.dataQuery = this.eventsList
+        ? await this.loadEventsList(0)
+        : this.addUsersList
+        ? await this.loadEventsList(0)
+        : [];
     }, 500),
   },
 };

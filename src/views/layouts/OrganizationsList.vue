@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-full w-[89%] xl:w-80 mx-auto overflow-y-scroll">
+  <div class="flex flex-col h-full overflow-y-scroll">
     <!-- Back -->
     <div
       class="absolute top-5 right-5 -scale-x-100 hover:text-primary cursor-pointer"
@@ -17,31 +17,25 @@
       </Button>
     </div>
     <!-- Organization types -->
-    <div class="flex flex-row justify-between mb-4">
+    <div class="flex flex-row justify-between mx-5 space-x-2">
       <div
-        class="w-1/2 mx-2 text-center group cursor-pointer"
-        @click="adminType = false"
+        class="w-1/2 text-center group cursor-pointer"
+        v-for="type in organizationTypes"
+        :key="type.name"
+        @click="adminType = type.isAdminType"
       >
-        <span>Участник</span>
+        <span>{{ type.name }}</span>
         <hr
           class="group-hover:border-primary"
-          :class="adminType ? 'border-black' : 'border-primary'"
-        />
-      </div>
-      <div
-        class="w-1/2 mx-2 text-center group cursor-pointer"
-        @click="adminType = true"
-      >
-        <span>Администратор</span>
-        <hr
-          class="group-hover:border-primary"
-          :class="adminType ? 'border-primary' : 'border-black'"
+          :class="
+            adminType === type.isAdminType ? 'border-primary' : 'border-black'
+          "
         />
       </div>
     </div>
-    <div class="overflow-y-scroll mb-4">
+    <div class="overflow-y-scroll my-4">
       <div
-        class="hover:bg-hoverColor px-5 cursor-pointer"
+        class="px-5 xl:px-0 hover:bg-hoverColor cursor-pointer"
         v-for="org in filteredOrganizations"
         :key="org.id"
         @click="onClickSelectOrganization(org.id)"
@@ -69,14 +63,18 @@ export default {
 
   inject: ["onClickRightsToggle", "onClickSelectOrganization"],
 
-  provide() {
-    return {
-      updateOrganizations: this.updateOrganizations,
-    };
-  },
-
   data() {
     return {
+      organizationTypes: [
+        {
+          name: "Участник",
+          isAdminType: false,
+        },
+        {
+          name: "Администратор",
+          isAdminType: true,
+        },
+      ],
       organizations: [],
       adminType: false,
       members: [],
@@ -99,18 +97,14 @@ export default {
   },
 
   async mounted() {
-    await this.updateOrganizations();
+    this.organizations = await api.user
+      .getByUserID(this.userID)
+      .then(({ data }) => data.organizations);
   },
 
   methods: {
     backMove() {
       this.onClickRightsToggle("myOrgs");
-    },
-
-    async updateOrganizations() {
-      this.organizations = await api.user
-        .getByUserID(this.userID)
-        .then(({ data }) => data.organizations);
     },
 
     openCreateOrganizationPage() {

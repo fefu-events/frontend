@@ -43,8 +43,6 @@ export default {
     organization: Object,
   },
 
-  inject: ["updateOrganizations"],
-
   computed: {
     ...mapState("me/", {
       userID: (state) => state.user?.id,
@@ -54,14 +52,11 @@ export default {
 
   methods: {
     async leaveOrganization(organizationID) {
-      const response = await api.organization.removeMember(
+      await api.organization.removeMember(
         this.token,
         organizationID,
         this.userID
       );
-      if (response.status === 200) {
-        this.updateOrganizations();
-      }
     },
   },
 };

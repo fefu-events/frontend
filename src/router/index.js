@@ -13,6 +13,9 @@ const routes = [
     path: "/about",
     name: "about",
     component: () => import("@/views/pages/MapView.vue"),
+    meta: {
+      title: "About",
+    },
   },
   {
     path: "/:catchAll(.*)",

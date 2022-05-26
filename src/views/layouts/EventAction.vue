@@ -1,14 +1,14 @@
 <template>
-  <div class="flex flex-col justify-between h-full w-4/5 xl:w-80 mx-auto">
-    <div id="form" class="flex flex-col overflow-y-scroll my-6">
+  <div class="flex flex-col justify-between h-full">
+    <div id="form" class="flex flex-col overflow-y-scroll my-4 space-y-4">
       <!-- Title -->
-      <div class="xl:mt-4 xl:mx-5">
+      <div class="mx-5">
         <div class="flex justify-between">
           <input
-            class="w-10/12 py-2 bg-transparent focus:outline-none"
+            class="w-full px-4 py-2 bg-transparent focus:outline-none"
             placeholder="Название"
             v-model="event.title"
-            :maxlength="50"
+            :maxlength="maxTitleSize"
           />
           <span
             class="py-2 pr-2 text-sm"
@@ -21,7 +21,7 @@
         <hr :class="v$.event.title.$error ? 'border-danger' : 'border-black'" />
       </div>
       <!-- Calendar -->
-      <div class="mt-4 xl:mx-5">
+      <div class="mx-5">
         <Disclosure :unmount="true" class="px-4" categoryName="Дата">
           <Calendar
             :propDate="event.date"
@@ -32,7 +32,7 @@
         <hr :class="v$.event.date.$error ? 'border-danger' : 'border-black'" />
       </div>
       <!-- Place -->
-      <div class="mt-4 xl:mx-5">
+      <div class="mx-5">
         <Autolist
           class="px-4"
           :categoryName="selectedPlaceLabel || 'Место'"
@@ -66,7 +66,7 @@
         />
       </div>
       <!-- Place description -->
-      <div class="mt-4 xl:mx-5">
+      <div class="mx-5">
         <input
           class="w-full py-2 px-4 text-sm bg-transparent focus:outline-none"
           placeholder="Уточнение места"
@@ -75,7 +75,7 @@
         <hr class="border-black" />
       </div>
       <!-- Category -->
-      <div class="mt-4 xl:mx-5">
+      <div class="mx-5">
         <Disclosure
           class="px-4"
           :categoryName="selectedCategoryLabel || 'Категория'"
@@ -105,7 +105,7 @@
         />
       </div>
       <!-- Description -->
-      <div class="relative mt-4 xl:!mt-8 xl:mx-5">
+      <div class="relative mx-5">
         <textarea
           v-model="event.description"
           class="w-full h-36 px-6 py-2 rounded text-sm resize-none ring-offset-0 focus:ring-0 focus:border-primary"
@@ -115,13 +115,13 @@
         <span
           class="absolute bottom-2 right-2 text-xs"
           :class="{
-            'text-danger': maxDescSize - event.description.length < 1,
+            '!text-danger': maxDescSize - event.description.length < 1,
           }"
           v-text="maxDescSize - event.description.length"
         />
       </div>
       <!-- Tags -->
-      <div class="mt-4 xl:!mt-8 xl:mx-5">
+      <div class="mx-5">
         <textarea
           v-model="event.tags"
           class="w-full h-36 px-6 py-2 rounded text-sm resize-none ring-offset-0 focus:ring-0 focus:border-primary"
@@ -129,7 +129,7 @@
         />
       </div>
       <!-- Link -->
-      <div class="mt-4 xl:mx-5">
+      <div class="mx-5">
         <input
           v-model="event.link"
           class="w-full py-2 px-4 text-sm bg-transparent focus:outline-none placeholder:italic"
@@ -138,8 +138,8 @@
         <hr :class="v$.event.link.$error ? 'border-danger' : 'border-black'" />
       </div>
       <!-- Organization -->
-      <div v-if="!editableEvent" class="mt-4 xl:!mt-8 xl:mx-5">
-        <Toggle class="px-4" @update="(value) => (org = value)">
+      <div v-if="!editableEvent" class="mx-5">
+        <Toggle @update="(value) => (org = value)">
           <span class="text-sm font-medium"> От имени организации </span>
         </Toggle>
         <div v-if="org" class="mt-2">
@@ -177,22 +177,22 @@
       </div>
     </div>
     <!-- Buttons -->
-    <div v-if="editableEvent" class="flex flex-col mx-5 xl:mx-10">
+    <div class="flex flex-col mx-10 mt-auto mb-10 space-y-4">
       <Button
+        v-if="editableEvent"
         class="hover:text-danger hover:border-danger"
         @click="onClickDelete(event.id)"
       >
         <span> Удалить мероприятие </span>
       </Button>
       <Button
+        v-if="editableEvent"
         class="mb-10 hover:text-success hover:border-success"
         @click="onClickUpdate(event.id)"
       >
         <span> Подтверить изменения </span>
       </Button>
-    </div>
-    <div v-else class="flex flex-col mx-5 xl:mx-10">
-      <Button class="mb-10" @click="onClickSubmit">
+      <Button v-if="!editableEvent" @click="onClickSubmit">
         <span> Создать </span>
       </Button>
     </div>
@@ -318,13 +318,6 @@ export default {
         )?.title || null
       );
     },
-
-    normalizeTags() {
-      return this.event.tags
-        .split(" ")
-        .map((tag) => (tag.includes("#") ? tag.slice(1) : tag))
-        .join(" ");
-    },
   },
 
   async mounted() {
@@ -358,11 +351,18 @@ export default {
       return result;
     },
 
+    normalizeTags() {
+      return this.event.tags
+        .split(" ")
+        .map((tag) => (tag.includes("#") ? tag.slice(1) : tag))
+        .join(" ");
+    },
+
     async onClickSubmit() {
       const result = await this.validate();
       if (!result) return;
 
-      this.event.tags = this.normalizeTags;
+      this.event.tags = this.normalizeTags();
       const response = await api.event.create(this.accessToken, this.event);
       if (response.status === 201) {
         this.$emit("rerender");
@@ -387,7 +387,7 @@ export default {
       const result = await this.validate();
       if (!result) return;
 
-      this.event.tags = this.normalizeTags;
+      this.event.tags = this.normalizeTags();
       const response = await api.event.update(
         this.accessToken,
         this.event,

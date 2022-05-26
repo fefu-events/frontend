@@ -58,7 +58,7 @@
                 class="cursor-pointer"
                 @click="showOrganizatorInfo"
                 :class="{
-                  'after:mx-2 after:content-[\'✓\'] after:text-primary':
+                  'after:mx-2 after:content-[\'&check;\'] after:text-primary':
                     event?.organization?.is_verified,
                 }"
               >
@@ -102,7 +102,7 @@
               {{ event?.description }}
             </p>
           </div>
-          <div class="flex flex-wrap mt-5 mb-10">
+          <div v-if="event?.tags.length > 0" class="flex flex-wrap mt-5 mb-10">
             <div
               v-for="tag in event?.tags"
               :key="tag"
@@ -125,14 +125,14 @@
             </a>
           </div>
         </div>
-        <div class="mx-5">
-          <Button v-if="token" class="w-full mt-10 xl:my-10" @click="takePart">
+        <div class="mx-5 mt-auto mb-10 space-y-4">
+          <Button v-if="token" class="w-full" @click="takePart">
             <span>
               {{ event?.am_i_participation ? "Не пойду" : "Возможно пойду" }}
             </span>
           </Button>
           <Button
-            class="xl:hidden w-full mt-2 mb-10"
+            class="xl:hidden w-full"
             @click="onClickSelectEvent(event.id)"
           >
             <span> Назад </span>

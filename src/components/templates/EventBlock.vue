@@ -4,18 +4,15 @@
       <div class="flex items-center col-span-4 text-left text-lg">
         <span> {{ event.title }} </span>
       </div>
-      <div class="max-w-[40px] rounded-full overflow-hidden">
-        <img
-          class="self-center justify-self-center w-10 h-10 m-auto"
-          src="@/assets/img/svg/logo.svg"
-        />
+      <div class="max-w-[40px] rounded-full ml-auto overflow-hidden">
+        <img class="w-10 h-10" src="@/assets/img/svg/logo.svg" />
       </div>
-      <div class="col-span-5 text-left" :class="{ '!col-span-4': edit }">
+      <div class="text-left" :class="edit ? 'col-span-4' : 'col-span-5'">
         <span>{{ normalizedDate }}</span>
       </div>
       <div
         v-if="edit"
-        class="hover:text-primary"
+        class="w-10 ml-auto hover:text-primary"
         @click.stop="onClickEdit(event.id)"
       >
         <PencilAltIcon class="w-6 h-6 mx-auto" />
