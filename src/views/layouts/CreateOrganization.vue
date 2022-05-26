@@ -10,18 +10,18 @@
 
     <!-- Add user list view -->
     <div v-if="addUsersList" class="flex flex-col h-full">
-      <div class="mt-10 font-bold text-lg cursor-pointer">
+      <div class="mx-10 mt-10 font-bold text-lg cursor-pointer">
         <span>Добавить участника</span>
       </div>
       <!-- Search input -->
       <Search
-        class="mt-4"
+        class="mx-5 mt-4"
         :placeholder="'Поиск'"
         @update="(value) => (userQuery = value)"
       />
       <div class="mb-4 overflow-y-scroll" ref="users">
         <div
-          class="hover:bg-hoverColor cursor-pointer"
+          class="px-5 xl:px-0 hover:bg-hoverColor cursor-pointer"
           v-for="user in users"
           :key="user"
         >

@@ -79,20 +79,18 @@
           <UserIcon class="w-8 h-8 text mx-auto" />
         </Button>
         <Button class="w-12 h-12 mx-5 bg-white">
-          <router-link to="/about">
-            <MenuIcon class="w-8 h-8 text mx-auto" />
-          </router-link>
+          <MenuIcon class="w-8 h-8 text mx-auto" />
         </Button>
       </section>
       <section v-else class="flex">
-        <Button nav class="w-32 h-15 mx-5 bg-white" @click="signIn">
+        <Button nav class="w-32 h-12 mx-5 bg-white" @click="signIn">
           <div class="flex items-center justify-evenly">
             <span class="text-lg font-bold">Войти</span>
-            <LoginIcon class="w-10 h-10 rotate-180" />
+            <LoginIcon class="w-8 h-8 rotate-180" />
           </div>
         </Button>
-        <Button class="w-15 h-15 mx-5 bg-white">
-          <MenuIcon class="w-10 h-10 text mx-auto" />
+        <Button class="w-12 h-12 mx-5 bg-white">
+          <MenuIcon class="w-8 h-8 text mx-auto" />
         </Button>
       </section>
     </div>
@@ -451,13 +449,17 @@ export default {
 
   watch: {
     singleEvent(newValue) {
+      this.eventListLayout = false;
       this.selectedEvent = newValue;
     },
 
     cachePlaces: {
       handler(newValue) {
+        this.selectedEvent = null;
         if (newValue?.mapPlace) {
           this.eventListLayout = true;
+        } else {
+          this.eventListLayout = false;
         }
       },
 

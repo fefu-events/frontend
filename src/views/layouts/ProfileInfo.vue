@@ -43,6 +43,7 @@
           <span class="group-hover:text-primary">Мои организации</span>
         </li>
         <li
+          v-if="statusPerms"
           class="flex flex-row space-x-2 font-bold cursor-pointer group"
           @click="openBookmark('moderators')"
         >
