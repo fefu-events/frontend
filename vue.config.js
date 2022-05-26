@@ -3,11 +3,10 @@ module.exports = defineConfig({
   transpileDependencies: true,
   productionSourceMap: false,
   devServer: {
-    // https: true,
+    https: process.env.VUE_APP_HTTPS == "true",
     proxy: {
       "^/api": {
-        // target: "https://0804-89-113-101-231.jp.ngrok.io/",
-        target: "http://localhost:8000",
+        target: process.env.VUE_APP_PROXY_API,
         pathRewrite: {
           "^/api": "",
         },
