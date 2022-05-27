@@ -54,12 +54,13 @@
               <UserGroupIcon class="w-5 h-5" />
             </div>
             <span
-              class="cursor-pointer"
+              class="cursor-pointer after:content-['✓']"
               @click="showOrganizatorInfo"
-              :class="{
-                'after:mx-2 after:content-[\'&check;\'] after:text-primary':
-                  event.organization?.is_verified,
-              }"
+              :class="
+                event.organization?.is_verified
+                  ? 'after:mx-2 after:text-primary'
+                  : 'after:text-transparent'
+              "
             >
               {{
                 event.organization

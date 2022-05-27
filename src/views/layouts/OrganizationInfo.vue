@@ -131,11 +131,12 @@
           </div>
           <span
             v-else
-            class="self-center text-2xl break-words"
-            :class="{
-              'after:mx-2 after:content-[\'✓\'] after:text-primary':
-                organization?.is_verified,
-            }"
+            class="self-center text-2xl break-words after:content-['✓']"
+            :class="
+              organization?.is_verified
+                ? 'after:mx-2 after:text-primary'
+                : 'after:text-transparent'
+            "
           >
             {{ organization?.title }}
           </span>
