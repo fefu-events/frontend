@@ -11,9 +11,7 @@
 
     <!-- Person -->
     <div class="flex flex-row items-center mx-5 mt-5 space-x-4">
-      <div class="min-w-[64px] h-16 rounded-full bg-gray-300">
-        <img src="" alt="" srcset="" />
-      </div>
+      <AvatarIcon class="min-w-[64px] h-16" />
       <span class="text-xl break-words word-space-full">
         {{ user?.name }}
       </span>
@@ -112,12 +110,14 @@ import _ from "lodash";
 import api from "@/service/api";
 import { mapState } from "vuex";
 import * as Icons from "@heroicons/vue/outline";
+import { AvatarIcon } from "@/components/icons";
 import { EventBlock } from "@/components/templates";
 import { Button } from "@/components/interface";
 
 export default {
   name: "ProfileInfo",
   components: {
+    AvatarIcon,
     EventBlock,
     Button,
     HashtagIcon: Icons.HashtagIcon,

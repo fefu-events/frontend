@@ -100,7 +100,7 @@
 
     <!-- Info view -->
     <div
-      class="flex-col h-full mt-6 overflow-hidden"
+      class="flex-col h-full mt-6 space-y-6 overflow-hidden"
       :class="allPanelClosed ? 'flex' : 'hidden'"
     >
       <!-- Organization avatar and title -->
@@ -143,10 +143,7 @@
         </div>
       </div>
       <!-- Description -->
-      <div
-        class="relative mt-4 mx-5"
-        :class="{ 'mb-5': organization.description }"
-      >
+      <div class="relative mx-5">
         <div v-if="editMode" class="relative w-11/12">
           <textarea
             v-model="orgDescription"
