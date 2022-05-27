@@ -27,10 +27,10 @@
       <div
         class="flex pt-10 pb-4 xl:py-0 flex-row content-between items-center xl:flex-col"
       >
-        <div class="bg-black w-28 xl:my-7 rounded-full overflow-hidden">
-          <img
+        <div class="w-28 xl:my-7 rounded-full overflow-hidden">
+          <CategoryIcon
             class="self-center justify-self-center"
-            src="@/assets/img/svg/logo.svg"
+            :categoryID="event.category?.id"
           />
         </div>
         <div class="flex flex-col pl-5 xl:pl-0 col-span-7 w-full">
@@ -147,6 +147,7 @@ import api from "@/service/api";
 import { mapState } from "vuex";
 import moment from "moment";
 import { Button } from "@/components/interface";
+import { CategoryIcon } from "@/components/icons";
 import { UserGroupIcon, CalendarIcon, ClockIcon } from "@heroicons/vue/outline";
 import { LinkIcon } from "@heroicons/vue/solid";
 
@@ -154,6 +155,8 @@ export default {
   name: "EventInfo",
   components: {
     Button,
+    /* eslint-disable vue/no-unused-components */
+    CategoryIcon,
     UserGroupIcon,
     CalendarIcon,
     ClockIcon,
