@@ -83,7 +83,7 @@
       />
       <div class="mb-4 overflow-y-scroll" ref="events">
         <div
-          class="px-5 xl:px-5 hover:bg-hoverColor cursor-pointer"
+          class="px-5 xl:px-0 hover:bg-hoverColor cursor-pointer"
           v-for="event in dataQuery"
           :key="event"
           @click="selectEvent(event.id)"

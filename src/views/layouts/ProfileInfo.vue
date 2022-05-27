@@ -62,11 +62,11 @@
     </span>
     <div
       v-if="events.length > 0"
-      class="px-5 xl:px-0 mt-1 mb-6 overflow-y-scroll"
+      class="mt-1 mb-6 overflow-y-scroll"
       ref="events"
     >
       <div
-        class="hover:bg-hoverColor cursor-pointer"
+        class="px-5 xl:px-0 hover:bg-hoverColor cursor-pointer"
         v-for="event in events"
         :key="event.id"
         @click="selectEvent(event.id)"
