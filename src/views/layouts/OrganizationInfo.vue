@@ -165,12 +165,12 @@
           {{ organization?.description }}
         </p>
         <PencilAltIcon
-          v-if="(isOwner || statusPerms) && !editMode"
+          v-if="(isOwner || isAdmin) && !editMode"
           class="absolute bottom-0 right-0 w-6 h-6 hover:text-primary cursor-pointer"
           @click="editMode = true"
         />
         <CheckIcon
-          v-else-if="(isOwner || statusPerms) && editMode"
+          v-else-if="(isOwner || isAdmin) && editMode"
           class="absolute bottom-0 right-0 w-6 h-6 hover:text-success cursor-pointer"
           @click="onClickAcceptEdits"
         />
@@ -359,7 +359,7 @@ export default {
           data = await this.loadEventsList(this.pageQuery * 10);
         }
         this.dataQuery = this.dataQuery.concat(data);
-        ++this.pageQuery;
+        this.pageQuery++;
       }
     },
 

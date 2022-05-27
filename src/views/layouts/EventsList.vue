@@ -1,6 +1,9 @@
 <template>
-  <div class="flex flex-col h-full w-[89%] xl:w-80 mx-auto" ref="events">
-    <div class="flex flex-col h-[85%] xl:h-full my-2 overflow-y-scroll">
+  <div class="flex flex-col h-full w-[89%] xl:w-80 mx-auto">
+    <div
+      class="flex flex-col h-[85%] xl:h-full my-2 overflow-y-scroll"
+      ref="events"
+    >
       <section v-if="!isLoaded" class="flex items-center h-full">
         <svg
           class="animate-spin h-12 w-12 text-primary mx-auto"
@@ -31,7 +34,7 @@
           :key="event.id"
           @click="onClickSelectEvent(event.id)"
         >
-          <EventBlock class="px-5" :event="event" />
+          <EventBlock :event="event" />
         </div>
       </section>
       <section
@@ -77,6 +80,8 @@ export default {
   data() {
     return {
       isLoaded: false,
+      debounceRequestFlag: true,
+
       page: 1,
       events: [],
     };
@@ -101,33 +106,32 @@ export default {
   },
 
   async mounted() {
+    this.events = await this.loadEventList(0);
     const eventsList = this.$refs.events;
     if (eventsList)
       eventsList.addEventListener("scroll", () => this.handleScroll());
-    this.events = await this.loadEventList(0);
   },
 
   methods: {
     async loadEventList(skip) {
-      const data = await api.event
+      return api.event
         .getAll(skip, this.filterParams, this.user)
         .then(({ data }) => {
           this.isLoaded = true;
           return data;
         });
-
-      return data;
     },
 
     async handleScroll() {
+      if (!this.debounceRequestFlag) return;
+
       const eventsList = this.$refs.events;
       const scrolling = eventsList.scrollTop + eventsList.clientHeight;
-      if (
-        scrolling >= eventsList.scrollHeight &&
-        this.events.length >= this.page * 10
-      ) {
-        const data = await this.loadEventList(0);
+      const limitData = this.events.length >= this.page * 10;
+      if (scrolling >= eventsList.scrollHeight && limitData) {
+        this.debounceRequestFlag = false;
 
+        const data = await this.loadEventList(this.page * 10);
         this.events = this.events.concat(data);
         this.page++;
       }

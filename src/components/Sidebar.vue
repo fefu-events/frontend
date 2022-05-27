@@ -1,7 +1,7 @@
 <template>
   <!-- LEFT SIDEBAR -->
 
-  <div class="flex z-500 absolute -space-x-2">
+  <div class="flex z-500 absolute">
     <!-- Filter layout -->
     <LayoutShell class="z-20" :side="'left'" :renderTerm="searchLayout">
       <EventsFilter
@@ -10,23 +10,33 @@
       />
     </LayoutShell>
     <!-- Event list layout -->
-    <LayoutShell class="z-10" :side="'left'" :renderTerm="eventListLayout">
+    <LayoutShell
+      class="z-10"
+      :side="'left'"
+      :renderTerm="eventListLayout"
+      :left_x_2="searchLayout"
+    >
       <EventsList
         v-if="eventListLayout"
         :onClickEventsListToggle="onClickEventsListToggle"
       />
     </LayoutShell>
     <!-- Event info layout -->
-    <LayoutShell class="z-0" :side="'left'" :renderTerm="selectedEvent">
+    <LayoutShell
+      class="z-0"
+      :side="'left'"
+      :renderTerm="selectedEvent"
+      :left_x_2="searchLayout || eventListLayout"
+      :left_x_4="searchLayout && eventListLayout"
+    >
       <EventInfo :eventID="selectedEvent" />
     </LayoutShell>
     <!-- Sidebar toggler -->
     <div
-      class="hidden xl:block sticky top-24 bg-white w-5 h-14 rounded-r-md border-y border-r border-black cursor-pointer z-30"
+      class="hidden xl:block relative top-24 bg-white w-5 h-14 rounded-r-md border-y border-r border-black cursor-pointer z-30"
       :class="{
-        '!mx-4': countOpenedLeftBars < 2,
-        '!mx-2': countOpenedLeftBars == 2,
-        '!mx-0': countOpenedLeftBars > 2,
+        '-left-2': countOpenedLeftBars == 2,
+        '-left-4': countOpenedLeftBars > 2,
       }"
       @click.stop="onClickSidebarToggle"
     >
