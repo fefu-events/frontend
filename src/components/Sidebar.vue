@@ -1,50 +1,32 @@
 <template>
   <!-- LEFT SIDEBAR -->
 
-  <div class="flex z-500 absolute">
+  <div class="flex z-500 absolute -space-x-2">
     <!-- Filter layout -->
-    <div
-      class="left-sidebar"
-      :class="{
-        'h-9/10 xl:!w-80 xl:h-screen outline': searchLayout,
-      }"
-    >
+    <LayoutShell class="z-20" :side="'left'" :renderTerm="searchLayout">
       <EventsFilter
         :eventsListState="eventListLayout"
         :toggleEventsList="onClickEventsListToggle"
       />
-    </div>
+    </LayoutShell>
     <!-- Event list layout -->
-    <div
-      class="left-sidebar xl:-z-10"
-      :class="{
-        'h-9/10 xl:!w-80 xl:h-screen outline': eventListLayout,
-        'xl:-left-2': searchLayout,
-      }"
-    >
+    <LayoutShell class="z-10" :side="'left'" :renderTerm="eventListLayout">
       <EventsList
         v-if="eventListLayout"
         :onClickEventsListToggle="onClickEventsListToggle"
       />
-    </div>
+    </LayoutShell>
     <!-- Event info layout -->
-    <div
-      class="left-sidebar xl:-z-20"
-      :class="{
-        'h-9/10 xl:!w-90 xl:h-screen outline': selectedEvent,
-        'xl:-left-2': searchLayout,
-        'xl:-left-4': eventListLayout,
-      }"
-    >
+    <LayoutShell class="z-0" :side="'left'" :renderTerm="selectedEvent">
       <EventInfo :eventID="selectedEvent" />
-    </div>
+    </LayoutShell>
     <!-- Sidebar toggler -->
     <div
-      class="hidden xl:block relative top-24 bg-white w-5 h-14 rounded-r-md border-y border-r border-black cursor-pointer z-10"
+      class="hidden xl:block sticky top-24 bg-white w-5 h-14 rounded-r-md border-y border-r border-black cursor-pointer z-30"
       :class="{
-        '-left-2':
-          searchLayout + eventListLayout + (selectedEvent != null) == 2,
-        '-left-4': selectedEvent && eventListLayout,
+        '!mx-4': countOpenedLeftBars < 2,
+        '!mx-2': countOpenedLeftBars == 2,
+        '!mx-0': countOpenedLeftBars > 2,
       }"
       @click.stop="onClickSidebarToggle"
     >
@@ -292,6 +274,14 @@ export default {
     ...mapState("filter/", {
       cachePlaces: (state) => state.cachePlaces,
     }),
+
+    countOpenedLeftBars() {
+      return (
+        Number(this.searchLayout) +
+        Number(this.eventListLayout) +
+        Number(this.selectedEvent != null)
+      );
+    },
 
     oneOfInfo() {
       let answer = false;

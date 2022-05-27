@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-full w-4/5 xl:w-70 mx-auto">
+  <div class="flex flex-col h-full">
     <div v-if="!isLoaded" class="flex items-center h-full">
       <svg
         class="animate-spin h-12 w-12 text-primary mx-auto"
