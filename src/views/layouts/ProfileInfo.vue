@@ -43,7 +43,7 @@
           <span class="group-hover:text-primary">Мои организации</span>
         </li>
         <li
-          v-if="statusPerms"
+          v-if="isAdmin"
           class="flex flex-row space-x-2 font-bold cursor-pointer group"
           @click="openBookmark('moderators')"
         >
@@ -153,6 +153,7 @@ export default {
     ...mapState("me/", {
       token: (state) => state.accessToken,
       meID: (state) => state.user?.id,
+      isAdmin: (state) => state.user?.is_admin,
       statusPerms: (state) => state.user?.is_admin || state.user?.is_moderator,
     }),
 

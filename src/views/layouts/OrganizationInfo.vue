@@ -46,7 +46,7 @@
       </div>
       <!-- Add members -->
       <Button
-        v-if="isOwner || statusPerms"
+        v-if="isOwner || isAdmin"
         class="mx-10"
         @click="openQueryList('users')"
       >
@@ -55,15 +55,15 @@
       <div class="my-4 overflow-y-scroll">
         <div
           class="px-5 xl:px-0 hover:bg-hoverColor cursor-pointer"
-          v-for="member in organization?.members"
+          v-for="member in organization.members"
           @click="onClickSelectUser(member.id)"
           :key="member"
         >
           <MemberBlock
             :user="member"
-            :removeMode="(isOwner || statusPerms) && member.id != meID"
+            :removeMode="(isOwner || isAdmin) && member.id != meID"
             :removeMember="removeMember"
-            :promoteMode="(isOwner || statusPerms) && member.id != meID"
+            :promoteMode="(isOwner || isAdmin) && member.id != meID"
             :promoteMember="promoteMember"
           />
         </div>
@@ -133,19 +133,19 @@
             v-else
             class="self-center text-2xl break-words after:content-['✓']"
             :class="
-              organization?.is_verified
+              organization.is_verified
                 ? 'after:mx-2 after:text-primary'
                 : 'after:text-transparent'
             "
           >
-            {{ organization?.title }}
+            {{ organization.title }}
           </span>
         </div>
       </div>
       <!-- Description -->
       <div
         class="relative mt-4 mx-5"
-        :class="{ 'mb-5': organization?.description }"
+        :class="{ 'mb-5': organization.description }"
       >
         <div v-if="editMode" class="relative w-11/12">
           <textarea
@@ -163,7 +163,7 @@
           />
         </div>
         <p v-else class="mx-5">
-          {{ organization?.description }}
+          {{ organization.description }}
         </p>
         <PencilAltIcon
           v-if="(isOwner || isAdmin) && !editMode"
@@ -187,7 +187,7 @@
         </Button>
         <Button v-if="isAdmin" @click="onClickVerify">
           <span>
-            {{ organization?.is_verified ? "Аннулировать" : "Верифицировать" }}
+            {{ organization.is_verified ? "Аннулировать" : "Верифицировать" }}
           </span>
         </Button>
         <Button v-if="isMember" :disabled="isOwner" @click="onClickLeave">
@@ -197,18 +197,18 @@
           v-if="!isMember && meID"
           :class="{
             'hover:border-danger hover:text-danger':
-              organization?.am_i_following,
+              organization.am_i_following,
           }"
           :disabled="isOwner"
           @click="onClickSubscribe"
         >
           <span>
-            {{ organization?.am_i_following ? "Отписаться" : "Подписаться" }}
+            {{ organization.am_i_following ? "Отписаться" : "Подписаться" }}
           </span>
         </Button>
         <Button
           class="hover:border-danger hover:text-danger"
-          v-if="isOwner || statusPerms"
+          v-if="isOwner || isAdmin"
           @click="onClickDelete"
         >
           <span> Удалить организацию </span>
@@ -269,7 +269,7 @@ export default {
       debounceRequestFlag: true,
       editMode: false,
 
-      organization: null,
+      organization: {},
       maxTitleSize: 50,
       orgTitle: "",
       maxDescSize: 255,
@@ -295,18 +295,16 @@ export default {
     }),
 
     isOwner() {
-      return this.organization?.owner_id === this.meID;
+      return this.organization.owner_id === this.meID;
     },
 
     isMember() {
-      return this.userOrgs
-        ?.map((org) => org.id)
-        .includes(this.organization?.id);
+      return this.userOrgs?.map((org) => org.id).includes(this.organization.id);
     },
 
     userIsAdded() {
       return (user) =>
-        this.organization?.members.some((member) => member.id == user.id);
+        this.organization.members?.some((member) => member.id == user.id);
     },
 
     allPanelClosed() {
@@ -443,7 +441,7 @@ export default {
     },
 
     async onClickVerify() {
-      if (this.organization?.is_verified) {
+      if (this.organization.is_verified) {
         await api.verification.organizationUnverify(
           this.token,
           this.organizationID
