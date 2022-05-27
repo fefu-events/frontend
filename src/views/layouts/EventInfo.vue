@@ -62,7 +62,9 @@
               }"
             >
               {{
-                event.organization ? event.organizatio?.title : event.user?.name
+                event.organization
+                  ? event.organization?.title
+                  : event.user?.name
               }}
             </span>
           </div>
