@@ -2,8 +2,8 @@ import api from "@/service/api";
 
 export default {
   state: () => ({
-    user: null,
-    accessToken: null,
+    user: {},
+    accessToken: "",
   }),
 
   actions: {
@@ -30,6 +30,12 @@ export default {
 
     async SET_NEW_TAGS({ commit }, tags) {
       commit("user_tags", tags);
+    },
+  },
+
+  getters: {
+    statusPermissions: (state) => {
+      return state.user.is_admin || state.user.is_moderator;
     },
   },
 
