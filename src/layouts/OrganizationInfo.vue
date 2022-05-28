@@ -221,7 +221,7 @@ import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 
 import api from "@/service/api";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 
 import { ReplyIcon, PencilAltIcon, CheckIcon } from "@heroicons/vue/outline";
 import * as InterfaceComponents from "@/components/interface";
@@ -286,9 +286,12 @@ export default {
     ...mapState("me/", {
       token: (state) => state.accessToken,
       meID: (state) => state.user?.id,
-      statusPerms: (state) => state.user?.is_admin || state.user?.is_moderator,
       isAdmin: (state) => state.user?.is_admin,
       userOrgs: (state) => state.user?.organizations,
+    }),
+
+    ...mapGetters("me/", {
+      statusPerms: "statusPermissions",
     }),
 
     isOwner() {

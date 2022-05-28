@@ -89,7 +89,7 @@
       <div class="mx-5">
         <div class="flex flex-row items-center justify-between">
           <span class="text-lg"> Участники </span>
-          <Button class="w-28 h-9 leading-none" @click="openAddUserList">
+          <Button class="w-28 h-9 !leading-none" @click="openAddUserList">
             <span class="text-sm"> Добавить </span>
           </Button>
         </div>

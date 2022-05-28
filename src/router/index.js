@@ -4,7 +4,7 @@ const routes = [
   {
     path: "/",
     name: "home",
-    component: () => import("@/views/pages/MapView.vue"),
+    component: () => import("@/views/MapView.vue"),
     meta: {
       title: "Map",
     },
@@ -12,7 +12,7 @@ const routes = [
   {
     path: "/about",
     name: "about",
-    component: () => import("@/views/pages/MapView.vue"),
+    component: () => import("@/views/MapView.vue"),
     meta: {
       title: "About",
     },

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-full overflow-scroll">
+  <div v-if="'isLoaded'" class="flex flex-col h-full overflow-scroll">
     <!-- Back -->
     <div
       v-if="selectedUser"
@@ -108,7 +108,7 @@
 <script>
 import _ from "lodash";
 import api from "@/service/api";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import * as Icons from "@heroicons/vue/outline";
 import { AvatarIcon } from "@/components/icons";
 import { EventBlock } from "@/components/templates";
@@ -154,7 +154,10 @@ export default {
       token: (state) => state.accessToken,
       meID: (state) => state.user?.id,
       isAdmin: (state) => state.user?.is_admin,
-      statusPerms: (state) => state.user?.is_admin || state.user?.is_moderator,
+    }),
+
+    ...mapGetters("me/", {
+      statusPerms: "statusPermissions",
     }),
 
     isMe() {
