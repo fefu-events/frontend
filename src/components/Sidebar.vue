@@ -102,7 +102,7 @@
     </LayoutShell>
 
     <LayoutShell :renderTerm="infoLayouts.moderators">
-      <ModeratorsList />
+      <ModeratorsList v-if="infoLayouts.moderators" />
     </LayoutShell>
 
     <!-- Organizations list layout -->
