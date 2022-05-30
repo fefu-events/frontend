@@ -1,101 +1,104 @@
 <template>
-  <div v-if="'isLoaded'" class="flex flex-col h-full overflow-scroll">
+  <div class="flex flex-col h-full overflow-scroll">
+    <LoadIcon v-if="!isLoaded" class="h-12 w-12 text-primary mx-auto" />
     <!-- Back -->
-    <div
-      v-if="selectedUser"
-      class="absolute top-5 right-5 -scale-x-100 hover:text-primary cursor-pointer"
-      @click="backMove"
-    >
-      <ReplyIcon class="w-10 h-10 stroke-1" />
-    </div>
-
-    <!-- Person -->
-    <div class="flex flex-row items-center mx-5 mt-5 space-x-4">
-      <AvatarIcon class="min-w-[64px] h-16" />
-      <span class="text-xl break-words word-space-full">
-        {{ user?.name }}
-      </span>
-    </div>
-    <!-- Bookmarks -->
-    <div v-if="isMe" class="my-4">
-      <ul class="mx-5 space-y-4 text-base">
-        <li
-          class="flex flex-row space-x-2 font-bold cursor-pointer group"
-          @click="openBookmark('tags')"
-        >
-          <HashtagIcon class="w-5 h-5" />
-          <span class="group-hover:text-primary">Мои теги</span>
-        </li>
-        <li
-          class="flex flex-row space-x-2 font-bold cursor-pointer group"
-          @click="openBookmark('subscriptions')"
-        >
-          <UserIcon class="w-5 h-5" />
-          <span class="group-hover:text-primary"> Мои подписки </span>
-        </li>
-        <li
-          class="flex flex-row space-x-2 font-bold cursor-pointer group"
-          @click="openBookmark('myOrgs')"
-        >
-          <UserGroupIcon class="w-5 h-5" />
-          <span class="group-hover:text-primary">Мои организации</span>
-        </li>
-        <li
-          v-if="isAdmin"
-          class="flex flex-row space-x-2 font-bold cursor-pointer group"
-          @click="openBookmark('moderators')"
-        >
-          <ShieldCheckIcon class="w-5 h-5" />
-          <span class="group-hover:text-primary">Модераторы</span>
-        </li>
-      </ul>
-    </div>
-    <!-- Events -->
-    <span
-      v-if="events.length > 0"
-      class="mx-5 font-medium"
-      :class="{ 'mt-10': !isMe }"
-    >
-      {{ isMe ? "Мои мероприятия:" : "Мероприятия:" }}
-    </span>
-    <div
-      v-if="events.length > 0"
-      class="mt-1 mb-6 overflow-y-scroll"
-      ref="events"
-    >
+    <div class="flex flex-col h-full" v-else>
       <div
-        class="px-5 xl:px-0 hover:bg-hoverColor cursor-pointer"
-        v-for="event in events"
-        :key="event.id"
-        @click="selectEvent(event.id)"
+        v-if="selectedUser"
+        class="absolute top-5 right-5 -scale-x-100 hover:text-primary cursor-pointer"
+        @click="backMove"
       >
-        <EventBlock
-          :event="event"
-          :edit="(isMe && userPerms(event)) || statusPerms"
-          :onClickSelectEditEvent="onClickSelectEditEvent"
+        <ReplyIcon class="w-10 h-10 stroke-1" />
+      </div>
+
+      <!-- Person -->
+      <div class="flex flex-row items-center mx-5 mt-5 space-x-4">
+        <AvatarIcon class="min-w-[64px] h-16" />
+        <span class="text-xl break-words word-space-full">
+          {{ user?.name }}
+        </span>
+      </div>
+      <!-- Bookmarks -->
+      <div v-if="isMe" class="my-4">
+        <ul class="mx-5 space-y-4 text-base">
+          <li
+            class="flex flex-row space-x-2 font-bold cursor-pointer group"
+            @click="openBookmark('tags')"
+          >
+            <HashtagIcon class="w-5 h-5" />
+            <span class="group-hover:text-primary">Мои теги</span>
+          </li>
+          <li
+            class="flex flex-row space-x-2 font-bold cursor-pointer group"
+            @click="openBookmark('subscriptions')"
+          >
+            <UserIcon class="w-5 h-5" />
+            <span class="group-hover:text-primary"> Мои подписки </span>
+          </li>
+          <li
+            class="flex flex-row space-x-2 font-bold cursor-pointer group"
+            @click="openBookmark('myOrgs')"
+          >
+            <UserGroupIcon class="w-5 h-5" />
+            <span class="group-hover:text-primary">Мои организации</span>
+          </li>
+          <li
+            v-if="isAdmin"
+            class="flex flex-row space-x-2 font-bold cursor-pointer group"
+            @click="openBookmark('moderators')"
+          >
+            <ShieldCheckIcon class="w-5 h-5" />
+            <span class="group-hover:text-primary">Модераторы</span>
+          </li>
+        </ul>
+      </div>
+      <!-- Events -->
+      <span
+        v-if="events.length > 0"
+        class="mx-5 font-medium"
+        :class="{ 'mt-5': !isMe }"
+      >
+        {{ isMe ? "Мои мероприятия:" : "Мероприятия:" }}
+      </span>
+      <div
+        v-if="events.length > 0"
+        class="mt-1 mb-6 overflow-y-scroll"
+        ref="events"
+      >
+        <div
+          class="px-5 xl:px-0 hover:bg-hoverColor cursor-pointer"
+          v-for="event in events"
+          :key="event.id"
+          @click="selectEvent(event.id)"
+        >
+          <EventBlock
+            :event="event"
+            :edit="(isMe && userPerms(event)) || statusPerms"
+            :onClickSelectEditEvent="onClickSelectEditEvent"
+          />
+        </div>
+      </div>
+      <div v-else class="h-2/5 mt-auto mb-4">
+        <img
+          class="max-h-full mx-auto"
+          src="@/assets/img/svg/emptyList.svg"
+          alt=""
         />
       </div>
+      <Button v-if="isMe" class="mt-auto mx-10 mb-10" @click="signOut">
+        <span> Выйти </span>
+      </Button>
+      <Button
+        v-if="!isMe && meID"
+        class="mt-auto mx-10 mb-10"
+        :class="{
+          'hover:border-danger hover:text-danger': user?.am_i_following,
+        }"
+        @click="onClickSubscription"
+      >
+        <span> {{ user?.am_i_following ? "Отписаться" : "Подписаться" }} </span>
+      </Button>
     </div>
-    <div v-else class="h-2/5 mt-auto mb-4">
-      <img
-        class="max-h-full mx-auto"
-        src="@/assets/img/svg/emptyList.svg"
-        alt=""
-      />
-    </div>
-    <Button v-if="isMe" class="mt-auto mx-10 mb-10" @click="signOut">
-      <span> Выйти </span>
-    </Button>
-    <Button
-      v-if="!isMe && meID"
-      class="mt-auto mx-10 mb-10"
-      :class="{
-        'hover:border-danger hover:text-danger': user?.am_i_following,
-      }"
-      @click="onClickSubscription"
-    >
-      <span> {{ user?.am_i_following ? "Отписаться" : "Подписаться" }} </span>
-    </Button>
   </div>
 </template>
 
@@ -110,16 +113,17 @@ import _ from "lodash";
 import api from "@/service/api";
 import { mapState, mapGetters } from "vuex";
 import * as Icons from "@heroicons/vue/outline";
-import { AvatarIcon } from "@/components/icons";
+import { AvatarIcon, LoadIcon } from "@/components/icons";
 import { EventBlock } from "@/components/templates";
 import { Button } from "@/components/interface";
 
 export default {
   name: "ProfileInfo",
   components: {
-    AvatarIcon,
-    EventBlock,
     Button,
+    EventBlock,
+    AvatarIcon,
+    LoadIcon,
     HashtagIcon: Icons.HashtagIcon,
     ReplyIcon: Icons.ReplyIcon,
     ShieldCheckIcon: Icons.ShieldCheckIcon,
@@ -142,10 +146,10 @@ export default {
 
   data() {
     return {
-      page: 1,
-      events: [],
-
+      isLoaded: false,
       user: null,
+      events: [],
+      page: 1,
     };
   },
 
@@ -188,6 +192,8 @@ export default {
         "scroll",
         _.debounce(() => this.handleScroll(), 100)
       );
+
+    this.isLoaded = true;
   },
 
   methods: {
