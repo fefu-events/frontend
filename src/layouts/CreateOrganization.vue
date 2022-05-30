@@ -10,18 +10,18 @@
 
     <!-- Add user list view -->
     <div v-if="addUsersList" class="flex flex-col h-full">
-      <div class="mt-10 font-bold text-lg cursor-pointer">
+      <div class="mx-10 mt-10 font-bold text-lg cursor-pointer">
         <span>Добавить участника</span>
       </div>
       <!-- Search input -->
       <Search
-        class="mt-4"
+        class="mx-5 mt-4"
         :placeholder="'Поиск'"
         @update="(value) => (userQuery = value)"
       />
       <div class="mb-4 overflow-y-scroll" ref="users">
         <div
-          class="hover:bg-hoverColor cursor-pointer"
+          class="px-5 xl:px-0 hover:bg-hoverColor cursor-pointer"
           v-for="user in users"
           :key="user"
         >
@@ -89,7 +89,7 @@
       <div class="mx-5">
         <div class="flex flex-row items-center justify-between">
           <span class="text-lg"> Участники </span>
-          <Button class="w-28 h-9 leading-none" @click="openAddUserList">
+          <Button class="w-28 h-9 !leading-none" @click="openAddUserList">
             <span class="text-sm"> Добавить </span>
           </Button>
         </div>
@@ -157,7 +157,7 @@ export default {
       maxTitleSize: 50,
       maxDescSize: 255,
 
-      debounceToggle: true,
+      debounceRequestFlag: true,
       errors: [],
 
       organization: {
@@ -214,17 +214,17 @@ export default {
     },
 
     async handleScroll() {
-      if (!this.debounceToggle) return;
+      if (!this.debounceRequestFlag) return;
 
       const refUsersList = this.$refs.users;
       const scrolling = refUsersList.scrollTop + refUsersList.clientHeight;
       const limitData = this.users.length >= this.page * 10;
       if (scrolling >= refUsersList.scrollHeight && limitData) {
-        this.debounceToggle = false;
+        this.debounceRequestFlag = false;
         const data = await api.user
           .getAll(this.page * 10, this.userQuery)
           .then(({ data }) => {
-            this.debounceToggle = true;
+            this.debounceRequestFlag = true;
             return data;
           });
         this.users = this.users.concat(data);

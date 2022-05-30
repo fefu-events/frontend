@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-full overflow-scroll">
+  <div v-if="'isLoaded'" class="flex flex-col h-full overflow-scroll">
     <!-- Back -->
     <div
       v-if="selectedUser"
@@ -11,9 +11,7 @@
 
     <!-- Person -->
     <div class="flex flex-row items-center mx-5 mt-5 space-x-4">
-      <div class="min-w-[64px] h-16 rounded-full bg-gray-300">
-        <img src="" alt="" srcset="" />
-      </div>
+      <AvatarIcon class="min-w-[64px] h-16" />
       <span class="text-xl break-words word-space-full">
         {{ user?.name }}
       </span>
@@ -43,6 +41,7 @@
           <span class="group-hover:text-primary">Мои организации</span>
         </li>
         <li
+          v-if="isAdmin"
           class="flex flex-row space-x-2 font-bold cursor-pointer group"
           @click="openBookmark('moderators')"
         >
@@ -61,11 +60,11 @@
     </span>
     <div
       v-if="events.length > 0"
-      class="px-5 xl:px-0 mt-1 mb-6 overflow-y-scroll"
+      class="mt-1 mb-6 overflow-y-scroll"
       ref="events"
     >
       <div
-        class="hover:bg-hoverColor cursor-pointer"
+        class="px-5 xl:px-0 hover:bg-hoverColor cursor-pointer"
         v-for="event in events"
         :key="event.id"
         @click="selectEvent(event.id)"
@@ -109,14 +108,16 @@
 <script>
 import _ from "lodash";
 import api from "@/service/api";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import * as Icons from "@heroicons/vue/outline";
+import { AvatarIcon } from "@/components/icons";
 import { EventBlock } from "@/components/templates";
 import { Button } from "@/components/interface";
 
 export default {
   name: "ProfileInfo",
   components: {
+    AvatarIcon,
     EventBlock,
     Button,
     HashtagIcon: Icons.HashtagIcon,
@@ -152,7 +153,11 @@ export default {
     ...mapState("me/", {
       token: (state) => state.accessToken,
       meID: (state) => state.user?.id,
-      statusPerms: (state) => state.user?.is_admin || state.user?.is_moderator,
+      isAdmin: (state) => state.user?.is_admin,
+    }),
+
+    ...mapGetters("me/", {
+      statusPerms: "statusPermissions",
     }),
 
     isMe() {

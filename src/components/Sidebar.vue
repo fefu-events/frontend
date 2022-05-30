@@ -3,48 +3,40 @@
 
   <div class="flex z-500 absolute">
     <!-- Filter layout -->
-    <div
-      class="left-sidebar"
-      :class="{
-        'h-9/10 xl:!w-80 xl:h-screen outline': searchLayout,
-      }"
-    >
+    <LayoutShell class="z-20" :side="'left'" :renderTerm="searchLayout">
       <EventsFilter
         :eventsListState="eventListLayout"
         :toggleEventsList="onClickEventsListToggle"
       />
-    </div>
+    </LayoutShell>
     <!-- Event list layout -->
-    <div
-      class="left-sidebar xl:-z-10"
-      :class="{
-        'h-9/10 xl:!w-80 xl:h-screen outline': eventListLayout,
-        'xl:-left-2': searchLayout,
-      }"
+    <LayoutShell
+      class="z-10"
+      :side="'left'"
+      :renderTerm="eventListLayout"
+      :left_x_2="searchLayout"
     >
       <EventsList
         v-if="eventListLayout"
         :onClickEventsListToggle="onClickEventsListToggle"
       />
-    </div>
+    </LayoutShell>
     <!-- Event info layout -->
-    <div
-      class="left-sidebar xl:-z-20"
-      :class="{
-        'h-9/10 xl:!w-90 xl:h-screen outline': selectedEvent,
-        'xl:-left-2': searchLayout,
-        'xl:-left-4': eventListLayout,
-      }"
+    <LayoutShell
+      class="z-0"
+      :side="'left'"
+      :renderTerm="selectedEvent"
+      :left_x_2="searchLayout || eventListLayout"
+      :left_x_4="searchLayout && eventListLayout"
     >
       <EventInfo :eventID="selectedEvent" />
-    </div>
+    </LayoutShell>
     <!-- Sidebar toggler -->
     <div
-      class="hidden xl:block relative top-24 bg-white w-5 h-14 rounded-r-md border-y border-r border-black cursor-pointer z-10"
+      class="hidden xl:block relative top-24 bg-white w-5 h-14 rounded-r-md border-y border-r border-black cursor-pointer z-30"
       :class="{
-        '-left-2':
-          searchLayout + eventListLayout + (selectedEvent != null) == 2,
-        '-left-4': selectedEvent && eventListLayout,
+        '-left-2': countOpenedLeftBars == 2,
+        '-left-4': countOpenedLeftBars > 2,
       }"
       @click.stop="onClickSidebarToggle"
     >
@@ -79,20 +71,18 @@
           <UserIcon class="w-8 h-8 text mx-auto" />
         </Button>
         <Button class="w-12 h-12 mx-5 bg-white">
-          <router-link to="/about">
-            <MenuIcon class="w-8 h-8 text mx-auto" />
-          </router-link>
+          <MenuIcon class="w-8 h-8 text mx-auto" />
         </Button>
       </section>
       <section v-else class="flex">
-        <Button nav class="w-32 h-15 mx-5 bg-white" @click="signIn">
+        <Button nav class="w-32 h-12 mx-5 bg-white" @click="signIn">
           <div class="flex items-center justify-evenly">
             <span class="text-lg font-bold">Войти</span>
-            <LoginIcon class="w-10 h-10 rotate-180" />
+            <LoginIcon class="w-8 h-8 rotate-180" />
           </div>
         </Button>
-        <Button class="w-15 h-15 mx-5 bg-white">
-          <MenuIcon class="w-10 h-10 text mx-auto" />
+        <Button class="w-12 h-12 mx-5 bg-white">
+          <MenuIcon class="w-8 h-8 text mx-auto" />
         </Button>
       </section>
     </div>
@@ -199,7 +189,7 @@
 import { computed } from "vue";
 import { mapState } from "vuex";
 import { Button } from "@/components/interface";
-import * as LayoutComponents from "@/views/layouts";
+import * as LayoutComponents from "@/layouts";
 import { LayoutShell } from "@/components/templates";
 import { UserIcon } from "@heroicons/vue/solid";
 import {
@@ -294,6 +284,14 @@ export default {
     ...mapState("filter/", {
       cachePlaces: (state) => state.cachePlaces,
     }),
+
+    countOpenedLeftBars() {
+      return (
+        Number(this.searchLayout) +
+        Number(this.eventListLayout) +
+        Number(this.selectedEvent != null)
+      );
+    },
 
     oneOfInfo() {
       let answer = false;
@@ -451,13 +449,17 @@ export default {
 
   watch: {
     singleEvent(newValue) {
+      this.eventListLayout = false;
       this.selectedEvent = newValue;
     },
 
     cachePlaces: {
       handler(newValue) {
+        this.selectedEvent = null;
         if (newValue?.mapPlace) {
           this.eventListLayout = true;
+        } else {
+          this.eventListLayout = false;
         }
       },
 

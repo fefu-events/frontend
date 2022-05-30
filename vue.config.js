@@ -3,10 +3,10 @@ module.exports = defineConfig({
   transpileDependencies: true,
   productionSourceMap: false,
   devServer: {
-    https: process.env.VUE_APP_ROOT_API_HTTPS,
+    https: process.env.VUE_APP_HTTPS == "true",
     proxy: {
       "^/api": {
-        target: process.env.VUE_APP_ROOT_API,
+        target: process.env.VUE_APP_PROXY_API,
         pathRewrite: {
           "^/api": "",
         },

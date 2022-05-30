@@ -88,7 +88,7 @@ export default {
 
   data() {
     return {
-      debounceToggle: true,
+      debounceRequestFlag: true,
       users: [],
       userQuery: "",
       addUserListPage: 1,
@@ -131,17 +131,17 @@ export default {
     },
 
     async handleScroll() {
-      if (!this.debounceToggle) return;
+      if (!this.debounceRequestFlag) return;
 
       const refList = this.$refs.users;
       const scrolling = refList.scrollTop + refList.clientHeight;
       const limitData = this.users.length >= this.addUserListPage * 10;
       if (scrolling >= refList.scrollHeight && limitData) {
-        this.debounceToggle = false;
+        this.debounceRequestFlag = false;
         const data = await api.user
           .getAll(this.addUserListPage * 10, this.userQuery)
           .then(({ data }) => {
-            this.debounceToggle = true;
+            this.debounceRequestFlag = true;
             return data;
           });
 

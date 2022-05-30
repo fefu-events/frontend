@@ -2,7 +2,6 @@ import api from "@/service/api";
 
 export default {
   state: () => ({
-    forceUpdateEventList: false,
     categories: [],
     places: [],
   }),

@@ -46,7 +46,7 @@
       </div>
       <!-- Add members -->
       <Button
-        v-if="isOwner || statusPerms"
+        v-if="isOwner || isAdmin"
         class="mx-10"
         @click="openQueryList('users')"
       >
@@ -55,15 +55,15 @@
       <div class="my-4 overflow-y-scroll">
         <div
           class="px-5 xl:px-0 hover:bg-hoverColor cursor-pointer"
-          v-for="member in organization?.members"
+          v-for="member in organization.members"
           @click="onClickSelectUser(member.id)"
           :key="member"
         >
           <MemberBlock
             :user="member"
-            :removeMode="(isOwner || statusPerms) && member.id != meID"
+            :removeMode="(isOwner || isAdmin) && member.id != meID"
             :removeMember="removeMember"
-            :promoteMode="(isOwner || statusPerms) && member.id != meID"
+            :promoteMode="(isOwner || isAdmin) && member.id != meID"
             :promoteMember="promoteMember"
           />
         </div>
@@ -83,7 +83,7 @@
       />
       <div class="mb-4 overflow-y-scroll" ref="events">
         <div
-          class="px-5 xl:px-5 hover:bg-hoverColor cursor-pointer"
+          class="px-5 xl:px-0 hover:bg-hoverColor cursor-pointer"
           v-for="event in dataQuery"
           :key="event"
           @click="selectEvent(event.id)"
@@ -100,7 +100,7 @@
 
     <!-- Info view -->
     <div
-      class="flex-col h-full mt-6 overflow-hidden"
+      class="flex-col h-full mt-6 space-y-6 overflow-hidden"
       :class="allPanelClosed ? 'flex' : 'hidden'"
     >
       <!-- Organization avatar and title -->
@@ -131,21 +131,19 @@
           </div>
           <span
             v-else
-            class="self-center text-2xl break-words"
-            :class="{
-              'after:mx-2 after:content-[\'✓\'] after:text-primary':
-                organization?.is_verified,
-            }"
+            class="self-center text-2xl break-words after:content-['✓']"
+            :class="
+              organization.is_verified
+                ? 'after:mx-2 after:text-primary'
+                : 'after:text-transparent'
+            "
           >
-            {{ organization?.title }}
+            {{ organization.title }}
           </span>
         </div>
       </div>
       <!-- Description -->
-      <div
-        class="relative mt-4 mx-5"
-        :class="{ 'mb-5': organization?.description }"
-      >
+      <div class="relative mx-5">
         <div v-if="editMode" class="relative w-11/12">
           <textarea
             v-model="orgDescription"
@@ -162,15 +160,15 @@
           />
         </div>
         <p v-else class="mx-5">
-          {{ organization?.description }}
+          {{ organization.description }}
         </p>
         <PencilAltIcon
-          v-if="(isOwner || statusPerms) && !editMode"
+          v-if="(isOwner || isAdmin) && !editMode"
           class="absolute bottom-0 right-0 w-6 h-6 hover:text-primary cursor-pointer"
           @click="editMode = true"
         />
         <CheckIcon
-          v-else-if="(isOwner || statusPerms) && editMode"
+          v-else-if="(isOwner || isAdmin) && editMode"
           class="absolute bottom-0 right-0 w-6 h-6 hover:text-success cursor-pointer"
           @click="onClickAcceptEdits"
         />
@@ -186,7 +184,7 @@
         </Button>
         <Button v-if="isAdmin" @click="onClickVerify">
           <span>
-            {{ organization?.is_verified ? "Аннулировать" : "Верифицировать" }}
+            {{ organization.is_verified ? "Аннулировать" : "Верифицировать" }}
           </span>
         </Button>
         <Button v-if="isMember" :disabled="isOwner" @click="onClickLeave">
@@ -196,18 +194,18 @@
           v-if="!isMember && meID"
           :class="{
             'hover:border-danger hover:text-danger':
-              organization?.am_i_following,
+              organization.am_i_following,
           }"
           :disabled="isOwner"
           @click="onClickSubscribe"
         >
           <span>
-            {{ organization?.am_i_following ? "Отписаться" : "Подписаться" }}
+            {{ organization.am_i_following ? "Отписаться" : "Подписаться" }}
           </span>
         </Button>
         <Button
           class="hover:border-danger hover:text-danger"
-          v-if="isOwner || statusPerms"
+          v-if="isOwner || isAdmin"
           @click="onClickDelete"
         >
           <span> Удалить организацию </span>
@@ -223,7 +221,7 @@ import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 
 import api from "@/service/api";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 
 import { ReplyIcon, PencilAltIcon, CheckIcon } from "@heroicons/vue/outline";
 import * as InterfaceComponents from "@/components/interface";
@@ -268,7 +266,7 @@ export default {
       debounceRequestFlag: true,
       editMode: false,
 
-      organization: null,
+      organization: {},
       maxTitleSize: 50,
       orgTitle: "",
       maxDescSize: 255,
@@ -288,24 +286,25 @@ export default {
     ...mapState("me/", {
       token: (state) => state.accessToken,
       meID: (state) => state.user?.id,
-      statusPerms: (state) => state.user?.is_admin || state.user?.is_moderator,
       isAdmin: (state) => state.user?.is_admin,
       userOrgs: (state) => state.user?.organizations,
     }),
 
+    ...mapGetters("me/", {
+      statusPerms: "statusPermissions",
+    }),
+
     isOwner() {
-      return this.organization?.owner_id === this.meID;
+      return this.organization.owner_id === this.meID;
     },
 
     isMember() {
-      return this.userOrgs
-        ?.map((org) => org.id)
-        .includes(this.organization?.id);
+      return this.userOrgs?.map((org) => org.id).includes(this.organization.id);
     },
 
     userIsAdded() {
       return (user) =>
-        this.organization?.members.some((member) => member.id == user.id);
+        this.organization.members?.some((member) => member.id == user.id);
     },
 
     allPanelClosed() {
@@ -359,7 +358,7 @@ export default {
           data = await this.loadEventsList(this.pageQuery * 10);
         }
         this.dataQuery = this.dataQuery.concat(data);
-        ++this.pageQuery;
+        this.pageQuery++;
       }
     },
 
@@ -442,7 +441,7 @@ export default {
     },
 
     async onClickVerify() {
-      if (this.organization?.is_verified) {
+      if (this.organization.is_verified) {
         await api.verification.organizationUnverify(
           this.token,
           this.organizationID

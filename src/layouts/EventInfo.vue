@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-full w-4/5 xl:w-70 mx-auto">
+  <div class="flex flex-col h-full">
     <div v-if="!isLoaded" class="flex items-center h-full">
       <svg
         class="animate-spin h-12 w-12 text-primary mx-auto"
@@ -23,112 +23,111 @@
         />
       </svg>
     </div>
-    <div v-else class="flex flex-col h-full">
+    <div v-else class="flex flex-col h-full px-5">
       <div
         class="flex pt-10 pb-4 xl:py-0 flex-row content-between items-center xl:flex-col"
       >
-        <div class="bg-black w-28 xl:my-7 rounded-full overflow-hidden">
-          <img
+        <div class="w-28 xl:my-7 rounded-full overflow-hidden">
+          <CategoryIcon
             class="self-center justify-self-center"
-            src="@/assets/img/svg/logo.svg"
+            :categoryID="event.category?.id"
           />
         </div>
         <div class="flex flex-col pl-5 xl:pl-0 col-span-7 w-full">
           <span class="text-left text-xl xl:text-2xl mb-3 uppercase">
-            {{ event?.title }}
+            {{ event.title }}
           </span>
           <hr class="xl:hidden border-black" />
         </div>
       </div>
       <hr class="hidden xl:block border-black" />
-      <div class="h-full flex flex-col justify-between overflow-y-scroll">
-        <div>
-          <div class="text-left">
-            <div class="my-3 xl:my-6">
-              <span class="text-primary text-2xl xl:text-2xl font-bold">
-                {{ event?.participant_count }}
-              </span>
-              собираются пойти
-            </div>
-            <div class="flex items-center my-4">
-              <div class="self-baseline mr-4 my-1">
-                <UserGroupIcon class="w-5 h-5" />
-              </div>
-              <span
-                class="cursor-pointer"
-                @click="showOrganizatorInfo"
-                :class="{
-                  'after:mx-2 after:content-[\'&check;\'] after:text-primary':
-                    event?.organization?.is_verified,
-                }"
-              >
-                {{
-                  event?.organization
-                    ? event?.organization.title
-                    : event?.user.name
-                }}
-              </span>
-            </div>
-            <div class="flex items-center my-4">
-              <div class="self-baseline mr-4 my-1">
-                <CalendarIcon class="w-5 h-5" />
-              </div>
-              <span>
-                {{ normalizedDate }}
-              </span>
-            </div>
-            <div class="flex items-center my-4">
-              <div class="self-baseline mr-4 my-1">
-                <ClockIcon class="w-5 h-5" />
-              </div>
-              <span>
-                {{ normalizedTime }}
-              </span>
-            </div>
-            <div class="flex items-center my-4">
-              <div class="self-baseline mr-4 my-1">
-                <img src="@/assets/img/svg/icon.svg" class="w-5 h-7" />
-              </div>
-              <div class="flex flex-col">
-                <span>
-                  {{ event?.place.label }}
-                </span>
-                <span>
-                  {{ event?.place_description }}
-                </span>
-              </div>
-            </div>
-            <p>
-              {{ event?.description }}
-            </p>
+      <div class="h-full flex flex-col overflow-y-scroll">
+        <div class="text-left">
+          <div class="my-3 xl:my-6">
+            <span class="text-primary text-2xl xl:text-2xl font-bold">
+              {{ event.participant_count }}
+            </span>
+            собираются пойти
           </div>
-          <div v-if="event?.tags.length > 0" class="flex flex-wrap mt-5 mb-10">
-            <div
-              v-for="tag in event?.tags"
-              :key="tag"
-              @click="storeTag(tag)"
-              class="px-2 mr-2 mb-2 border border-black rounded hover:bg-primary hover:border-primary hover:text-white hover:cursor-pointer"
-              :class="{
-                'bg-primary border-primary text-white hover:bg-transparent hover:border-black hover:text-black':
-                  tags.includes(tag),
-              }"
+          <div class="flex items-center my-4">
+            <div class="self-baseline mr-4 my-1">
+              <UserGroupIcon class="w-5 h-5" />
+            </div>
+            <span
+              class="cursor-pointer after:content-['✓']"
+              @click="showOrganizatorInfo"
+              :class="
+                event.organization?.is_verified
+                  ? 'after:mx-2 after:text-primary'
+                  : 'after:text-transparent'
+              "
             >
-              <span>#{{ tag }}</span>
+              {{
+                event.organization
+                  ? event.organization?.title
+                  : event.user?.name
+              }}
+            </span>
+          </div>
+          <div class="flex items-center my-4">
+            <div class="self-baseline mr-4 my-1">
+              <CalendarIcon class="w-5 h-5" />
+            </div>
+            <span>
+              {{ normalizedDate }}
+            </span>
+          </div>
+          <div class="flex items-center my-4">
+            <div class="self-baseline mr-4 my-1">
+              <ClockIcon class="w-5 h-5" />
+            </div>
+            <span>
+              {{ normalizedTime }}
+            </span>
+          </div>
+          <div class="flex items-center my-4">
+            <div class="self-baseline mr-4 my-1">
+              <img src="@/assets/img/svg/icon.svg" class="w-5 h-7" />
+            </div>
+            <div class="flex flex-col">
+              <span>
+                {{ event.place?.label }}
+              </span>
+              <span class="break-words">
+                {{ event.place_description }}
+              </span>
             </div>
           </div>
-          <div v-if="event?.url" class="flex items-center my-4">
+          <p class="break-words">
+            {{ event.description }}
+          </p>
+        </div>
+        <div v-if="event.tags?.length > 0" class="flex flex-wrap mt-5 mb-10">
+          <div
+            v-for="tag in event.tags"
+            :key="tag"
+            @click="storeTag(tag)"
+            class="px-2 mr-2 mb-2 border border-black rounded hover:bg-primary hover:border-primary hover:text-white hover:cursor-pointer"
+            :class="{
+              'bg-primary border-primary text-white hover:bg-transparent hover:border-black hover:text-black':
+                tags.includes(tag),
+            }"
+          >
+            <span>#{{ tag }}</span>
+          </div>
+          <div v-if="event.url" class="flex items-center my-4">
             <div class="self-baseline mr-4 my-1">
               <LinkIcon class="w-5 h-5" />
             </div>
-            <a :href="event?.url" class="underline break-all" target="blank">
-              {{ event?.url }}
+            <a :href="event.url" class="underline break-all" target="blank">
+              {{ event.url }}
             </a>
           </div>
         </div>
-        <div class="mx-5 mt-auto mb-10 space-y-4">
+        <div class="mx-5 pt-4 mt-auto mb-10 space-y-4">
           <Button v-if="token" class="w-full" @click="takePart">
             <span>
-              {{ event?.am_i_participation ? "Не пойду" : "Возможно пойду" }}
+              {{ event.am_i_participation ? "Не пойду" : "Возможно пойду" }}
             </span>
           </Button>
           <Button
@@ -148,6 +147,7 @@ import api from "@/service/api";
 import { mapState } from "vuex";
 import moment from "moment";
 import { Button } from "@/components/interface";
+import { CategoryIcon } from "@/components/icons";
 import { UserGroupIcon, CalendarIcon, ClockIcon } from "@heroicons/vue/outline";
 import { LinkIcon } from "@heroicons/vue/solid";
 
@@ -155,6 +155,8 @@ export default {
   name: "EventInfo",
   components: {
     Button,
+    /* eslint-disable vue/no-unused-components */
+    CategoryIcon,
     UserGroupIcon,
     CalendarIcon,
     ClockIcon,
@@ -174,7 +176,7 @@ export default {
   data() {
     return {
       isLoaded: false,
-      event: null,
+      event: {},
     };
   },
 
@@ -185,13 +187,13 @@ export default {
     }),
 
     normalizedDate() {
-      const start = moment(this.event?.date_begin).format("DD.MM.YYYY");
-      const end = moment(this.event?.date_end).format("DD.MM.YYYY");
+      const start = moment(this.event.date_begin).format("DD.MM.YYYY");
+      const end = moment(this.event.date_end).format("DD.MM.YYYY");
       return `${start} - ${end}`;
     },
 
     normalizedTime() {
-      return moment(this.event?.date_begin).format("HH:mm");
+      return moment(this.event.date_begin).format("HH:mm");
     },
   },
 
@@ -221,8 +223,8 @@ export default {
     },
 
     showOrganizatorInfo() {
-      if (this.event?.organization?.id) {
-        this.onClickSelectOrganization(this.event?.organization.id);
+      if (this.event.organization?.id) {
+        this.onClickSelectOrganization(this.event.organization.id);
       } else {
         this.onClickSelectUser(this.event.user.id);
       }
