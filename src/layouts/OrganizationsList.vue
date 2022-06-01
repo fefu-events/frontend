@@ -40,7 +40,11 @@
         :key="org.id"
         @click="onClickSelectOrganization(org.id)"
       >
-        <OrgBlock :organization="org" :admin="adminType" />
+        <OrgBlock
+          :organization="org"
+          :leaveMode="!adminType"
+          :leaveOrganization="leaveOrganization"
+        />
       </div>
     </div>
   </div>
@@ -109,6 +113,14 @@ export default {
 
     openCreateOrganizationPage() {
       this.onClickRightsToggle("createOrg");
+    },
+
+    async leaveOrganization(organizationID) {
+      await api.organization.removeMember(
+        this.token,
+        organizationID,
+        this.userID
+      );
     },
   },
 };

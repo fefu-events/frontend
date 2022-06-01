@@ -13,14 +13,21 @@
     <div class="my-4 overflow-y-scroll">
       <div
         class="px-5 xl:px-0 hover:bg-hoverColor cursor-pointer"
-        v-for="user in following"
-        :key="user.id"
+        v-for="follow in following"
+        :key="follow"
       >
         <MemberBlock
-          :user="user"
+          v-if="follow.user"
+          :user="follow.user"
           :removeMode="true"
           :subscriptionMode="true"
           :unfollowMember="unfollowMember"
+        />
+        <OrgBlock
+          v-else
+          :organization="follow.organization"
+          :subscriptionMode="true"
+          :unfollowOrganization="unfollowOrganization"
         />
       </div>
     </div>
@@ -31,12 +38,13 @@
 import api from "@/service/api";
 import { mapState } from "vuex";
 import { ReplyIcon } from "@heroicons/vue/outline";
-import { MemberBlock } from "@/components/templates";
+import { MemberBlock, OrgBlock } from "@/components/templates";
 
 export default {
   name: "SubscriptionsList",
   components: {
     MemberBlock,
+    OrgBlock,
     ReplyIcon,
   },
 
@@ -62,6 +70,11 @@ export default {
   methods: {
     backMove() {
       this.onClickRightsToggle("subscriptions");
+    },
+
+    async unfollowOrganization(organizationID) {
+      await api.subscription.removeOrganization(this.token, organizationID);
+      await this.updateFollowing();
     },
 
     async unfollowMember(userID) {
