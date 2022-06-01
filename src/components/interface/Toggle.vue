@@ -8,7 +8,7 @@
       <span
         aria-hidden="true"
         :class="enabled ? 'translate-x-6' : 'translate-x-0'"
-        class="pointer-events-none inline-block w-5 h-5 rounded-full bg-white shadow-lg transform ring-0 transition ease-in-out duration-200"
+        class="pointer-events-none inline-block w-5 h-5 rounded-full bg-white drop-shadow-lg shadow-black transform ring-0 transition ease-in-out duration-200"
       />
     </Switch>
     <slot />
