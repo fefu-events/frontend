@@ -6,7 +6,7 @@ module.exports = {
   theme: {
     extend: {
       gradientColorStops: {
-        primary: "#FF9058",
+        start: "#FF9058",
         end: "#F38B88",
       },
       colors: {

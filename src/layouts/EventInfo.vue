@@ -65,7 +65,7 @@
           </div>
           <div class="flex items-center my-4">
             <div class="self-baseline mr-4 my-1">
-              <img src="@/assets/img/svg/icon.svg" class="w-5 h-7" />
+              <AppIcon class="w-5 h-7 text-black" />
             </div>
             <div class="flex flex-col">
               <span>
@@ -125,7 +125,7 @@ import api from "@/service/api";
 import { mapState } from "vuex";
 import moment from "moment";
 import { Button } from "@/components/interface";
-import { CategoryIcon, LoadIcon } from "@/components/icons";
+import { CategoryIcon, LoadIcon, AppIcon } from "@/components/icons";
 import { UserGroupIcon, CalendarIcon, ClockIcon } from "@heroicons/vue/outline";
 import { LinkIcon } from "@heroicons/vue/solid";
 
@@ -133,6 +133,7 @@ export default {
   name: "EventInfo",
   components: {
     Button,
+    AppIcon,
     LoadIcon,
     CategoryIcon,
     UserGroupIcon,

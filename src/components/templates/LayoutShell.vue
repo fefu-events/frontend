@@ -3,7 +3,7 @@
     v-if="side == 'right'"
     class="right-sidebar"
     :class="{
-      'h-9/10 xl:h-9/10 xl:!w-80 outline': renderTerm,
+      'bottom-10 xl:bottom-0 xl:right-0 outline': renderTerm,
     }"
   >
     <slot />
