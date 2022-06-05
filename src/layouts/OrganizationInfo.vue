@@ -503,7 +503,7 @@ export default {
       this.dataQuery = this.eventsList
         ? await this.loadEventsList(0)
         : this.addUsersList
-        ? await this.loadEventsList(0)
+        ? await this.loadUsersList(0)
         : [];
     }, 500),
   },
