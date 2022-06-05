@@ -17,10 +17,12 @@
           </span>
         </li>
         <li class="cursor-pointer group">
-          <MailIcon class="inline-block w-6" />
-          <span class="group-hover:text-primary align-middle font-bold">
-            Обратная связь
-          </span>
+          <a href="https://t.me/fefu_events" target="_blank">
+            <MailIcon class="inline-block w-6" />
+            <span class="group-hover:text-primary align-middle font-bold">
+              Обратная связь
+            </span>
+          </a>
         </li>
       </ul>
     </div>
