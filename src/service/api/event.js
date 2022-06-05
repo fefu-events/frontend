@@ -83,6 +83,7 @@ const endpoints = {
         skip: skip,
         limit: 10,
         user_id: userID,
+        archived: true,
       },
     }),
 

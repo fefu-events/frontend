@@ -101,12 +101,15 @@ export default {
   inject: ["onClickRightsToggle", "onClickSelectUser"],
 
   async mounted() {
-    this.moderators = await api.user.getModerators().then(({ data }) => data);
+    this.moderators = await api.administration
+      .getModerators(this.token)
+      .then(({ data }) => data);
   },
 
   computed: {
     ...mapState("me/", {
       meID: (state) => state.user?.id,
+      token: (state) => state.accessToken,
     }),
 
     userIsAdded() {
@@ -161,12 +164,22 @@ export default {
       this.updateUsersList();
     },
 
-    addModerator(userID) {
-      console.log(`Moder ${userID} added`);
+    async addModerator(userID) {
+      const user = await api.administration
+        .addModerator(this.token, userID)
+        .then(({ data }) => data);
+
+      this.moderators.push(user);
     },
 
-    removeModerator(userID) {
-      console.log(`Moder ${userID} removed`);
+    async removeModerator(userID) {
+      const user = await api.administration
+        .removeModerator(this.token, userID)
+        .then(({ data }) => data);
+
+      this.moderators = this.moderators.filter(
+        (moderator) => moderator.id !== user.id
+      );
     },
   },
 

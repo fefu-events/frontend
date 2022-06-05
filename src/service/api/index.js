@@ -1,3 +1,4 @@
+import administration from "./administration";
 import client from "./client";
 import event from "./event";
 import map from "./map";
@@ -9,6 +10,7 @@ import user from "./user";
 import verification from "./verification";
 
 const api = {
+  administration,
   client,
   event,
   map,

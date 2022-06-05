@@ -4,7 +4,7 @@
     <LMap
       :bounds="bounds"
       :maxBounds="maxBounds"
-      :zoom="defaut_zoom"
+      :zoom="default_zoom"
       :minZoom="minZoom"
       :maxZoom="maxZoom"
       :zoomAnimation="true"
@@ -80,7 +80,7 @@ export default {
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       attribution:
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-      defaut_zoom: 15,
+      default_zoom: 15,
       minZoom: 15,
       maxZoom: 18,
       center: [43.029308, 131.892346],

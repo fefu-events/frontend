@@ -70,7 +70,7 @@
         <Button class="w-12 h-12 mx-5 bg-white" @click="onClickUserInfoToggle">
           <UserIcon class="w-8 h-8 text mx-auto" />
         </Button>
-        <Button class="w-12 h-12 mx-5 bg-white">
+        <Button class="w-12 h-12 mx-5 bg-white" @click="onClickAboutToggle">
           <MenuIcon class="w-8 h-8 text mx-auto" />
         </Button>
       </section>
@@ -81,7 +81,7 @@
             <LoginIcon class="w-8 h-8 rotate-180" />
           </div>
         </Button>
-        <Button class="w-12 h-12 mx-5 bg-white">
+        <Button class="w-12 h-12 mx-5 bg-white" @click="onClickAboutToggle">
           <MenuIcon class="w-8 h-8 text mx-auto" />
         </Button>
       </section>
@@ -101,8 +101,9 @@
       <SubscriptionsList v-if="infoLayouts.subscriptions" />
     </LayoutShell>
 
+    <!-- Moderators list layout -->
     <LayoutShell :renderTerm="infoLayouts.moderators">
-      <ModeratorsList />
+      <ModeratorsList v-if="infoLayouts.moderators" />
     </LayoutShell>
 
     <!-- Organizations list layout -->
@@ -144,6 +145,7 @@
         @rerender="() => ++eventActionLayoutWatcher"
       />
     </LayoutShell>
+
     <!-- Other user profile info layout -->
     <LayoutShell :renderTerm="selectedUser">
       <ProfileInfo
@@ -152,6 +154,11 @@
         :userID="selectedUser"
         :signOut="signOut"
       />
+    </LayoutShell>
+
+    <!-- About Layout -->
+    <LayoutShell :renderTerm="aboutLayout">
+      <About />
     </LayoutShell>
   </div>
 
@@ -175,11 +182,11 @@
     <div
       v-if="meID"
       class="flex-1 hover:text-primary"
-      @click="onClickEventActionToggle"
+      @click.stop="onClickEventActionToggle"
     >
       <PlusIcon class="w-full h-5" />
     </div>
-    <div class="flex-1 hover:text-primary">
+    <div class="flex-1 hover:text-primary" @click.stop="onClickAboutToggle">
       <MenuIcon class="w-full h-5" />
     </div>
   </div>
@@ -203,6 +210,7 @@ import {
 export default {
   name: "SidebarComponent",
   components: {
+    About: LayoutComponents.About,
     CreateOrganization: LayoutComponents.CreateOrganization,
     EventAction: LayoutComponents.EventAction,
     EventInfo: LayoutComponents.EventInfo,
@@ -253,6 +261,7 @@ export default {
       searchLayout: false,
       eventListLayout: false,
       eventActionLayout: false,
+      aboutLayout: false,
       infoLayouts: {
         me: false,
         myOrgs: false,
@@ -359,6 +368,7 @@ export default {
         this.selectedUser = null;
         this.eventActionLayout = false;
         this.editableEvent = null;
+        this.aboutLayout = false;
       }
 
       // main actions
@@ -390,6 +400,20 @@ export default {
       this.eventListLayout = !this.eventListLayout;
     },
 
+    onClickAboutToggle() {
+      if (window.screen.width < 1280) {
+        this.selectedEvent = null;
+        this.eventListLayout = false;
+        this.searchLayout = false;
+      }
+      this.eventActionLayout = false;
+      for (let toggle in this.infoLayouts) {
+        this.infoLayouts[toggle] = false;
+      }
+
+      this.aboutLayout = !this.aboutLayout;
+    },
+
     // RIGHT SIDEBAR ACTIONS
 
     onClickUserInfoToggle() {
@@ -399,6 +423,7 @@ export default {
         this.eventListLayout = false;
         this.searchLayout = false;
       }
+      this.aboutLayout = false;
       this.eventActionLayout = false;
 
       // main actions
@@ -429,6 +454,8 @@ export default {
         this.eventListLayout = false;
         this.searchLayout = false;
       }
+
+      this.aboutLayout = false;
       for (let toggle in this.infoLayouts) {
         this.infoLayouts[toggle] = false;
       }

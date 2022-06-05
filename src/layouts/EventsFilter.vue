@@ -18,11 +18,11 @@
     <div class="xl:mb-6 mx-5 overflow-y-scroll overflow-x-hidden">
       <!-- Follow toggle -->
       <section v-if="user">
-        <Toggle class="px-4" @update="(value) => (followToggle = value)">
+        <Toggle @update="(value) => (followToggle = value)">
           <span class="text-sm font-medium"> Только подписки </span>
         </Toggle>
         <!-- Recommend toggle -->
-        <Toggle class="px-4" @update="(value) => (recommendToggle = value)">
+        <Toggle @update="(value) => (recommendToggle = value)">
           <span class="text-sm font-medium"> Рекомендации </span>
         </Toggle>
       </section>

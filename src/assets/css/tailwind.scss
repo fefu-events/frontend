@@ -19,8 +19,8 @@
   }
 
   .right-sidebar {
-    @apply fixed bottom-10 w-screen h-0 bg-white outline-1 outline-black rounded-t-lg overflow-hidden duration-300
-           xl:bottom-0 xl:right-0 xl:absolute xl:w-0 xl:h-9/10 xl:rounded-l-lg xl:rounded-r-none xl:duration-100;
+    @apply fixed -bottom-[90%] w-screen h-9/10 bg-white outline-1 outline-black rounded-t-lg overflow-hidden duration-300
+           xl:bottom-0 xl:-right-80 xl:w-80 xl:rounded-l-lg xl:rounded-r-none xl:duration-100;
   }
 
   .form-radio {

@@ -1,28 +1,6 @@
 <template>
   <div class="flex flex-col h-full">
-    <div v-if="!isLoaded" class="flex items-center h-full">
-      <svg
-        class="animate-spin h-12 w-12 text-primary mx-auto"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <circle
-          class="opacity-40"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          stroke-width="2"
-        ></circle>
-        <path
-          class="opacity-80"
-          stroke="currentColor"
-          stroke-width="2"
-          d="M4.85857 5C3.09032 6.80375 2 9.27455 2 12C2 17.5228 6.47715 22 12 22"
-        />
-      </svg>
-    </div>
+    <LoadIcon v-if="!isLoaded" class="h-12 w-12 text-primary mx-auto" />
     <div v-else class="flex flex-col h-full px-5">
       <div
         class="flex pt-10 pb-4 xl:py-0 flex-row content-between items-center xl:flex-col"
@@ -87,7 +65,7 @@
           </div>
           <div class="flex items-center my-4">
             <div class="self-baseline mr-4 my-1">
-              <img src="@/assets/img/svg/icon.svg" class="w-5 h-7" />
+              <AppIcon class="w-5 h-7 text-black" />
             </div>
             <div class="flex flex-col">
               <span>
@@ -147,7 +125,7 @@ import api from "@/service/api";
 import { mapState } from "vuex";
 import moment from "moment";
 import { Button } from "@/components/interface";
-import { CategoryIcon } from "@/components/icons";
+import { CategoryIcon, LoadIcon, AppIcon } from "@/components/icons";
 import { UserGroupIcon, CalendarIcon, ClockIcon } from "@heroicons/vue/outline";
 import { LinkIcon } from "@heroicons/vue/solid";
 
@@ -155,7 +133,8 @@ export default {
   name: "EventInfo",
   components: {
     Button,
-    /* eslint-disable vue/no-unused-components */
+    AppIcon,
+    LoadIcon,
     CategoryIcon,
     UserGroupIcon,
     CalendarIcon,

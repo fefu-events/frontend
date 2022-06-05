@@ -1,3 +1,4 @@
+export { default as About } from "./About.vue";
 export { default as CreateOrganization } from "./CreateOrganization.vue";
 export { default as EventAction } from "./EventAction.vue";
 export { default as EventInfo } from "./EventInfo.vue";
